@@ -559,7 +559,8 @@ export async function createJobSheet(formData: FormData) {
   const customerPhone = formData.get("customerPhone") as string;
   const customerAddress = formData.get("customerAddress") as string;
   
-  const deviceType = formData.get("deviceType") as string;
+  const category = (formData.get("category") as string) || "GENERAL";
+  let deviceType = formData.get("deviceType") as string;
   const deviceModel = formData.get("deviceModel") as string;
   const problemDesc = formData.get("problemDesc") as string;
   const accessories = formData.get("accessories") as string;
@@ -567,6 +568,20 @@ export async function createJobSheet(formData: FormData) {
   const estimatedCost = parseFloat(formData.get("estimatedCost") as string) || 0;
   const advanceAmount = parseFloat(formData.get("advanceAmount") as string) || 0;
   
+  let technicalDetails = null;
+
+  if (category === 'MOTOR') {
+      deviceType = 'Electric Motor'; // Force type
+      technicalDetails = {
+          starter: formData.get("tech_starter") as string,
+          power: formData.get("tech_power") as string,
+          winding1: formData.get("tech_winding1") as string,
+          winding2: formData.get("tech_winding2") as string,
+          winding3: formData.get("tech_winding3") as string,
+          winding4: formData.get("tech_winding4") as string,
+      };
+  }
+
   // Date handling
   const receivedAtStr = formData.get("receivedAt") as string;
   const expectedAtStr = formData.get("expectedAt") as string;
@@ -583,10 +598,12 @@ export async function createJobSheet(formData: FormData) {
       customerName,
       customerPhone,
       customerAddress,
+      category,
       deviceType,
       deviceModel,
       problemDesc,
       accessories,
+      technicalDetails: technicalDetails || undefined,
       receivedAt,
       expectedAt,
       estimatedCost,
@@ -661,6 +678,7 @@ export async function updateJobSheetDetails(formData: FormData) {
     const customerPhone = formData.get("customerPhone") as string;
     const customerAddress = formData.get("customerAddress") as string;
     
+    const category = (formData.get("category") as string) || "GENERAL";
     const deviceType = formData.get("deviceType") as string;
     const deviceModel = formData.get("deviceModel") as string;
     const problemDesc = formData.get("problemDesc") as string;
@@ -668,6 +686,18 @@ export async function updateJobSheetDetails(formData: FormData) {
     
     const estimatedCost = parseFloat(formData.get("estimatedCost") as string) || 0;
     const advanceAmount = parseFloat(formData.get("advanceAmount") as string) || 0;
+
+    let technicalDetails = undefined;
+    if (category === 'MOTOR') {
+        technicalDetails = {
+            starter: formData.get("tech_starter") as string,
+            power: formData.get("tech_power") as string,
+            winding1: formData.get("tech_winding1") as string,
+            winding2: formData.get("tech_winding2") as string,
+            winding3: formData.get("tech_winding3") as string,
+            winding4: formData.get("tech_winding4") as string,
+        } as any;
+    }
 
     await db.jobSheet.update({
         where: { 
@@ -678,12 +708,14 @@ export async function updateJobSheetDetails(formData: FormData) {
             customerName,
             customerPhone,
             customerAddress,
+            category,
             deviceType,
             deviceModel,
             problemDesc,
             accessories,
             estimatedCost,
-            advanceAmount
+            advanceAmount,
+            technicalDetails: technicalDetails || null
         }
     });
 

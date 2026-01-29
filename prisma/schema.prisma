@@ -122,6 +122,9 @@ model JobSheet {
   advanceAmount   Float? @default(0)
   finalCost       Float?
 
+  category        String   @default("GENERAL") // MOBILE, MOTOR, TV
+  technicalDetails Json?   // Flexible storage for specific fields
+
   updatedAt       DateTime @updatedAt
 }
 

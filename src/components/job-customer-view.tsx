@@ -11,6 +11,8 @@ type JobSheet = {
     customerAddress?: string | null;
     deviceType?: string | null;
     deviceModel: string;
+    category?: string;
+    technicalDetails?: any;
     problemDesc: string;
     accessories?: string | null;
     status: string;
@@ -213,6 +215,67 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                 </div>
                             </section>
 
+                            {/* Technical Details Section (For Motors) */}
+                            {((isEditing && job.category === 'MOTOR') || (!isEditing && job.technicalDetails)) && (
+                                <section className="animate-in fade-in slide-in-from-bottom-2">
+                                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                        <Wrench className="h-4 w-4" /> Technical Specifications
+                                    </h3>
+                                    <div className="bg-slate-50 rounded-xl p-6 border border-slate-100 grid grid-cols-2 lg:grid-cols-3 gap-6">
+                                        
+                                        <div>
+                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Starter Phase</label>
+                                            {isEditing && job.category === 'MOTOR' ? (
+                                                <input name="tech_starter" defaultValue={job.technicalDetails?.starter || ''} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
+                                            ) : (
+                                                <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.starter || '-'}</div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Power / HP</label>
+                                            {isEditing && job.category === 'MOTOR' ? (
+                                                <input name="tech_power" defaultValue={job.technicalDetails?.power || ''} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
+                                            ) : (
+                                                <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.power || '-'}</div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Winding 1</label>
+                                             {isEditing && job.category === 'MOTOR' ? (
+                                                <input name="tech_winding1" defaultValue={job.technicalDetails?.winding1 || ''} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
+                                            ) : (
+                                                <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.winding1 || '-'}</div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Winding 2</label>
+                                             {isEditing && job.category === 'MOTOR' ? (
+                                                <input name="tech_winding2" defaultValue={job.technicalDetails?.winding2 || ''} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
+                                            ) : (
+                                                <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.winding2 || '-'}</div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Winding 3</label>
+                                             {isEditing && job.category === 'MOTOR' ? (
+                                                <input name="tech_winding3" defaultValue={job.technicalDetails?.winding3 || ''} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
+                                            ) : (
+                                                <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.winding3 || '-'}</div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Winding 4</label>
+                                             {isEditing && job.category === 'MOTOR' ? (
+                                                <input name="tech_winding4" defaultValue={job.technicalDetails?.winding4 || ''} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
+                                            ) : (
+                                                <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.winding4 || '-'}</div>
+                                            )}
+                                        </div>
+
+                                    </div>
+                                </section>
+                            )}
+
                             {/* Device Section */}
                             <section>
                                 <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -223,7 +286,14 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                         <div className="p-5">
                                             <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Device Type</label>
                                             {isEditing ? (
-                                                <input name="deviceType" defaultValue={job.deviceType || ''} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" placeholder="e.g. Mobile" />
+                                                <div className="flex flex-col gap-2">
+                                                    <select name="category" defaultValue={job.category || 'GENERAL'} className="w-full mt-1 p-2 border rounded-md text-slate-700 text-sm">
+                                                        <option value="GENERAL">General</option>
+                                                        <option value="MOBILE">Mobile</option>
+                                                        <option value="MOTOR">Motor</option>
+                                                    </select>
+                                                    <input name="deviceType" defaultValue={job.deviceType || ''} className="w-full p-2 border rounded-md font-bold text-slate-800" placeholder="e.g. Mobile" />
+                                                </div>
                                             ) : (
                                                 <div className="text-base font-bold text-slate-800 mt-1">
                                                     {job.deviceType || "Device"}

@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => void }) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState("GENERAL");
 
   const handleSubmit = async (formData: FormData) => {
     setLoading(true);
@@ -98,48 +99,107 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
                     </div>
                 </div>
 
-                {/* Section 2: Device Details */}
+                {/* Section 2: Job Type & Device Info */}
                 <div className="space-y-6">
                     <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 border-b border-slate-100 pb-2">
-                        <Smartphone className="w-4 h-4" /> Device Info
+                        <Smartphone className="w-4 h-4" /> Technical Info
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                         <div className="space-y-3">
-                            <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">
-                                Device Type
-                            </label>
-                            <div className="relative">
-                                <select 
-                                    name="deviceType"
-                                    className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm appearance-none"
-                                >
-                                    <option value="Mobile">Mobile Phone</option>
-                                    <option value="Laptop">Laptop / PC</option>
-                                    <option value="Tablet">Tablet</option>
-                                    <option value="TV">TV (LED/LCD)</option>
-                                    <option value="Refrigerator">Refrigerator</option>
-                                    <option value="WashingMachine">Washing Machine</option>
-                                    <option value="AC">Air Conditioner</option>
-                                    <option value="Microwave">Microwave</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-                                </div>
+
+                    <div className="space-y-3">
+                        <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">
+                            Job Category
+                        </label>
+                        <div className="relative">
+                            <select 
+                                name="category"
+                                value={selectedCategory}
+                                onChange={(e) => setSelectedCategory(e.target.value)}
+                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm appearance-none"
+                            >
+                                <option value="GENERAL">General Repair</option>
+                                <option value="MOBILE">Mobile Repair</option>
+                                <option value="TV">TV Repairing</option>
+                                <option value="MOTOR">Motor Repairing</option>
+                            </select>
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                             </div>
-                         </div>
-                         <div className="space-y-3">
-                            <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">
-                                Brand & Model
-                            </label>
-                            <input 
-                                name="deviceModel"
-                                required
-                                placeholder="e.g. Samsung S23 Ultra"
-                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
-                            />
-                         </div>
+                        </div>
                     </div>
+
+                    {selectedCategory === 'MOTOR' ? (
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 animate-in fade-in slide-in-from-top-2">
+                             <input type="hidden" name="deviceType" value="Electric Motor" />
+                             
+                             <div className="space-y-3">
+                                <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">Starter Type</label>
+                                <input name="tech_starter" placeholder="e.g. DOL, Star Delta" className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary shadow-sm" />
+                             </div>
+                             <div className="space-y-3">
+                                <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">Power / HP</label>
+                                <input name="tech_power" placeholder="e.g. 2HP, 5KW" className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary shadow-sm" />
+                             </div>
+                             <div className="space-y-3">
+                                <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">Winding (Bounding) 1</label>
+                                <input name="tech_winding1" placeholder="Value 1" className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary shadow-sm" />
+                             </div>
+                             <div className="space-y-3">
+                                <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">Winding (Bounding) 2</label>
+                                <input name="tech_winding2" placeholder="Value 2" className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary shadow-sm" />
+                             </div>
+                             <div className="space-y-3">
+                                <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">Winding (Bounding) 3</label>
+                                <input name="tech_winding3" placeholder="Value 3" className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary shadow-sm" />
+                             </div>
+                             <div className="space-y-3">
+                                <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">Winding (Bounding) 4</label>
+                                <input name="tech_winding4" placeholder="Value 4" className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary shadow-sm" />
+                             </div>
+                             <div className="space-y-3 md:col-span-2">
+                                <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">Model / Serial No.</label>
+                                <input name="deviceModel" placeholder="Motor Model / Serial" className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary shadow-sm" />
+                             </div>
+                         </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 animate-in fade-in slide-in-from-top-2">
+                             <div className="space-y-3">
+                                <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">
+                                    Device Type
+                                </label>
+                                <div className="relative">
+                                    <select 
+                                        name="deviceType"
+                                        className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm appearance-none"
+                                    >
+                                        <option value="Mobile">Mobile Phone</option>
+                                        <option value="Laptop">Laptop / PC</option>
+                                        <option value="Tablet">Tablet</option>
+                                        <option value="TV">TV (LED/LCD)</option>
+                                        <option value="Refrigerator">Refrigerator</option>
+                                        <option value="WashingMachine">Washing Machine</option>
+                                        <option value="AC">Air Conditioner</option>
+                                        <option value="Microwave">Microwave</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                </div>
+                             </div>
+                             <div className="space-y-3">
+                                <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">
+                                    Brand & Model
+                                </label>
+                                <input 
+                                    name="deviceModel"
+                                    required
+                                    placeholder="e.g. Samsung S23 Ultra"
+                                    className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
+                                />
+                             </div>
+                        </div>
+                    )}
+                    
                     <div className="space-y-3">
                         <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">
                             Problem Description
@@ -148,7 +208,7 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
                             name="problemDesc"
                             required
                             rows={3}
-                            placeholder="Describe the issue (e.g. Display broken, Not cooling, etc.)"
+                            placeholder="Describe the issue..."
                             className="flex w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm resize-none"
                         />
                     </div>
@@ -158,7 +218,7 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
                         </label>
                         <input 
                             name="accessories"
-                            placeholder="e.g. Adapter, Remote, Cover (Optional)"
+                            placeholder="e.g. Adapter, Remote, Cover"
                             className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                         />
                     </div>
