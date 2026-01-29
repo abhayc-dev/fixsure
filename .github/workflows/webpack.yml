@@ -23,4 +23,6 @@ jobs:
       run: npm ci
 
     - name: Build
+      env:
+        DATABASE_URL: "postgresql://postgres:password@localhost:5432/fixsure"
       run: npm run build
