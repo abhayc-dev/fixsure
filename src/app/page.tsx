@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ShieldCheck, CheckCircle, ArrowRight, Smartphone, Zap, FileText } from "lucide-react";
 import HomeHeroForm from "@/components/HomeHeroForm";
 
@@ -38,7 +39,7 @@ export default function Home() {
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
 
             {/* Left Content */}
-            <div className="flex-1 text-center lg:text-left space-y-8 animate-in slide-in-from-bottom-5 duration-700">
+            <div className="flex-1 text-center lg:text-left space-y-6 animate-in slide-in-from-bottom-5 duration-700">
               <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-50 border border-orange-100 rounded-full text-orange-600 text-xs font-bold uppercase tracking-wider mb-2">
                 <Zap className="w-3 h-3 fill-orange-600" />
                 #1 App for Repair Shops
@@ -53,6 +54,11 @@ export default function Home() {
                 Issue digital warranties, manage repair job sheets, and track your shop's growth in one dashboard. No more paper slips.
               </p>
 
+              {/* Form moved to Left Side for all screens */}
+              <div className="w-full max-w-md mx-auto lg:mx-0 py-2">
+                <HomeHeroForm />
+              </div>
+
               <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-2">
                 <div className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-100 rounded-lg shadow-sm text-sm font-medium text-slate-700">
                   <CheckCircle className="w-4 h-4 text-green-500" /> Free Forever Plan
@@ -61,45 +67,22 @@ export default function Home() {
                   <CheckCircle className="w-4 h-4 text-green-500" /> Instant Setup
                 </div>
               </div>
-
-              {/* Mobile Only Form Container (Visible only on small screens below layout switch) */}
-              <div className="lg:hidden w-full max-w-sm mx-auto mt-6">
-                <HomeHeroForm />
-              </div>
             </div>
 
-            {/* Right Content - Hero Form / Visuals */}
-            <div className="hidden lg:block flex-1 relative animate-in slide-in-from-right-5 duration-1000 delay-200">
+            {/* Right Content - Hero Image */}
+            <div className="hidden lg:flex flex-1 relative justify-center items-center animate-in slide-in-from-right-5 duration-1000 delay-200">
               {/* Decorative Background Elements */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-orange-200/20 rounded-full blur-3xl -z-10"></div>
-
-              <div className="relative z-10 bg-white/50 backdrop-blur-sm p-4 rounded-3xl border border-white/50 shadow-xl ring-1 ring-black/5 max-w-md mx-auto">
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
-                  <h3 className="text-xl font-bold text-slate-900 mb-2">Start Growing Today</h3>
-                  <p className="text-sm text-slate-500 mb-6">Enter your mobile number to create your shop account instantly.</p>
-                  <HomeHeroForm />
-                </div>
-
-                {/* Floating Badges */}
-                <div className="absolute -top-6 -right-6 bg-white p-3 rounded-xl shadow-lg border border-slate-100 flex items-center gap-3 animate-bounce shadow-orange-100/50" style={{ animationDuration: '3s' }}>
-                  <div className="bg-green-100 p-2 rounded-full">
-                    <Smartphone className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div className="text-left">
-                    <p className="text-[10px] text-slate-400 font-bold uppercase">Warranties Issued</p>
-                    <p className="text-sm font-bold text-slate-900">10,000+</p>
-                  </div>
-                </div>
-
-                <div className="absolute -bottom-6 -left-6 bg-white p-3 rounded-xl shadow-lg border border-slate-100 flex items-center gap-3 animate-bounce shadow-blue-100/50" style={{ animationDuration: '4s', animationDelay: '1s' }}>
-                  <div className="bg-blue-100 p-2 rounded-full">
-                    <FileText className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div className="text-left">
-                    <p className="text-[10px] text-slate-400 font-bold uppercase">Job Sheets</p>
-                    <p className="text-sm font-bold text-slate-900">Digital & PDF</p>
-                  </div>
-                </div>
+              
+              <div className="relative z-10 w-full flex justify-center">
+                  <Image 
+                    src="/hero-image.png" 
+                    alt="FixSure for Business" 
+                    width={600} 
+                    height={600}
+                    className="w-[120%] max-w-[600px] object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-700"
+                    priority
+                  />
               </div>
             </div>
 

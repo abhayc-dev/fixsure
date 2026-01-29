@@ -198,9 +198,8 @@ export default function DashboardClient({
             <aside className="w-64 bg-[#1e293b] text-white flex-shrink-0 flex flex-col justify-between hidden md:flex">
                 <div>
                     {/* Brand */}
-                    <div className="h-16 flex items-center px-6 border-b border-white/10">
-                        <ShieldCheck className="h-6 w-6 text-primary mr-2" />
-                        <span className="font-bold text-lg tracking-wide">FixSure Shop</span>
+                    <div className="h-16 flex items-center justify-center border-b border-white/10">
+                        <ShieldCheck className="h-8 w-8 text-primary" />
                     </div>
 
                     {/* Nav Items */}
