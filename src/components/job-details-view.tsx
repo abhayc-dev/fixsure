@@ -88,204 +88,109 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
     };
 
     return (
-        <>
-            {/* Print Styles */}
-            <style jsx global>{`
-                @media print {
-                    body * {
-                        visibility: hidden;
-                    }
-                    .printable-ticket, .printable-ticket * {
-                        visibility: visible;
-                    }
-                    .printable-ticket {
-                        position: absolute;
-                        left: 0;
-                        top: 0;
-                        width: 100% !important;
-                        margin: 0 !important;
-                        padding: 0 !important;
-                        box-shadow: none !important;
-                        border: 1px solid #ddd !important;
-                    }
-                    /* Force single page check */
-                    .break-inside-avoid {
-                        page-break-inside: avoid;
-                    }
-                    @page {
-                        margin: 5mm;
-                        size: A4 portrait;
-                    }
-                }
-            `}</style>
-
-            <div className="animate-fade-in w-full max-w-5xl mx-auto space-y-6">
-                
-                {/* Top Action Bar - Hidden in Print */}
-                <div className="flex items-center justify-between print:hidden">
-                    <button 
-                        onClick={onBack}
-                        className="group flex items-center gap-2 bg-white border border-slate-200 shadow-sm rounded-full px-5 py-2.5 text-sm font-bold text-slate-600 hover:text-slate-900 hover:border-slate-300 hover:shadow-md transition-all active:scale-[0.98]"
-                    >
-                        <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" /> 
-                        Back to Job Sheets
-                    </button>
-                    
-                    <button 
-                        onClick={handleDownloadPdf}
-                        disabled={downloading}
-                        className={cn(
-                            "flex items-center gap-2 bg-slate-900 text-white shadow-lg rounded-full px-5 py-2.5 text-sm font-bold hover:bg-slate-800 hover:shadow-xl transition-all active:scale-[0.98]",
-                            downloading && "opacity-75 cursor-wait"
-                        )}
-                    >
-                        {downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Printer className="h-4 w-4" />} 
-                        {downloading ? "Generating PDF..." : "Download / Print"}
-                    </button>
-                </div>
-
-                {/* Main Ticket Card - Printable Target */}
-                <div ref={ticketRef} className="printable-ticket bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden print:rounded-none print:shadow-none print:border-none">
-                    
-                    {/* Header Banner */}
-                    <div className="bg-slate-50 border-b border-slate-100 p-8 print:p-5 flex flex-col md:flex-row md:items-center justify-between gap-6 print:gap-4 print:bg-white print:border-b-2 print:border-black">
-                        <div className="flex items-start gap-4">
-                            <div className="p-3 bg-white border border-slate-200 rounded-xl shadow-sm text-primary print:border-black print:text-black">
-                                <Wrench className="h-8 w-8" />
-                            </div>
-                            <div>
-                                 <div className="flex items-center gap-3">
-                                    <h1 className="text-2xl font-bold text-slate-800 print:text-black">Job Sheet {job.jobId}</h1>
-                                    <span className={cn(
-                                        "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border print:border-black print:text-black print:bg-transparent",
-                                        job.status === 'RECEIVED' ? "bg-blue-50 text-blue-700 border-blue-200" :
-                                        job.status === 'READY' ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
-                                        job.status === 'DELIVERED' ? "bg-slate-100 text-slate-600 border-slate-200" :
-                                        "bg-orange-50 text-orange-700 border-orange-200"
-                                    )}>
-                                        {job.status}
-                                    </span>
-                                 </div>
-                                 <p className="text-slate-500 mt-1 flex items-center gap-2 text-sm print:text-gray-600">
-                                    <Calendar className="h-3.5 w-3.5" /> 
-                                    Received on {new Date(job.receivedAt).toLocaleDateString()} at {new Date(job.receivedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                 </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="p-8 print:p-5 grid grid-cols-1 lg:grid-cols-3 gap-10 print:gap-6 print:grid-cols-2">
-                        
-                        {/* Left Column: Customer & Device (Span 2) */}
-                        <div className="lg:col-span-2 space-y-10 print:space-y-6 print:col-span-2">
-                            
-                            {/* Customer Section */}
-                            <section className="break-inside-avoid">
-                                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2 print:text-black print:font-extrabold print:border-b print:border-black print:pb-1 print:mb-2">
-                                    <User className="h-4 w-4" /> Customer Information
-                                </h3>
-                                <div className="bg-slate-50/50 rounded-xl p-6 border border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-6 print:bg-white print:border-slate-300 print:p-4 print:gap-4">
-                                    <div>
-                                        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide print:text-black">Name</label>
-                                        <div className="text-lg font-bold text-slate-800 mt-1 print:text-black">{job.customerName}</div>
-                                    </div>
-                                    <div>
-                                        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide print:text-black">Mobile</label>
-                                        <div className="text-lg font-bold text-slate-800 mt-1 print:text-black">{job.customerPhone}</div>
-                                    </div>
-                                    <div className="md:col-span-2">
-                                        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1 print:text-black">
-                                            <MapPin className="h-3 w-3" /> Address
-                                        </label>
-                                        <div className="text-base font-medium text-slate-700 mt-1 print:text-black">
-                                            {job.customerAddress || <span className="text-slate-400 italic">No address provided</span>}
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-
-                            {/* Device Section */}
-                            <section className="break-inside-avoid">
-                                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2 print:text-black print:font-extrabold print:border-b print:border-black print:pb-1 print:mb-2">
-                                    <Smartphone className="h-4 w-4" /> Device Details
-                                </h3>
-                                <div className="border border-slate-200 rounded-xl overflow-hidden print:border-slate-300">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-200 print:divide-slate-300">
-                                        <div className="p-5 print:p-4">
-                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide print:text-black">Device</label>
-                                            <div className="text-base font-bold text-slate-800 mt-1 print:text-black">
-                                                {job.deviceType || "Device"} - {job.deviceModel}
-                                            </div>
-                                        </div>
-                                        <div className="p-5 print:p-4">
-                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide print:text-black">Accessories</label>
-                                            <div className="text-base font-medium text-slate-800 mt-1 print:text-black">
-                                                {job.accessories || <span className="text-slate-400 italic">None</span>}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="border-t border-slate-200 p-5 bg-orange-50/30 print:bg-transparent print:border-slate-300 print:p-4">
-                                        <label className="text-xs font-bold text-orange-800/70 uppercase tracking-wide print:text-black">Reported Problem</label>
-                                        <p className="text-base font-medium text-slate-800 mt-2 leading-relaxed print:text-black">
-                                            {job.problemDesc}
-                                        </p>
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
-
-                        {/* Right Column: Payment & Dates (Span 1) */}
-                        <div className="space-y-8 print:space-y-6 print:col-span-2 print:grid print:grid-cols-2 print:gap-6 break-inside-avoid">
-                            
-                            {/* Financial Card */}
-                            <div className="bg-slate-900 text-white rounded-2xl p-6 shadow-xl shadow-slate-200 print:bg-white print:text-black print:border print:border-black print:shadow-none print:rounded-xl">
-                                 <div className="flex items-center gap-2 mb-6 opacity-80 print:opacity-100 print:border-b print:border-black print:pb-2 print:mb-4">
-                                     <Receipt className="h-5 w-5" />
-                                     <span className="text-sm font-bold uppercase tracking-wider">Estimated Cost</span>
-                                 </div>
-                                 
-                                 <div className="space-y-4">
-                                     <div className="flex justify-between items-center text-sm">
-                                         <span className="text-slate-400 print:text-gray-600">Total Estimate</span>
-                                         <span className="font-medium">₹{total.toLocaleString()}</span>
-                                     </div>
-                                     <div className="flex justify-between items-center text-sm border-b border-white/10 pb-4 print:border-gray-200">
-                                         <span className="text-slate-400 print:text-gray-600">Advance Paid</span>
-                                         <span className="font-medium text-green-400 print:text-black">- ₹{advance.toLocaleString()}</span>
-                                     </div>
-                                     <div className="flex justify-between items-end pt-2">
-                                         <span className="text-sm font-bold text-slate-300 print:text-black">Balance Due</span>
-                                         <span className="text-3xl font-bold print:text-2xl">₹{balance.toLocaleString()}</span>
-                                     </div>
-                                 </div>
-                            </div>
-
-                            {/* Dates Card */}
-                            <div className="bg-white border border-slate-200 rounded-2xl p-6 print:border-slate-300 print:rounded-xl">
-                                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 print:text-black print:font-extrabold print:border-b print:border-black print:pb-1">Timelines</h3>
-                                
-                                <div className="space-y-6 print:space-y-4">
-                                    <div className="relative pl-6 border-l-2 border-slate-100 print:border-slate-300">
-                                        <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-slate-300 print:bg-black"></div>
-                                        <label className="text-xs font-semibold text-slate-500 print:text-black">Received On</label>
-                                        <div className="text-sm font-bold text-slate-800 print:text-black">
-                                            {new Date(job.receivedAt).toLocaleDateString()}
-                                        </div>
-                                    </div>
-
-                                    <div className="relative pl-6 border-l-2 border-primary/30 print:border-black">
-                                        <div className="absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-full bg-primary animate-pulse print:bg-black print:animate-none"></div>
-                                        <label className="text-xs font-semibold text-primary print:text-black">Est. Delivery</label>
-                                        <div className="text-sm font-bold text-slate-800 print:text-black">
-                                            {job.expectedAt ? new Date(job.expectedAt).toLocaleDateString() : 'Not Set'}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div className="w-full h-full bg-white flex flex-col items-center p-8 overflow-y-auto">
+             {/* Back Actions */}
+             <div className="w-full max-w-[800px] flex justify-start mb-6 print:hidden">
+                <button 
+                    onClick={onBack}
+                    className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium transition-colors"
+                >
+                    <ArrowLeft className="h-4 w-4" /> Back to Jobs
+                </button>
             </div>
-        </>
+
+            {/* THE INVOICE SHEET */}
+            <div ref={ticketRef} className="w-full max-w-[800px] bg-white p-8 border border-slate-200 shadow-sm print:shadow-none print:border-none text-black">
+                
+                {/* 1. Header Section */}
+                <div className="text-center mb-8">
+                    <h1 className="text-4xl font-normal text-slate-800 mb-2">Best Service & Repairing</h1>
+                    <div className="text-slate-600 text-sm mb-1">Agra</div>
+                    <div className="text-slate-600 text-sm">Phone: 8876798779</div>
+                </div>
+
+                <div className="border-t border-slate-200 my-6"></div>
+
+                {/* 2. Title */}
+                <h2 className="text-2xl font-bold text-center uppercase mb-8 tracking-wide">REPAIR INVOICE / JOB SHEET</h2>
+
+                {/* 3. Details Columns */}
+                <div className="grid grid-cols-2 gap-8 mb-8">
+                    {/* Customer Details */}
+                    <div>
+                        <h3 className="font-bold text-sm uppercase mb-3">CUSTOMER DETAILS:</h3>
+                        <div className="text-sm font-bold text-black mb-1 text-lg">{job.customerName}</div>
+                        <div className="text-sm text-slate-800 mb-1">Phone: {job.customerPhone}</div>
+                        <div className="text-sm text-slate-800">Addr: {job.customerAddress || 'N/A'}</div>
+                    </div>
+
+                    {/* Job Details */}
+                    <div>
+                        <h3 className="font-bold text-sm uppercase mb-3">JOB DETAILS:</h3>
+                        <div className="text-sm text-slate-800 mb-1"><span className="font-bold">Job ID:</span> {job.jobId}</div>
+                        <div className="text-sm text-slate-800 mb-1"><span className="font-bold">Date:</span> {new Date(job.receivedAt).toLocaleDateString()}</div>
+                        <div className="text-sm text-slate-800"><span className="font-bold">Status:</span> {job.status}</div>
+                    </div>
+                </div>
+
+                {/* 4. Device Table */}
+                <div className="mb-8">
+                    <table className="w-full border-collapse">
+                        <thead>
+                            <tr className="bg-[#444] text-white print:bg-[#444] print:text-white">
+                                <th className="p-3 text-left border border-slate-300 font-bold text-sm w-1/4">Device</th>
+                                <th className="p-3 text-left border border-slate-300 font-bold text-sm w-1/4">Model</th>
+                                <th className="p-3 text-left border border-slate-300 font-bold text-sm w-1/4">Issue / Problem</th>
+                                <th className="p-3 text-left border border-slate-300 font-bold text-sm w-1/4">Accessories</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td className="p-3 border border-slate-300 text-sm">{job.deviceType || 'Mobile'}</td>
+                                <td className="p-3 border border-slate-300 text-sm">{job.deviceModel}</td>
+                                <td className="p-3 border border-slate-300 text-sm text-slate-600">{job.problemDesc}</td>
+                                <td className="p-3 border border-slate-300 text-sm text-slate-600">{job.accessories || '-'}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* 5. Financials */}
+                <div className="flex flex-col items-end gap-2 mt-8">
+                    <div className="w-1/2 flex justify-between text-sm">
+                        <span className="font-bold text-right w-full mr-8">Estimated Cost:</span>
+                        <span className="font-medium">Rs. {total}</span>
+                    </div>
+                    <div className="w-1/2 flex justify-between text-sm">
+                        <span className="font-bold text-right w-full mr-8">Advance Paid:</span>
+                        <span className="font-medium">Rs. {advance}</span>
+                    </div>
+                    <div className="w-1/2 flex justify-between text-lg mt-2 font-bold">
+                        <span className="text-right w-full mr-8">TOTAL PAYABLE:</span>
+                        <span>Rs. {balance}</span>
+                    </div>
+                </div>
+
+            </div>
+
+            {/* Print/Download Button */}
+            <div className="w-full max-w-[800px] flex justify-end mt-6 print:hidden">
+                <button 
+                    onClick={handleDownloadPdf}
+                    className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                    disabled={downloading}
+                >
+                    {downloading ? (
+                        <>
+                            <Loader2 className="h-4 w-4 animate-spin" /> Generating PDF...
+                        </>
+                    ) : (
+                        <>
+                            <Printer className="h-4 w-4" /> Download / Print
+                        </>
+                    )}
+                </button>
+            </div>
+        </div>
     );
 }

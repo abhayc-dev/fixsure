@@ -14,6 +14,8 @@ export async function getCurrentShop() {
     redirect("/login");
   }
 
+  console.log("DEBUG: getCurrentShop called with sessionId:", sessionId);
+
   const shop = await db.shop.findUnique({
     where: { id: sessionId },
   });
@@ -635,4 +637,56 @@ export async function getAdminJobSheets() {
             receivedAt: 'desc'
         }
     });
+}
+
+export async function deleteJobSheet(jobId: string) {
+    const shop = await getCurrentShop();
+    
+    await db.jobSheet.delete({
+        where: {
+            id: jobId,
+            shopId: shop.id
+        }
+    });
+
+    revalidatePath("/dashboard");
+    return { success: true };
+}
+
+export async function updateJobSheetDetails(formData: FormData) {
+    const shop = await getCurrentShop();
+    const id = formData.get("id") as string;
+
+    const customerName = formData.get("customerName") as string;
+    const customerPhone = formData.get("customerPhone") as string;
+    const customerAddress = formData.get("customerAddress") as string;
+    
+    const deviceType = formData.get("deviceType") as string;
+    const deviceModel = formData.get("deviceModel") as string;
+    const problemDesc = formData.get("problemDesc") as string;
+    const accessories = formData.get("accessories") as string;
+    
+    const estimatedCost = parseFloat(formData.get("estimatedCost") as string) || 0;
+    const advanceAmount = parseFloat(formData.get("advanceAmount") as string) || 0;
+
+    await db.jobSheet.update({
+        where: { 
+            id,
+            shopId: shop.id
+        },
+        data: {
+            customerName,
+            customerPhone,
+            customerAddress,
+            deviceType,
+            deviceModel,
+            problemDesc,
+            accessories,
+            estimatedCost,
+            advanceAmount
+        }
+    });
+
+    revalidatePath("/dashboard");
+    return { success: true };
 }

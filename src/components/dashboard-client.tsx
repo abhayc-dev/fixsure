@@ -33,6 +33,7 @@ import SecurityForm from "./settings/security-form";
 import CreateWarrantyForm from "./create-warranty-form";
 import CreateJobSheetForm from "./create-job-sheet-form";
 import JobDetailsView from "./job-details-view";
+import JobCustomerView from "./job-customer-view";
 import WarrantyCardView from "./warranty-card-view";
 import WarrantyDetailsView from "./warranty-details-view";
 import { DashCircularChart, DashRevenueChart } from "./dash-charts";
@@ -109,7 +110,7 @@ export default function DashboardClient({
     const [showJobSheetModal, setShowJobSheetModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState('ALL');
-    const [viewMode, setViewMode] = useState<'WARRANTIES' | 'JOBS' | 'REPORTS' | 'SETTINGS' | 'CREATE_WARRANTY' | 'CREATE_JOB' | 'JOB_DETAILS' | 'WARRANTY_DETAILS' | 'WARRANTY_CERTIFICATE'>('WARRANTIES');
+    const [viewMode, setViewMode] = useState<'WARRANTIES' | 'JOBS' | 'REPORTS' | 'SETTINGS' | 'CREATE_WARRANTY' | 'CREATE_JOB' | 'JOB_DETAILS' | 'JOB_CUSTOMER_DETAILS' | 'WARRANTY_DETAILS' | 'WARRANTY_CERTIFICATE'>('WARRANTIES');
 
     const [selectedJobSheet, setSelectedJobSheet] = useState<JobSheet | null>(null);
     const [selectedWarranty, setSelectedWarranty] = useState<Warranty | null>(null);
@@ -176,18 +177,42 @@ export default function DashboardClient({
 
 
     if (viewMode === 'WARRANTY_DETAILS' && selectedWarranty) {
-        return <WarrantyDetailsView
-            warranty={selectedWarranty}
-            onBack={() => {
-                setSelectedWarranty(null);
-                setViewMode('WARRANTIES');
-            }}
-            onOpenCard={() => setViewMode('WARRANTY_CERTIFICATE')}
-        />;
+        return (
+            <div className="min-h-screen bg-[#f3f4f6] p-4">
+                <WarrantyDetailsView
+                    warranty={selectedWarranty}
+                    onBack={() => {
+                        setSelectedWarranty(null);
+                        setViewMode('WARRANTIES');
+                    }}
+                    onOpenCard={() => setViewMode('WARRANTY_CERTIFICATE')}
+                />
+            </div>
+        );
     }
 
     if (viewMode === 'WARRANTY_CERTIFICATE' && selectedWarranty) {
-        return <WarrantyCardView warranty={selectedWarranty} shop={shop} onBack={handleBackToDetails} />;
+        return (
+            <div className="min-h-screen bg-[#f3f4f6] p-4">
+                 <WarrantyCardView warranty={selectedWarranty} shop={shop} onBack={handleBackToDetails} />
+            </div>
+        );
+    }
+
+    if (viewMode === 'JOB_DETAILS' && selectedJobSheet) {
+        return (
+            <div className="min-h-screen bg-white">
+                 <JobDetailsView job={selectedJobSheet} onBack={() => setViewMode('JOBS')} />
+            </div>
+        );
+    }
+
+    if (viewMode === 'JOB_CUSTOMER_DETAILS' && selectedJobSheet) {
+        return (
+            <div className="min-h-screen bg-[#f3f4f6] p-4">
+                 <JobCustomerView job={selectedJobSheet} onBack={() => setViewMode('JOBS')} />
+            </div>
+        );
     }
 
 
@@ -498,12 +523,12 @@ export default function DashboardClient({
                                     <thead className="bg-slate-50/80 backdrop-blur-sm text-slate-500 font-bold border-b border-slate-200 uppercase text-[11px] tracking-wider sticky top-0 z-20">
                                         <tr>
                                             <th className="px-6 py-4 font-semibold">Warranty ID</th>
-                                            <th className="px-6 py-4 font-semibold">Customer</th>
+                                            <th className="px-8 py-4 font-semibold">Customer</th>
                                             <th className="px-6 py-4 font-semibold">Device / Issue</th>
                                             <th className="px-6 py-4 text-right font-semibold">Amount</th>
                                             <th className="px-6 py-4 font-semibold">Expires</th>
                                             <th className="px-6 py-4 font-semibold">Status</th>
-                                            <th className="px-6 py-4 text-right font-semibold">Actions</th>
+                                            <th className="px-8 py-4 text-right font-semibold">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-100">
@@ -522,7 +547,10 @@ export default function DashboardClient({
                                                     {/* Warranty ID */}
                                                     <td className="px-6 py-5 whitespace-nowrap">
                                                         <button
-                                                            onClick={() => handleViewWarranty(w)}
+                                                            onClick={() => {
+                                                                setSelectedWarranty(w);
+                                                                setViewMode('WARRANTY_CERTIFICATE');
+                                                            }}
                                                             className="font-mono text-xs font-bold text-primary bg-primary/5 px-2 py-1 rounded-md border border-primary/10 hover:bg-primary/20 hover:scale-105 transition-all cursor-pointer"
                                                         >
                                                             {w.shortCode}
@@ -581,11 +609,11 @@ export default function DashboardClient({
 
                                                     {/* Actions */}
                                                     {/* Actions */}
-                                                    <td className="px-6 py-5 text-right">
-                                                        <div className="flex items-center justify-end gap-2">
+                                                    <td className="px-6 py-5 text-right font-medium">
+                                                        <div className="flex items-center justify-end gap-3">
                                                             <button
                                                                 onClick={() => handleViewWarranty(w)}
-                                                                className="p-2 text-slate-400 hover:text-primary hover:bg-primary/5 rounded-lg transition-colors"
+                                                                className="p-2 text-slate-500 hover:text-primary hover:bg-primary/5 rounded-full transition-colors"
                                                                 title="View Details"
                                                             >
                                                                 <Eye className="h-4 w-4" />
@@ -612,7 +640,7 @@ export default function DashboardClient({
                                             placeholder="Search jobs..."
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}
-                                            className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-sm font-medium placeholder:text-slate-400"
+                                            className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-sm font-medium placeholder:text-slate-500"
                                         />
                                     </div>
 
@@ -660,10 +688,13 @@ export default function DashboardClient({
                                                     filteredJobSheets.map((j) => (
                                                         <tr key={j.id} className="hover:bg-slate-50/80 transition-all duration-200 group border-b border-slate-50">
                                                             <td className="px-6 py-5 align-middle">
-                                                                <div className="flex flex-col">
+                                                                <button
+                                                                    onClick={() => handleViewJob(j)}
+                                                                    className="flex flex-col text-left group-hover:scale-105 transition-transform"
+                                                                >
                                                                     <span className="text-primary font-bold tracking-tight text-xs opacity-70">JO-</span>
-                                                                    <span className="text-slate-900 font-bold font-mono text-sm">{j.jobId.split('-')[1]}</span>
-                                                                </div>
+                                                                    <span className="text-slate-900 font-bold font-mono text-sm group-hover:text-primary transition-colors">{j.jobId.split('-')[1]}</span>
+                                                                </button>
                                                             </td>
                                                             <td className="px-6 py-5 align-middle">
                                                                 <div className="flex flex-col gap-0.5">
@@ -740,9 +771,12 @@ export default function DashboardClient({
                                                                     <JobActionMenu job={j} shop={shop} />
 
                                                                     <button
-                                                                        onClick={() => handleViewJob(j)}
+                                                                        onClick={() => {
+                                                                            setSelectedJobSheet(j);
+                                                                            setViewMode('JOB_CUSTOMER_DETAILS');
+                                                                        }}
                                                                         className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:text-primary hover:border-primary hover:bg-primary/5 transition-all"
-                                                                        title="View Details"
+                                                                        title="View Customer Details"
                                                                     >
                                                                         <Eye className="h-4 w-4" />
                                                                     </button>
@@ -840,7 +874,7 @@ function ActionMenu({ warranty }: { warranty: Warranty }) {
                 onClick={() => setIsOpen(!isOpen)}
                 className="p-2 hover:bg-secondary rounded-full transition-colors relative z-0"
             >
-                <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                <MoreHorizontal className="h-4 w-4 text-gray-500" />
             </button>
 
             {isOpen && (

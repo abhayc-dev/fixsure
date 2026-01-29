@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { ArrowRight, Loader2, X, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { sendOtp, verifyOtp } from "@/lib/auth-actions";
@@ -122,41 +123,24 @@ export default function HomeHeroForm() {
       setError("");
   };
 
-  return (
-    <>
-      {/* Home Page Input Form */}
-      <div className="flex flex-col gap-2 w-full max-w-lg">
-        <div className="flex flex-col sm:flex-row gap-3">
-            <div className={`flex-1 bg-white rounded-lg border ${error && !showOtpModal ? 'border-red-500' : 'border-gray-300'} focus-within:border-[#FF6442] focus-within:ring-4 focus-within:ring-[#FF6442]/5 transition-all shadow-sm flex items-center overflow-hidden`}>
-                <div className="bg-gray-50 px-3 py-3.5 border-r border-gray-200 text-gray-500 font-bold text-sm">+91</div>
-                <input 
-                type="tel" 
-                value={phone}
-                onChange={(e) => {
-                  const val = e.target.value.replace(/\D/g, '').slice(0, 10);
-                  setPhone(val);
-                }}
-                placeholder="Enter shop phone number" 
-                className="w-full px-4 py-3.5 outline-none text-foreground placeholder:text-gray-400 font-medium text-black"
-                onKeyDown={(e) => e.key === "Enter" && handleGetStarted()}
-                />
-            </div>
-            <button 
-                onClick={handleGetStarted}
-                disabled={loading}
-                className="bg-[#FF6442] text-[16px] text-white font-bold px-8 py-3.5 rounded-lg hover:bg-[#E55B3C] transition-all shadow-lg shadow-[#FF6442]/20 whitespace-nowrap flex items-center justify-center gap-2 group active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-                {loading ? <Loader2 className="w-5 h-5 animate-spin"/> : "Get Started"} 
-                {!loading && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
-            </button>
-        </div>
-        {error && !showOtpModal && <p className="text-red-500 text-sm px-1">{error}</p>}
-      </div>
+  // Ensure we are client-side for portal
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-      {/* OTP Modal */}
-      {showOtpModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl w-full max-w-[400px] shadow-2xl relative overflow-hidden animate-in zoom-in-95 duration-200">
+  // Modal Content
+  const modalContent = showOtpModal && mounted ? (
+    createPortal(
+      <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 isolate">
+        {/* Backdrop */}
+        <div 
+            className="absolute inset-0 bg-black/60 backdrop-blur-md animate-in fade-in duration-300"
+            onClick={() => setShowOtpModal(false)}
+        />
+        
+        {/* Modal Card */}
+        <div className="bg-white rounded-2xl w-full max-w-[400px] shadow-2xl relative overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-5 duration-300 z-10 flex flex-col">
             
             {/* Close Button */}
             <button 
@@ -274,9 +258,44 @@ export default function HomeHeroForm() {
               </p>
 
             </div>
-          </div>
         </div>
-      )}
+      </div>,
+      document.body
+    )
+  ) : null;
+
+  return (
+    <>
+      {/* Home Page Input Form */}
+      <div className="flex flex-col gap-2 w-full max-w-lg">
+        <div className="flex flex-col sm:flex-row gap-3">
+            <div className={`flex-1 bg-white rounded-lg border ${error && !showOtpModal ? 'border-red-500' : 'border-gray-300'} focus-within:border-[#FF6442] focus-within:ring-4 focus-within:ring-[#FF6442]/5 transition-all shadow-sm flex items-center overflow-hidden`}>
+                <div className="bg-gray-50 px-3 py-3.5 border-r border-gray-200 text-gray-500 font-bold text-sm">+91</div>
+                <input 
+                type="tel" 
+                value={phone}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                  setPhone(val);
+                }}
+                placeholder="Enter shop phone number" 
+                className="w-full px-4 py-3.5 outline-none text-foreground placeholder:text-gray-400 font-medium text-black"
+                onKeyDown={(e) => e.key === "Enter" && handleGetStarted()}
+                />
+            </div>
+            <button 
+                onClick={handleGetStarted}
+                disabled={loading}
+                className="bg-[#FF6442] text-[16px] text-white font-bold px-8 py-3.5 rounded-lg hover:bg-[#E55B3C] transition-all shadow-lg shadow-[#FF6442]/20 whitespace-nowrap flex items-center justify-center gap-2 group active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+                {loading ? <Loader2 className="w-5 h-5 animate-spin"/> : "Get Started"} 
+                {!loading && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
+            </button>
+        </div>
+        {error && !showOtpModal && <p className="text-red-500 text-sm px-1">{error}</p>}
+      </div>
+
+      {modalContent}
     </>
   );
 }

@@ -5,6 +5,7 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { QRCodeSVG } from "qrcode.react";
 
+
 // Define Warranty Type matching the DashboardClient one
 type Warranty = {
     id: string;

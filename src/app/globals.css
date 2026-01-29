@@ -25,3 +25,13 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Global Input Text Visibility Fix */
+input, textarea, select {
+  color: #020617 !important; /* slate-950, very dark */
+}
+
+::placeholder {
+  color: #64748b !important; /* slate-500, darker gray */
+  opacity: 1; /* Firefox fix */
+}
