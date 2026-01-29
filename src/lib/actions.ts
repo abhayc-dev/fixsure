@@ -1,0 +1,638 @@
+"use server";
+
+import { db } from "@/lib/db";
+import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+
+// Helper to get authorized shop from session
+export async function getCurrentShop() {
+  const cookieStore = await cookies();
+  const sessionId = cookieStore.get("shop_session")?.value;
+
+  if (!sessionId) {
+    redirect("/login");
+  }
+
+  const shop = await db.shop.findUnique({
+    where: { id: sessionId },
+  });
+
+  if (!shop) {
+     redirect("/login");
+  }
+
+  return shop;
+}
+
+export async function createWarranty(formData: FormData) {
+  const shop = await getCurrentShop();
+  
+  const customerName = formData.get("customer") as string;
+  const customerPhone = formData.get("phone") as string;
+  const customerAddress = formData.get("address") as string;
+  const deviceModel = formData.get("device") as string;
+  const repairType = formData.get("issue") as string;
+  const duration = parseInt(formData.get("duration") as string);
+  const repairCost = parseFloat(formData.get("price") as string) || 0;
+  
+  const shortCode = `FS-${Math.floor(Math.random() * 90000) + 10000}`; // 5 digit random
+  
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + duration);
+
+  if (!shop.isVerified) {
+      throw new Error("Your shop is blocked by Admin. Contact support.");
+  }
+
+  if (shop.subscriptionStatus !== 'ACTIVE' && shop.subscriptionStatus !== 'FREE_TRIAL') {
+      throw new Error("Subscription Expired. Please recharge.");
+  }
+  
+  if (shop.subscriptionEnds && new Date() > shop.subscriptionEnds) {
+      await db.shop.update({
+          where: { id: shop.id },
+          data: { subscriptionStatus: "EXPIRED" }
+      });
+      throw new Error("Plan Expired. Please recharge to issue new warranties.");
+  }
+
+  await db.warranty.create({
+    data: {
+      shortCode,
+      customerName,
+      customerPhone,
+      customerAddress,
+      deviceModel,
+      repairType,
+      repairCost,
+      durationDays: duration,
+      issuedAt: new Date(), // Explicit server time to match analytics
+      expiresAt: expiresAt,
+      shopId: shop.id,
+      status: "ACTIVE",
+    },
+  });
+
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
+export async function getWarranties() {
+  const shop = await getCurrentShop();
+  
+  return await db.warranty.findMany({
+    where: { shopId: shop.id },
+    orderBy: { issuedAt: "desc" },
+  });
+}
+
+export async function getWarrantyById(id: string) {
+    const shop = await getCurrentShop();
+    const warranty = await db.warranty.findUnique({
+        where: { id },
+        include: { shop: true }
+    });
+    
+    if (!warranty || warranty.shopId !== shop.id) {
+        return null; // Or throw error, but null is safer for page handling
+    }
+    return warranty;
+}
+
+export async function getWarrantyByCode(code: string) {
+  return await db.warranty.findUnique({
+    where: { shortCode: code },
+    include: { shop: true },
+  });
+}
+
+export async function getStats() {
+    const shop = await getCurrentShop();
+    
+    const total = await db.warranty.count({ where: { shopId: shop.id } });
+    const active = await db.warranty.count({ 
+        where: { 
+            shopId: shop.id,
+            status: "ACTIVE"
+        } 
+    });
+
+    // 1. Total All-Time Revenue
+    const revenueAgg = await db.warranty.aggregate({
+        _sum: { repairCost: true },
+        where: { shopId: shop.id }
+    });
+    
+    // 2. Current Month Revenue
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const revenueMonthAgg = await db.warranty.aggregate({
+        _sum: { repairCost: true },
+        where: { 
+            shopId: shop.id,
+            issuedAt: { gte: startOfMonth }
+        }
+    });
+
+    // 3. Weekly Trend (Last 7 Days)
+    const weeklyChart = [];
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const start = new Date(d.setHours(0,0,0,0));
+        const end = new Date(d.setHours(23,59,59,999));
+        
+        const dayAgg = await db.warranty.aggregate({
+            _sum: { repairCost: true },
+            where: {
+                shopId: shop.id,
+                issuedAt: { gte: start, lte: end }
+            }
+        });
+        weeklyChart.push({
+            label: start.toLocaleDateString('en-US', { weekday: 'short' }),
+            value: dayAgg._sum.repairCost || 0
+        });
+    }
+
+    // 4. Yearly/Monthly Trend (Last 12 Months)
+    const monthlyChart = [];
+    const jobChart = [];
+    
+    for (let i = 11; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const start = new Date(d.getFullYear(), d.getMonth(), 1);
+        const end = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59); // Last day of month
+
+        const monthAgg = await db.warranty.aggregate({
+            _sum: { repairCost: true },
+            _count: { id: true },
+            where: {
+                shopId: shop.id,
+                issuedAt: { gte: start, lte: end }
+            }
+        });
+        
+        const label = start.toLocaleDateString('en-US', { month: 'short' });
+        
+        monthlyChart.push({
+            label,
+            value: monthAgg._sum.repairCost || 0
+        });
+        
+        jobChart.push({
+            label,
+            value: monthAgg._count.id || 0
+        })
+    }
+    
+    return { 
+      total,
+      active,
+      revenue: revenueAgg._sum.repairCost || 0,
+      monthlyRevenue: revenueMonthAgg._sum.repairCost || 0,
+      weeklyChart,
+      monthlyChart,
+      jobChart,
+      jobDistribution: [
+          { label: 'Received', value: await db.jobSheet.count({ where: { shopId: shop.id, status: 'RECEIVED' } }), color: '#3b82f6' },
+          { label: 'In Progress', value: await db.jobSheet.count({ where: { shopId: shop.id, status: 'IN_PROGRESS' } }), color: '#eab308' },
+          { label: 'Ready', value: await db.jobSheet.count({ where: { shopId: shop.id, status: 'READY' } }), color: '#22c55e' },
+          { label: 'Delivered', value: await db.jobSheet.count({ where: { shopId: shop.id, status: 'DELIVERED' } }), color: '#64748b' }
+      ],
+      shopName: shop.shopName,
+      subscription: shop.subscriptionStatus,
+      isVerified: shop.isVerified,
+      hasAccessPin: !!shop.accessPin
+    };
+}
+
+export async function verifyAccessPin(pin: string) {
+    const shop = await getCurrentShop();
+    if (!shop.accessPin) return { success: false, error: "PIN not set" };
+    
+    // In a real app, hash this! But for this specific feature request (simple hide), direct comparison is acceptable but hashing is better.
+    // For now simple comparison as we didn't add bcrypt.
+    if (shop.accessPin === pin) {
+        return { success: true };
+    }
+    return { success: false, error: "Incorrect PIN" };
+}
+
+export async function setAccessPin(pin: string) {
+    const shop = await getCurrentShop();
+    if (shop.accessPin) return { success: false, error: "PIN already set" };
+    
+    await db.shop.update({
+        where: { id: shop.id },
+        data: { accessPin: pin }
+    });
+    
+    revalidatePath("/dashboard");
+    return { success: true };
+}
+
+export async function changeAccessPin(oldPin: string, newPin: string) {
+    const shop = await getCurrentShop();
+    
+    if (!shop.accessPin) {
+        return { success: false, error: "No PIN is currently set. Please set one first." };
+    }
+
+    if (shop.accessPin !== oldPin) {
+        return { success: false, error: "Incorrect Old PIN" };
+    }
+    
+    // In real app, enforce complexity policies here
+    if (newPin.length !== 4 || !/^\d+$/.test(newPin)) {
+        return { success: false, error: "PIN must be 4 digits" };
+    }
+
+    await db.shop.update({
+        where: { id: shop.id },
+        data: { accessPin: newPin }
+    });
+    
+    revalidatePath("/dashboard");
+    return { success: true };
+}
+
+export async function getShopDetails() {
+  const shop = await getCurrentShop();
+  
+  // Self-healing: If Active but no date, give 30 days
+  if (shop.subscriptionStatus === 'ACTIVE' && !shop.subscriptionEnds) {
+     const newExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+     await db.shop.update({
+        where: { id: shop.id },
+        data: { subscriptionEnds: newExpiry }
+     });
+     shop.subscriptionEnds = newExpiry;
+  }
+  
+  return shop;
+}
+
+const Razorpay = require('razorpay');
+
+export async function createSubscriptionOrder() {
+  const shop = await getCurrentShop();
+  
+  const razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  });
+
+  try {
+    const order = await razorpay.orders.create({
+        amount: 39900, // amount in paisa (399 * 100)
+        currency: "INR",
+        receipt: `rcpt_${Date.now()}`,
+        notes: {
+            shopId: shop.id,
+            phone: shop.phone
+        }
+    });
+
+    return { success: true, orderId: order.id, amount: order.amount, keyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID };
+  } catch (error) {
+      console.error("RAZORPAY ORDER ERROR:", error);
+      throw error;
+  }
+}
+
+export async function verifySubscriptionPayment(paymentId: string, orderId: string, signature: string) {
+    const shop = await getCurrentShop();
+    
+    // Verify Signature on server side
+    const { validatePaymentVerification } = require('razorpay/dist/utils/razorpay-utils');
+    const isValid = validatePaymentVerification(
+        { "order_id": orderId, "payment_id": paymentId },
+        signature,
+        process.env.RAZORPAY_KEY_SECRET
+    );
+
+    if (!isValid) {
+        throw new Error("Payment verification failed");
+    }
+
+    // Update Subscription in DB
+    const newExpiry = new Date();
+    // If already active and not expired, add to existing expiry
+    if (shop.subscriptionEnds && shop.subscriptionEnds > new Date()) {
+        newExpiry.setTime(shop.subscriptionEnds.getTime());
+    }
+    newExpiry.setDate(newExpiry.getDate() + 30); // Add 30 days
+
+    await db.shop.update({
+        where: { id: shop.id },
+        data: {
+        subscriptionStatus: "ACTIVE",
+        subscriptionEnds: newExpiry,
+        }
+    });
+
+    revalidatePath("/dashboard");
+    revalidatePath("/dashboard/subscription");
+    return { success: true };
+}
+
+export async function updateShopDetails(formData: FormData) {
+  const shop = await getCurrentShop();
+  
+  const shopName = formData.get("shopName") as string;
+  const address = formData.get("address") as string;
+  const city = formData.get("city") as string;
+  const ownerName = formData.get("ownerName") as string;
+  const phone = formData.get("phone") as string;
+
+  if (!shopName || shopName.length < 3) {
+      throw new Error("Shop Name must be at least 3 characters");
+  }
+
+  await db.shop.update({
+    where: { id: shop.id },
+    data: {
+      shopName,
+      address,
+      city,
+      ownerName,
+      phone
+    }
+  });
+
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
+// --- ADMIN ACTIONS ---
+
+export async function getAdminStats() {
+  const shop = await getCurrentShop();
+  if ((shop as any).role !== "ADMIN") {
+     throw new Error("Unauthorized");
+  }
+
+  const totalShops = await db.shop.count();
+  const activeSubs = await db.shop.count({ where: { subscriptionStatus: "ACTIVE" } });
+  
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const warrantiesToday = await db.warranty.count({
+    where: {
+      issuedAt: {
+        gte: today
+      }
+    }
+  });
+
+  // Calculate estimated revenue (assuming 399 per active sub for now)
+  const revenue = activeSubs * 399;
+
+  return {
+    totalShops,
+    activeSubs,
+    warrantiesToday,
+    revenue
+  };
+}
+
+export async function updateWarrantyNote(warrantyId: string, note: string) {
+    const shop = await getCurrentShop();
+    
+    // Verify warranty belongs to this shop
+    const warranty = await db.warranty.findUnique({
+        where: { id: warrantyId },
+        select: { shopId: true }
+    });
+
+    if (!warranty || warranty.shopId !== shop.id) {
+        throw new Error("Warranty not found or access denied");
+    }
+
+    await db.warranty.update({
+        where: { id: warrantyId },
+        data: { privateNote: note }
+    });
+
+    revalidatePath("/dashboard");
+    revalidatePath(`/dashboard/warranties/${warrantyId}`); // In case we are on detail page
+    return { success: true };
+}
+
+export async function getAllShops() {
+  const shop = await getCurrentShop();
+  if ((shop as any).role !== "ADMIN") {
+     throw new Error("Unauthorized");
+  }
+
+  const shops = await db.shop.findMany({
+    include: {
+      _count: {
+        select: { warranties: true }
+      }
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+  
+  // Calculate flags (simple logic: > 50 warranties active = flagged for check)
+  return shops.map(shop => ({
+    ...shop,
+    warrantyCount: shop._count.warranties,
+    isFlagged: shop._count.warranties > 50 // Simple threshold for abuse detection
+  }));
+}
+
+export async function toggleShopStatus(shopId: string, currentStatus: boolean) {
+  const shop = await getCurrentShop();
+  if ((shop as any).role !== "ADMIN") {
+     throw new Error("Unauthorized");
+  }
+
+  // Toggle verification status (acting as Block/Unblock for now)
+  await db.shop.update({
+    where: { id: shopId },
+    data: { isVerified: !currentStatus }
+  });
+  revalidatePath("/admin");
+}
+
+export async function deleteShop(shopId: string) {
+  const shop = await getCurrentShop();
+  if ((shop as any).role !== "ADMIN") {
+     throw new Error("Unauthorized");
+  }
+
+  // Manually cascade delete warranties first since schema doesn't have onDelete: Cascade
+  await db.warranty.deleteMany({
+    where: { shopId: shopId }
+  });
+
+  await db.shop.delete({
+    where: { id: shopId }
+  });
+
+  revalidatePath("/admin");
+}
+export async function updateWarrantyStatus(warrantyId: string, newStatus: string) {
+  const shop = await getCurrentShop(); // Ensure authorized
+  
+  await db.warranty.update({
+    where: { 
+        id: warrantyId,
+        shopId: shop.id // Security: ensure it belongs to this shop
+    },
+    data: { status: newStatus as "ACTIVE" | "EXPIRED" | "CLAIMED" | "VOID" }
+  });
+
+  revalidatePath("/dashboard");
+}
+
+export async function updateJobStatus(jobId: string, newStatus: string) {
+    const shop = await getCurrentShop();
+    
+    await db.jobSheet.update({
+        where: {
+            id: jobId,
+            shopId: shop.id
+        },
+        data: { status: newStatus as "RECEIVED" | "IN_PROGRESS" | "READY" | "DELIVERED" | "CANCELLED" }
+    });
+
+    revalidatePath("/dashboard");
+}
+
+export async function getShopDetailsForAdmin(shopId: string) {
+    const admin = await getCurrentShop();
+    if ((admin as any).role !== "ADMIN") {
+        throw new Error("Unauthorized");
+    }
+
+    const shop = await db.shop.findUnique({
+        where: { id: shopId },
+        include: {
+            warranties: {
+                orderBy: { issuedAt: "desc" },
+                take: 10 // Recent 10
+            },
+            _count: {
+                select: { warranties: true }
+            }
+        }
+    });
+
+    if (!shop) throw new Error("Shop not found");
+
+    // Calculate detailed stats
+    const totalWarranties = shop._count.warranties;
+    const activeWarranties = await db.warranty.count({
+        where: { shopId: shopId, status: "ACTIVE" }
+    });
+    const expiredWarranties = await db.warranty.count({
+        where: { shopId: shopId, status: "EXPIRED" }
+    });
+    
+    // Mock Revenue Calculation (Assuming 1 subscription = 399)
+    // In real app, you'd query a Payment/Invoice table
+    const estimatedRevenue = shop.subscriptionStatus === 'ACTIVE' ? 399 : 0; 
+
+    return {
+        ...shop,
+        stats: {
+            totalWarranties,
+            activeWarranties,
+            expiredWarranties,
+            estimatedRevenue
+        }
+    };
+}
+
+export async function createJobSheet(formData: FormData) {
+  const shop = await getCurrentShop();
+
+  const customerName = formData.get("customerName") as string;
+  const customerPhone = formData.get("customerPhone") as string;
+  const customerAddress = formData.get("customerAddress") as string;
+  
+  const deviceType = formData.get("deviceType") as string;
+  const deviceModel = formData.get("deviceModel") as string;
+  const problemDesc = formData.get("problemDesc") as string;
+  const accessories = formData.get("accessories") as string;
+  
+  const estimatedCost = parseFloat(formData.get("estimatedCost") as string) || 0;
+  const advanceAmount = parseFloat(formData.get("advanceAmount") as string) || 0;
+  
+  // Date handling
+  const receivedAtStr = formData.get("receivedAt") as string;
+  const expectedAtStr = formData.get("expectedAt") as string;
+  
+  const receivedAt = receivedAtStr ? new Date(receivedAtStr) : new Date();
+  const expectedAt = expectedAtStr ? new Date(expectedAtStr) : null;
+
+  const jobId = `JO-${Math.floor(Math.random() * 90000) + 10000}`;
+
+  await db.jobSheet.create({
+    data: {
+      jobId,
+      shopId: shop.id,
+      customerName,
+      customerPhone,
+      customerAddress,
+      deviceType,
+      deviceModel,
+      problemDesc,
+      accessories,
+      receivedAt,
+      expectedAt,
+      estimatedCost,
+      advanceAmount,
+      status: "RECEIVED"
+    }
+  });
+
+  // --- Simulate WhatsApp Sending ---
+  console.log(`\n=== 🟢 WHATSAPP MSG to ${customerPhone} ===`);
+  console.log(`Hello ${customerName},`);
+  console.log(`Your repair job for ${deviceType} (${deviceModel}) has been created at ${shop.shopName}.`);
+  console.log(`Job ID: ${jobId}`);
+  console.log(`Issue: ${problemDesc}`);
+  console.log(`Est. Cost: ₹${estimatedCost}`);
+  console.log(`We will notify you when it is ready!`);
+  console.log(`==========================================\n`);
+
+  revalidatePath("/dashboard");
+  return { success: true, jobId };
+}
+
+export async function getJobSheets() {
+    const shop = await getCurrentShop();
+    return await db.jobSheet.findMany({
+        where: { shopId: shop.id },
+        orderBy: { receivedAt: "desc" }
+    });
+}
+
+export async function getAdminJobSheets() {
+    const shop = await getCurrentShop();
+    if ((shop as any).role !== "ADMIN") {
+        throw new Error("Unauthorized");
+    }
+
+    return await db.jobSheet.findMany({
+        include: {
+            shop: {
+                select: {
+                    shopName: true,
+                    ownerName: true,
+                    phone: true
+                }
+            }
+        },
+        orderBy: {
+            receivedAt: 'desc'
+        }
+    });
+}

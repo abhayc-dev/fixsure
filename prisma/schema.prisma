@@ -1,0 +1,134 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// 1. Shop Owner (The Primary User)
+model Shop {
+  id                String   @id @default(uuid()) // Unique internal ID
+  phone             String   @unique              // Login via OTP
+  shopName          String
+  ownerName         String?
+  address           String?
+  city              String?
+  role              Role     @default(USER)
+  
+  // Auth
+  otp               String?
+  otpExpires        DateTime?
+
+  // Security
+  accessPin         String?   // For hiding revenue
+
+  // Business Status
+  isVerified        Boolean  @default(false)
+  subscriptionStatus SubscriptionStatus @default(FREE_TRIAL)
+  subscriptionEnds  DateTime?
+
+  // Relations
+  warranties        Warranty[]
+  jobSheets         JobSheet[]
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+// 2. The Digital Warranty (The Core Product)
+model Warranty {
+  id              String   @id @default(uuid())
+  shortCode       String   @unique // e.g., FS-9021 (For customers to type/verify)
+  
+  // Relations
+  shopId          String
+  shop            Shop     @relation(fields: [shopId], references: [id])
+  
+  // Customer Details
+  customerName    String
+  customerPhone   String
+  customerAddress String?
+  
+  // Device & Repair Details
+  deviceModel     String   // e.g. iPhone 13
+  repairType      String   // e.g. Screen Replacement
+  repairCost      Float?
+  
+  // Warranty Terms
+  status          WarrantyStatus @default(ACTIVE)
+  durationDays    Int      // e.g. 30, 90
+  issuedAt        DateTime @default(now())
+  expiresAt       DateTime
+  
+  // Verification
+  viewCount       Int      @default(0) // Analytics: How many times checked?
+  
+  // Internal
+  privateNote     String?  @db.Text // Large text support
+}
+
+// Enums for standardizing status
+enum SubscriptionStatus {
+  FREE_TRIAL
+  ACTIVE
+  EXPIRED
+  PAST_DUE
+}
+
+enum WarrantyStatus {
+  ACTIVE    // Covered
+  EXPIRED   // Time over
+  CLAIMED   // Customer came back, issue fixed under warranty
+  VOID      // Customer broke it again (physical damage)
+}
+
+// 3. Repair Job Sheet (Intake Form)
+model JobSheet {
+  id              String   @id @default(uuid())
+  jobId           String   @unique // Short readable ID e.g. JO-1029
+  
+  shopId          String
+  shop            Shop     @relation(fields: [shopId], references: [id])
+
+  // Customer Details
+  customerName    String
+  customerPhone   String
+  customerAddress String?
+
+  // Device & Issue Details
+  deviceType      String   // e.g. Mobile, AC, etc.
+  deviceModel     String
+  problemDesc     String   // What is wrong?
+  accessories     String?  // e.g. Charger, Remote given?
+
+  // Dates & Status
+  receivedAt      DateTime @default(now()) // Given Date
+  expectedAt      DateTime?                 // Completed Date (Est)
+  completedAt     DateTime?                 // Actual finish
+
+  status          JobStatus @default(RECEIVED)
+  
+  // Financials
+  estimatedCost   Float?
+  advanceAmount   Float? @default(0)
+  finalCost       Float?
+
+  updatedAt       DateTime @updatedAt
+}
+
+enum JobStatus {
+  RECEIVED
+  IN_PROGRESS
+  READY
+  DELIVERED
+  CANCELLED
+}
