@@ -346,7 +346,9 @@ export default function LoginPage() {
                   </div>
                 </div>
 
-                <button
+                {/* TODO: Add Google Login */}
+
+                {/* <button
                   type="button"
                   onClick={handleGoogleLogin}
                   disabled={loading}
@@ -373,7 +375,7 @@ export default function LoginPage() {
                     </svg>
                   </div>
                   <span>Sign in with Google</span>
-                </button>
+                </button> */}
               </>
             )}
           </div>
