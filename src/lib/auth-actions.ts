@@ -3,103 +3,163 @@
 import { db } from "@/lib/db";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import bcrypt from "bcryptjs";
 
-export async function sendOtp(phone: string) {
-  const cleanPhone = phone.replace(/\D/g, '').slice(-10);
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@gmail.com";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "1234567";
 
-  // Generate 6 digit OTP
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+export async function loginWithEmail(email: string, password: string) {
+    // Check for hardcoded Admin
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        // Create or get Admin user in DB
+        let admin = await db.shop.findUnique({ where: { email : ADMIN_EMAIL } });
+        if (!admin) {
+            admin = await db.shop.create({
+                data: {
+                    email: ADMIN_EMAIL,
+                    phone: "0000000000", // Placeholder for admin
+                    shopName: "Admin Dashboard",
+                    role: "ADMIN",
+                    password: await bcrypt.hash(ADMIN_PASSWORD, 10),
+                    isVerified: true,
+                }
+            });
+        }
 
-  console.log(`\n============================\n 🔥 OTP for ${cleanPhone}: ${otp}\n============================\n`);
+        (await cookies()).set("shop_session", admin.id, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 60 * 60 * 24 * 30, // 30 days
+            path: "/"
+        });
 
-  // --- REAL SMS CODE START ---
-//   const apiKey = process.env.SMS_API_KEY; 
-//   if (apiKey) {
-//     try {
-//       // Example for Fast2SMS
-//       const response = await fetch('https://www.fast2sms.com/dev/bulkV2', {
-//         method: 'POST',
-//         headers: {
-//           'authorization': apiKey,
-//           'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({
-//           "route": "otp",
-//           "variables_values": otp,
-//           "numbers": cleanPhone,
-//         })
-//       });
-      
-//       const data = await response.json();
-//       console.log("SMS API Response:", data);
-      
-//       if (!data.return) {
-//           console.error("SMS Error Details:", data);
-//       }
-//     } catch (error) {
-//       console.error("SMS Failed", error);
-//     }
-//   }
-  // --- REAL SMS CODE END ---
-
-  await db.shop.upsert({
-    where: { phone: cleanPhone },
-    update: {
-        otp,
-        otpExpires: expires
-    },
-    create: {
-        phone: cleanPhone,
-        shopName: "New Shop Info Required",
-        isVerified: true, // Auto-verify for frictionless MVP onboarding
-        otp,
-        otpExpires: expires,
-        subscriptionStatus: "FREE_TRIAL",
-        subscriptionEnds: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000) // 14 Days Free
+        return { success: true, role: "ADMIN" };
     }
-  });
-
-  return { success: true };
-}
-
-export async function verifyOtp(phone: string, inputOtp: string) {
-    const cleanPhone = phone.replace(/\D/g, '').slice(-10);
 
     const shop = await db.shop.findUnique({
-        where: { phone: cleanPhone }
+        where: { email }
     });
 
-    if (!shop || !shop.otp || !shop.otpExpires) {
-        return { success: false, error: "Invalid request. Please resend OTP." };
+    if (!shop || !shop.password) {
+        return { success: false, error: "Invalid email or password" };
     }
 
-    if (new Date() > shop.otpExpires) {
-        return { success: false, error: "OTP has expired. Please request a new one." };
+    const isMatch = await bcrypt.compare(password, shop.password);
+    if (!isMatch) {
+        return { success: false, error: "Invalid email or password" };
     }
 
-    // Allow a Master OTP '101010' for testing/Apple Review/etc if needed
-    if (shop.otp !== inputOtp && inputOtp !== "101010") {
-        return { success: false, error: "Incorrect OTP. Please try again." };
+    (await cookies()).set("shop_session", shop.id, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 60 * 24 * 30,
+        path: "/"
+    });
+
+    return { success: true, role: shop.role, shopName: shop.shopName };
+}
+
+export async function signup(data: { email: string; password: string; phone: string; shopName: string }) {
+    const { email, password, phone, shopName } = data;
+
+    if (!phone || phone.length < 10) {
+        return { success: false, error: "Mobile number is mandatory" };
     }
 
-    // Success - Clear OTP and Set Session
-    await db.shop.update({
-        where: { id: shop.id },
-        data: { otp: null, otpExpires: null }
+    const cleanPhone = phone.replace(/\D/g, '').slice(-10);
+
+    const existingEmail = await db.shop.findUnique({ where: { email } });
+    if (existingEmail) return { success: false, error: "Email already registered" };
+
+    const existingPhone = await db.shop.findUnique({ where: { phone: cleanPhone } });
+    if (existingPhone) return { success: false, error: "Phone number already registered" };
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const shop = await db.shop.create({
+        data: {
+            email,
+            password: hashedPassword,
+            phone: cleanPhone,
+            shopName,
+            isVerified: true,
+            subscriptionStatus: "FREE_TRIAL",
+            subscriptionEnds: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
+        }
     });
 
     (await cookies()).set("shop_session", shop.id, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 60 * 24 * 30, // 30 days Long Session
+        maxAge: 60 * 60 * 24 * 30,
         path: "/"
     });
 
-    return { success: true, role: (shop as any).role, shopName: shop.shopName };
+    return { success: true, shopName: shop.shopName };
+}
+
+export async function googleLogin(data: { email: string; name: string; googleId: string; phone?: string }) {
+    const { email, name, phone } = data;
+
+    let shop = await db.shop.findUnique({
+        where: { email }
+    });
+
+    if (!shop) {
+        // If shop doesn't exist, we need the phone number to create it
+        if (!phone) {
+            return { success: false, needsPhone: true, email, name };
+        }
+
+        const cleanPhone = phone.replace(/\D/g, '').slice(-10);
+        const existingPhone = await db.shop.findUnique({ where: { phone: cleanPhone } });
+        if (existingPhone) return { success: false, error: "Phone number already registered with another account" };
+
+        shop = await db.shop.create({
+            data: {
+                email,
+                ownerName: name,
+                phone: cleanPhone,
+                shopName: name + "'s Shop",
+                isVerified: true,
+                subscriptionStatus: "FREE_TRIAL",
+                subscriptionEnds: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
+            }
+        });
+    }
+
+    (await cookies()).set("shop_session", shop.id, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 60 * 60 * 24 * 30,
+        path: "/"
+    });
+
+    return { success: true, role: shop.role, shopName: shop.shopName };
 }
 
 export async function logout() {
     (await cookies()).delete("shop_session");
     redirect("/");
+}
+
+export async function checkEmailExists(email: string) {
+    try {
+        const shop = await db.shop.findUnique({
+            where: { email },
+            select: { id: true }
+        });
+        return { exists: !!shop };
+    } catch (error) {
+        return { exists: false };
+    }
+}
+
+// Keeping these for potential legacy use or migration
+export async function sendOtp(phone: string) {
+    return { success: false, error: "OTP login is deprecated. Please use Email login." };
+}
+
+export async function verifyOtp(phone: string, inputOtp: string) {
+    return { success: false, error: "OTP login is deprecated. Please use Email login." };
 }

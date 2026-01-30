@@ -258,7 +258,7 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
                             </label>
                             <input 
                                 name="advanceAmount"
-                                type="number"
+                              
                                 min="0"
                                 placeholder="0.00"
                                 className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"

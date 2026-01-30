@@ -19,9 +19,9 @@ export default function Home() {
           <div className="flex items-center gap-4">
             <Link
               href="/login"
-              className="hidden sm:inline-flex bg-slate-900 text-white text-sm font-bold px-4 py-2 rounded-lg hover:bg-slate-800 transition-all hover:shadow-lg active:scale-95"
+              className="hidden sm:inline-flex bg-orange-500 text-white text-sm font-bold px-4 py-2 rounded-lg hover:bg-slate-800 transition-all hover:shadow-lg active:scale-95"
             >
-              Get Started
+              Create Account 
             </Link>
           </div>
         </div>
@@ -76,10 +76,8 @@ export default function Home() {
         </p>
 
         {/* Form */}
-        <div className="w-full max-w-md mx-auto lg:mx-0 p-2 bg-white/70 backdrop-blur-xl border border-white/50 rounded-2xl shadow-xl">
-          <div className="p-4">
-            <HomeHeroForm />
-          </div>
+        <div className="w-full max-w-2xl mx-auto lg:mx-0">
+          <HomeHeroForm />
         </div>
 
         {/* Bottom Trust Line */}
