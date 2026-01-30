@@ -13,7 +13,7 @@ const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 
 const prisma = new PrismaClient({ adapter });
-const PORT = process.env.BACKEND_PORT || 8000;
+const PORT = process.env.PORT || process.env.BACKEND_PORT || 8000;
 
 app.use(cors());
 app.use(express.json());
