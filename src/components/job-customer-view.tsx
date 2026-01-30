@@ -12,7 +12,6 @@ type JobSheet = {
     deviceType?: string | null;
     deviceModel: string;
     category?: string;
-    technicalDetails?: any;
     problemDesc: string;
     accessories?: string | null;
     status: string;
@@ -20,6 +19,7 @@ type JobSheet = {
     expectedAt: Date | null;
     estimatedCost: number | null;
     advanceAmount?: number | null;
+    technicalDetails?: Record<string, string | number | boolean | null> | null;
 };
 
 export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack: () => void }) {
@@ -225,8 +225,8 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                         
                                         <div>
                                             <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Starter Phase</label>
-                                            {isEditing && job.category === 'MOTOR' ? (
-                                                <input name="tech_starter" defaultValue={job.technicalDetails?.starter || ''} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
+                                             {isEditing && job.category === 'MOTOR' ? (
+                                                <input name="tech_starter" defaultValue={String(job.technicalDetails?.starter || '')} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
                                             ) : (
                                                 <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.starter || '-'}</div>
                                             )}
@@ -234,7 +234,7 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                         <div>
                                             <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Power / HP</label>
                                             {isEditing && job.category === 'MOTOR' ? (
-                                                <input name="tech_power" defaultValue={job.technicalDetails?.power || ''} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
+                                                <input name="tech_power" defaultValue={String(job.technicalDetails?.power || '')} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
                                             ) : (
                                                 <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.power || '-'}</div>
                                             )}
@@ -242,7 +242,7 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                         <div>
                                             <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Winding 1</label>
                                              {isEditing && job.category === 'MOTOR' ? (
-                                                <input name="tech_winding1" defaultValue={job.technicalDetails?.winding1 || ''} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
+                                                <input name="tech_winding1" defaultValue={String(job.technicalDetails?.winding1 || '')} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
                                             ) : (
                                                 <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.winding1 || '-'}</div>
                                             )}
@@ -250,7 +250,7 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                         <div>
                                             <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Winding 2</label>
                                              {isEditing && job.category === 'MOTOR' ? (
-                                                <input name="tech_winding2" defaultValue={job.technicalDetails?.winding2 || ''} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
+                                                <input name="tech_winding2" defaultValue={String(job.technicalDetails?.winding2 || '')} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
                                             ) : (
                                                 <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.winding2 || '-'}</div>
                                             )}
@@ -258,7 +258,7 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                         <div>
                                             <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Winding 3</label>
                                              {isEditing && job.category === 'MOTOR' ? (
-                                                <input name="tech_winding3" defaultValue={job.technicalDetails?.winding3 || ''} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
+                                                <input name="tech_winding3" defaultValue={String(job.technicalDetails?.winding3 || '')} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
                                             ) : (
                                                 <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.winding3 || '-'}</div>
                                             )}
@@ -266,7 +266,7 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                         <div>
                                             <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Winding 4</label>
                                              {isEditing && job.category === 'MOTOR' ? (
-                                                <input name="tech_winding4" defaultValue={job.technicalDetails?.winding4 || ''} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
+                                                <input name="tech_winding4" defaultValue={String(job.technicalDetails?.winding4 || '')} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
                                             ) : (
                                                 <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.winding4 || '-'}</div>
                                             )}

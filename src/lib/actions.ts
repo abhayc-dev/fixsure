@@ -280,7 +280,7 @@ export async function getShopDetails() {
   return shop;
 }
 
-const Razorpay = require('razorpay');
+import Razorpay from 'razorpay';
 
 export async function createSubscriptionOrder() {
   const shop = await getCurrentShop();
@@ -312,11 +312,12 @@ export async function verifySubscriptionPayment(paymentId: string, orderId: stri
     const shop = await getCurrentShop();
     
     // Verify Signature on server side
-    const { validatePaymentVerification } = require('razorpay/dist/utils/razorpay-utils');
+    // @ts-ignore
+    const { validatePaymentVerification } = await import('razorpay/dist/utils/razorpay-utils');
     const isValid = validatePaymentVerification(
         { "order_id": orderId, "payment_id": paymentId },
         signature,
-        process.env.RAZORPAY_KEY_SECRET
+        process.env.RAZORPAY_KEY_SECRET!
     );
 
     if (!isValid) {
@@ -374,9 +375,34 @@ export async function updateShopDetails(formData: FormData) {
 
 // --- ADMIN ACTIONS ---
 
+export async function getAllJobSheets() {
+  const admin = await getCurrentShop();
+  if (admin.role !== "ADMIN") {
+      throw new Error("Unauthorized");
+  }
+
+  const jobs = await db.jobSheet.findMany({
+    include: {
+      shop: {
+        select: {
+          shopName: true,
+          ownerName: true,
+          phone: true,
+          city: true
+        }
+      }
+    },
+    orderBy: {
+      receivedAt: 'desc'
+    }
+  });
+
+  return jobs;
+}
+
 export async function getAdminStats() {
   const shop = await getCurrentShop();
-  if ((shop as any).role !== "ADMIN") {
+  if (shop.role !== "ADMIN") {
      throw new Error("Unauthorized");
   }
 
@@ -428,8 +454,8 @@ export async function updateWarrantyNote(warrantyId: string, note: string) {
 }
 
 export async function getAllShops() {
-  const shop = await getCurrentShop();
-  if ((shop as any).role !== "ADMIN") {
+  const shop = await getCurrentShop() as { role: string; id: string };
+  if (shop.role !== "ADMIN") {
      throw new Error("Unauthorized");
   }
 
@@ -498,8 +524,7 @@ export async function updateWarrantyStatus(warrantyId: string, newStatus: string
 }
 
 export async function updateJobStatus(jobId: string, newStatus: string) {
-    const shop = await getCurrentShop();
-    
+    // No shop needed for status update as it is proxied to the backend by the ID.
     const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs/${jobId}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -514,8 +539,8 @@ export async function updateJobStatus(jobId: string, newStatus: string) {
 }
 
 export async function getShopDetailsForAdmin(shopId: string) {
-    const admin = await getCurrentShop();
-    if ((admin as any).role !== "ADMIN") {
+    const admin = await getCurrentShop() as { role: string; id: string };
+    if (admin.role !== "ADMIN") {
         throw new Error("Unauthorized");
     }
 
@@ -646,7 +671,7 @@ export async function getJobSheets() {
 
 export async function getAdminJobSheets() {
     const shop = await getCurrentShop();
-    if ((shop as any).role !== "ADMIN") {
+    if ((shop as { role: string }).role !== "ADMIN") {
         throw new Error("Unauthorized");
     }
 
@@ -656,8 +681,7 @@ export async function getAdminJobSheets() {
 }
 
 export async function deleteJobSheet(jobId: string) {
-    const shop = await getCurrentShop();
-    
+    // No shop needed for deletion as it is proxied to the backend by the ID.
     const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs/${jobId}`, {
         method: 'DELETE'
     });
@@ -671,7 +695,7 @@ export async function deleteJobSheet(jobId: string) {
 }
 
 export async function updateJobSheetDetails(formData: FormData) {
-    const shop = await getCurrentShop();
+    // No shop needed as it is proxied to the backend by the ID.
     const id = formData.get("id") as string;
 
     const customerName = formData.get("customerName") as string;

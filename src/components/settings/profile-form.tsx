@@ -50,9 +50,10 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
             await updateShopDetails(submitData);
             alert("Profile updated successfully!");
             router.refresh();
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error(error);
-            alert(error.message || "Something went wrong");
+            const message = error instanceof Error ? error.message : "Something went wrong";
+            alert(message);
         } finally {
             setLoading(false);
         }

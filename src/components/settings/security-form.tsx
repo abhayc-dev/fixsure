@@ -58,7 +58,7 @@ export default function SecurityForm({ hasPin }: { hasPin: boolean }) {
                  <div>
                      <h3 className="font-medium text-orange-900">Security PIN Not Set</h3>
                      <p className="text-sm text-orange-700 mt-1">
-                         To protect your revenue visibility, please set a PIN from the dashboard by clicking the "Eye" icon on the revenue card.
+                         To protect your revenue visibility, please set a PIN from the dashboard by clicking the &quot;Eye&quot; icon on the revenue card.
                      </p>
                  </div>
              </div>

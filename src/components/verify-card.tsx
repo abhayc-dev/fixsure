@@ -8,7 +8,19 @@ import { useRef, useEffect, useState } from "react";
 import DownloadButton from "./download-button";
 import { QRCodeCanvas } from "qrcode.react";
 
-export default function VerifyCard({ data }: { data: any }) {
+export default function VerifyCard({ data }: { data: { 
+    id: string; 
+    shortCode: string; 
+    status: string; 
+    expiresAt: string | Date; 
+    issuedAt: string | Date;
+    deviceModel: string;
+    repairType: string;
+    shop: {
+        shopName: string;
+        address?: string | null;
+    }
+} }) {
   const router = useRouter();
   const cardRef = useRef<HTMLDivElement>(null);
   const [origin, setOrigin] = useState("");

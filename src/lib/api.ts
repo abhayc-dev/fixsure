@@ -6,7 +6,7 @@ export async function fetchJobs(shopId: string) {
     return res.json();
 }
 
-export async function createJob(data: any) {
+export async function createJob(data: Record<string, unknown>) {
     const res = await fetch(`${API_BASE_URL}/api/jobs`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -16,7 +16,7 @@ export async function createJob(data: any) {
     return res.json();
 }
 
-export async function updateJob(id: string, data: any) {
+export async function updateJob(id: string, data: Record<string, unknown>) {
     const res = await fetch(`${API_BASE_URL}/api/jobs/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
