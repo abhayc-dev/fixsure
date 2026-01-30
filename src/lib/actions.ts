@@ -189,6 +189,10 @@ export async function getStats() {
         })
     }
     
+    // 5. Job Distribution from Backend
+    const jobStatsRes = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/stats/jobs?shopId=${shop.id}`);
+    const jobStats = jobStatsRes.ok ? await jobStatsRes.json() : { received: 0, inProgress: 0, ready: 0, delivered: 0 };
+
     return { 
       total,
       active,
@@ -198,10 +202,10 @@ export async function getStats() {
       monthlyChart,
       jobChart,
       jobDistribution: [
-          { label: 'Received', value: await db.jobSheet.count({ where: { shopId: shop.id, status: 'RECEIVED' } }), color: '#3b82f6' },
-          { label: 'In Progress', value: await db.jobSheet.count({ where: { shopId: shop.id, status: 'IN_PROGRESS' } }), color: '#eab308' },
-          { label: 'Ready', value: await db.jobSheet.count({ where: { shopId: shop.id, status: 'READY' } }), color: '#22c55e' },
-          { label: 'Delivered', value: await db.jobSheet.count({ where: { shopId: shop.id, status: 'DELIVERED' } }), color: '#64748b' }
+          { label: 'Received', value: jobStats.received, color: '#3b82f6' },
+          { label: 'In Progress', value: jobStats.inProgress, color: '#eab308' },
+          { label: 'Ready', value: jobStats.ready, color: '#22c55e' },
+          { label: 'Delivered', value: jobStats.delivered, color: '#64748b' }
       ],
       shopName: shop.shopName,
       subscription: shop.subscriptionStatus,
@@ -496,13 +500,15 @@ export async function updateWarrantyStatus(warrantyId: string, newStatus: string
 export async function updateJobStatus(jobId: string, newStatus: string) {
     const shop = await getCurrentShop();
     
-    await db.jobSheet.update({
-        where: {
-            id: jobId,
-            shopId: shop.id
-        },
-        data: { status: newStatus as "RECEIVED" | "IN_PROGRESS" | "READY" | "DELIVERED" | "CANCELLED" }
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs/${jobId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
     });
+
+    if (!response.ok) {
+        throw new Error("Failed to update status on backend");
+    }
 
     revalidatePath("/dashboard");
 }
@@ -589,49 +595,53 @@ export async function createJobSheet(formData: FormData) {
   const receivedAt = receivedAtStr ? new Date(receivedAtStr) : new Date();
   const expectedAt = expectedAtStr ? new Date(expectedAtStr) : null;
 
-  const jobId = `JO-${Math.floor(Math.random() * 90000) + 10000}`;
-
-  await db.jobSheet.create({
-    data: {
-      jobId,
-      shopId: shop.id,
-      customerName,
-      customerPhone,
-      customerAddress,
-      category,
-      deviceType,
-      deviceModel,
-      problemDesc,
-      accessories,
-      technicalDetails: technicalDetails || undefined,
-      receivedAt,
-      expectedAt,
-      estimatedCost,
-      advanceAmount,
-      status: "RECEIVED"
-    }
+  // Use the new Backend API
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+          shopId: shop.id,
+          customerName,
+          customerPhone,
+          customerAddress,
+          category,
+          deviceType,
+          deviceModel,
+          problemDesc,
+          accessories,
+          technicalDetails,
+          receivedAt,
+          expectedAt,
+          estimatedCost,
+          advanceAmount
+      })
   });
+
+  if (!response.ok) {
+      throw new Error("Failed to create job on backend");
+  }
+
+  const newJob = await response.json();
 
   // --- Simulate WhatsApp Sending ---
   console.log(`\n=== 🟢 WHATSAPP MSG to ${customerPhone} ===`);
   console.log(`Hello ${customerName},`);
   console.log(`Your repair job for ${deviceType} (${deviceModel}) has been created at ${shop.shopName}.`);
-  console.log(`Job ID: ${jobId}`);
+  console.log(`Job ID: ${newJob.jobId}`);
   console.log(`Issue: ${problemDesc}`);
   console.log(`Est. Cost: ₹${estimatedCost}`);
   console.log(`We will notify you when it is ready!`);
   console.log(`==========================================\n`);
 
   revalidatePath("/dashboard");
-  return { success: true, jobId };
+  return { success: true, jobId: newJob.jobId };
 }
 
 export async function getJobSheets() {
     const shop = await getCurrentShop();
-    return await db.jobSheet.findMany({
-        where: { shopId: shop.id },
-        orderBy: { receivedAt: "desc" }
-    });
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs?shopId=${shop.id}`);
+    if (!response.ok) return [];
+    return await response.json();
 }
 
 export async function getAdminJobSheets() {
@@ -640,31 +650,21 @@ export async function getAdminJobSheets() {
         throw new Error("Unauthorized");
     }
 
-    return await db.jobSheet.findMany({
-        include: {
-            shop: {
-                select: {
-                    shopName: true,
-                    ownerName: true,
-                    phone: true
-                }
-            }
-        },
-        orderBy: {
-            receivedAt: 'desc'
-        }
-    });
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/jobs`);
+    if (!response.ok) return [];
+    return await response.json();
 }
 
 export async function deleteJobSheet(jobId: string) {
     const shop = await getCurrentShop();
     
-    await db.jobSheet.delete({
-        where: {
-            id: jobId,
-            shopId: shop.id
-        }
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs/${jobId}`, {
+        method: 'DELETE'
     });
+
+    if (!response.ok) {
+        throw new Error("Failed to delete job from backend");
+    }
 
     revalidatePath("/dashboard");
     return { success: true };
@@ -687,7 +687,7 @@ export async function updateJobSheetDetails(formData: FormData) {
     const estimatedCost = parseFloat(formData.get("estimatedCost") as string) || 0;
     const advanceAmount = parseFloat(formData.get("advanceAmount") as string) || 0;
 
-    let technicalDetails = undefined;
+    let technicalDetails = null;
     if (category === 'MOTOR') {
         technicalDetails = {
             starter: formData.get("tech_starter") as string,
@@ -696,15 +696,13 @@ export async function updateJobSheetDetails(formData: FormData) {
             winding2: formData.get("tech_winding2") as string,
             winding3: formData.get("tech_winding3") as string,
             winding4: formData.get("tech_winding4") as string,
-        } as any;
+        };
     }
 
-    await db.jobSheet.update({
-        where: { 
-            id,
-            shopId: shop.id
-        },
-        data: {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
             customerName,
             customerPhone,
             customerAddress,
@@ -715,9 +713,13 @@ export async function updateJobSheetDetails(formData: FormData) {
             accessories,
             estimatedCost,
             advanceAmount,
-            technicalDetails: technicalDetails || null
-        }
+            technicalDetails
+        })
     });
+
+    if (!response.ok) {
+        throw new Error("Failed to update job on backend");
+    }
 
     revalidatePath("/dashboard");
     return { success: true };
