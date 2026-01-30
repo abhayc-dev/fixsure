@@ -65,7 +65,7 @@ export default function CreateWarrantyForm({ onSuccess }: { onSuccess: () => voi
                             name="customer"
                             required
                             placeholder="e.g. Rahul Kumar"
-                            className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
+                            className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                         />
                     </div>
                     <div className="space-y-3">
@@ -79,7 +79,7 @@ export default function CreateWarrantyForm({ onSuccess }: { onSuccess: () => voi
                             type="tel" 
                             maxLength={10} 
                             placeholder="e.g. 9876543210"
-                            className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
+                            className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                         />
                     </div>
                 </div>
@@ -92,7 +92,7 @@ export default function CreateWarrantyForm({ onSuccess }: { onSuccess: () => voi
                     <input 
                         name="address"
                         placeholder="e.g. House No. 12, Sector 4, Market Area"
-                        className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
+                        className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                     />
                 </div>
 
@@ -106,7 +106,7 @@ export default function CreateWarrantyForm({ onSuccess }: { onSuccess: () => voi
                             name="device"
                             required
                             placeholder="e.g. Samsung Galaxy S21"
-                            className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
+                            className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                         />
                     </div>
                     <div className="space-y-3">
@@ -118,7 +118,7 @@ export default function CreateWarrantyForm({ onSuccess }: { onSuccess: () => voi
                             name="issue"
                             required
                             placeholder="e.g. Screen Replacement"
-                            className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
+                            className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                         />
                     </div>
                 </div>
@@ -136,7 +136,8 @@ export default function CreateWarrantyForm({ onSuccess }: { onSuccess: () => voi
                            step="10"
                            required
                            placeholder="e.g. 1500"
-                           className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
+                           onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                           className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                         />
                     </div>
                     <div className="space-y-3">
@@ -147,7 +148,7 @@ export default function CreateWarrantyForm({ onSuccess }: { onSuccess: () => voi
                         <div className="relative">
                             <select 
                                 name="duration"
-                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm appearance-none"
+                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm appearance-none"
                                 defaultValue="30"
                             >
                                 <option value="15">15 Days</option>
@@ -163,7 +164,7 @@ export default function CreateWarrantyForm({ onSuccess }: { onSuccess: () => voi
                 </div>
             </div>
 
-            <div className="pt-6 border-t border-slate-100 mb-[-6px]">
+            <div className="pt-6 border-t border-slate-100 mb-[-6px] flex justify-end">
                 <button 
                     type="submit" 
                     disabled={loading}

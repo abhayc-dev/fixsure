@@ -70,7 +70,7 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
                                 name="customerName"
                                 required
                                 placeholder="e.g. Amit Sharma"
-                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
+                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                             />
                         </div>
                         <div className="space-y-3">
@@ -83,7 +83,7 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
                                 type="tel"
                                 maxLength={10}
                                 placeholder="e.g. 9876543210"
-                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
+                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                             />
                         </div>
                     </div>
@@ -94,7 +94,7 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
                         <input 
                             name="customerAddress"
                             placeholder="e.g. Flat 402, Sunshine Apts, Delhi"
-                            className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
+                            className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                         />
                     </div>
                 </div>
@@ -114,7 +114,7 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
                                 name="category"
                                 value={selectedCategory}
                                 onChange={(e) => setSelectedCategory(e.target.value)}
-                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm appearance-none"
+                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm appearance-none"
                             >
                                 <option value="GENERAL">General Repair</option>
                                 <option value="MOBILE">Mobile Repair</option>
@@ -128,38 +128,135 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
                     </div>
 
                     {selectedCategory === 'MOTOR' ? (
-                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 animate-in fade-in slide-in-from-top-2">
-                             <input type="hidden" name="deviceType" value="Electric Motor" />
-                             
-                             <div className="space-y-3">
-                                <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">Starter Type</label>
-                                <input name="tech_starter" placeholder="e.g. DOL, Star Delta" className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary shadow-sm" />
-                             </div>
-                             <div className="space-y-3">
-                                <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">Power / HP</label>
-                                <input name="tech_power" placeholder="e.g. 2HP, 5KW" className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary shadow-sm" />
-                             </div>
-                             <div className="space-y-3">
-                                <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">Winding (Bounding) 1</label>
-                                <input name="tech_winding1" placeholder="Value 1" className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary shadow-sm" />
-                             </div>
-                             <div className="space-y-3">
-                                <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">Winding (Bounding) 2</label>
-                                <input name="tech_winding2" placeholder="Value 2" className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary shadow-sm" />
-                             </div>
-                             <div className="space-y-3">
-                                <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">Winding (Bounding) 3</label>
-                                <input name="tech_winding3" placeholder="Value 3" className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary shadow-sm" />
-                             </div>
-                             <div className="space-y-3">
-                                <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">Winding (Bounding) 4</label>
-                                <input name="tech_winding4" placeholder="Value 4" className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary shadow-sm" />
-                             </div>
-                             <div className="space-y-3 md:col-span-2">
+                        <div className="mt-8 space-y-8 animate-in fade-in slide-in-from-top-4 duration-500 md:col-span-2">
+                            {/* Hidden field for backend categorisation if needed */}
+                            <input type="hidden" name="deviceType" value="Electric Motor" />
+
+                            <div className="bg-slate-50/50 rounded-2xl p-6 border border-slate-100 space-y-8">
+                                <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                                    <div className="bg-primary/10 p-2 rounded-lg">
+                                        <Wrench className="w-5 h-5 text-primary" />
+                                    </div>
+                                    <h3 className="text-lg font-bold text-slate-800">Motor Repair – Technical Details</h3>
+                                </div>
+
+                                {/* Motor Basics */}
+                                <div className="space-y-4">
+                                    <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                                        Motor Basics
+                                    </h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-slate-500 ml-1">Power / HP</label>
+                                            <input 
+                                                name="motor.power" 
+                                                placeholder="e.g. 2HP, 5KW" 
+                                                className="flex h-11 w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm" 
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-slate-500 ml-1">Starter Type</label>
+                                            <input 
+                                                name="motor.starter" 
+                                                placeholder="e.g. DOL, Star Delta" 
+                                                className="flex h-11 w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm" 
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Winding / Bounding */}
+                                <div className="space-y-4">
+                                    <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Winding / Bounding</h4>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        {[1, 2, 3, 4].map((num) => (
+                                            <div key={num} className="space-y-2">
+                                                <label className="text-xs font-bold text-slate-500 ml-1">Winding {num}</label>
+                                                <input 
+                                                    name={`motor.winding${num}`} 
+                                                    placeholder="Details..." 
+                                                    className="flex h-10 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm" 
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Coil Details */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    {/* Running Coil */}
+                                    <div className="space-y-4 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                                        <h4 className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-blue-500" />
+                                            Running Coil
+                                        </h4>
+                                        <div className="space-y-4 text-slate-700">
+                                            <div className="grid grid-cols-2 gap-4 ">
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[10px] font-extrabold text-slate-400 uppercase ml-1">Turns</label>
+                                                    <input name="motor.running_turns" placeholder="Turns" className="flex h-10 w-full rounded-lg border border-slate-200 bg-slate-50/30 px-3 text-sm focus:bg-white transition-all outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 " />
+                                                </div>
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[10px] font-extrabold text-slate-400 uppercase ml-1">Wire Gauge</label>
+                                                    <input name="motor.running_gauge" placeholder="Gauge" className="flex h-10 w-full rounded-lg border border-slate-200 bg-slate-50/30 px-3 text-sm focus:bg-white transition-all outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400" />
+                                                </div>
+                                            </div>
+                                            <div className="space-y-1.5">
+                                                <label className="text-[10px] font-extrabold text-slate-400 uppercase ml-1">Weight (kg)</label>
+                                                <input name="motor.running_weight" type="number" step="0.001" placeholder="0.000" className="flex h-10 w-full rounded-lg border border-slate-200 bg-slate-50/30 px-3 text-sm focus:bg-white transition-all outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 focus:appearance-none" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Starting Coil */}
+                                    <div className="space-y-4 bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                                        <h4 className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-orange-500" />
+                                            Starting Coil
+                                        </h4>
+                                        <div className="space-y-4 text-slate-700">
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[10px] font-extrabold text-slate-400 uppercase ml-1">Turns</label>
+                                                    <input name="motor.starting_turns" placeholder="Turns" className="flex h-10 w-full rounded-lg border border-slate-200 bg-slate-50/30 px-3 text-sm focus:bg-white transition-all outline-none focus:ring-2 focus:ring-orange-100 focus:border-orange-400" />
+                                                </div>
+                                                <div className="space-y-1.5">
+                                                    <label className="text-[10px] font-extrabold text-slate-400 uppercase ml-1">Wire Gauge</label>
+                                                    <input name="motor.starting_gauge" placeholder="Gauge" className="flex h-10 w-full rounded-lg border border-slate-200 bg-slate-50/30 px-3 text-sm focus:bg-white transition-all outline-none focus:ring-2 focus:ring-orange-100 focus:border-orange-400" />
+                                                </div>
+                                            </div>
+                                            <div className="space-y-1.5">
+                                                <label className="text-[10px] font-extrabold text-slate-400 uppercase ml-1">Weight (kg)</label>
+                                                <input name="motor.starting_weight" type="number" step="0.001" placeholder="0.000" className="flex h-10 w-full rounded-lg border border-slate-200 bg-slate-50/30 px-3 text-sm focus:bg-white transition-all outline-none focus:ring-2 focus:ring-orange-100 focus:border-orange-400 focus:appearance-none" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Parts Replaced */}
+                                <div className="space-y-4">
+                                    <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Parts Replaced</h4>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                        {['Running Coil', 'Starting Coil', 'Capacitor', 'Bearing', 'Fan', 'Shaft'].map((part) => (
+                                            <label key={part} className="flex items-center gap-3 p-3 bg-white rounded-xl border border-slate-100 hover:border-primary/30 cursor-pointer transition-all hover:shadow-sm">
+                                                <input 
+                                                    type="checkbox" 
+                                                    name="motor.parts" 
+                                                    value={part}
+                                                    className="w-4 h-4 rounded border-slate-300 text-primary focus:ring-primary/20" 
+                                                />
+                                                <span className="text-sm font-medium text-slate-700">{part}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-3">
                                 <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">Model / Serial No.</label>
-                                <input name="deviceModel" placeholder="Motor Model / Serial" className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary shadow-sm" />
-                             </div>
-                         </div>
+                                <input name="deviceModel" placeholder="Motor Model / Serial" className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary shadow-sm" />
+                            </div>
+                        </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 animate-in fade-in slide-in-from-top-2">
                              <div className="space-y-3">
@@ -169,7 +266,7 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
                                 <div className="relative">
                                     <select 
                                         name="deviceType"
-                                        className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm appearance-none"
+                                        className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm appearance-none"
                                     >
                                         <option value="Mobile">Mobile Phone</option>
                                         <option value="Laptop">Laptop / PC</option>
@@ -194,7 +291,7 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
                                     name="deviceModel"
                                     required
                                     placeholder="e.g. Samsung S23 Ultra"
-                                    className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
+                                    className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                                 />
                              </div>
                         </div>
@@ -209,7 +306,7 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
                             required
                             rows={3}
                             placeholder="Describe the issue..."
-                            className="flex w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm resize-none"
+                            className="flex w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm resize-none"
                         />
                     </div>
                     <div className="space-y-3">
@@ -219,7 +316,7 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
                         <input 
                             name="accessories"
                             placeholder="e.g. Adapter, Remote, Cover"
-                            className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
+                            className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                         />
                     </div>
                 </div>
@@ -237,7 +334,7 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
                             <input 
                                 name="expectedAt"
                                 type="date"
-                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
+                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                             />
                         </div>
                         <div className="space-y-3">
@@ -249,7 +346,8 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
                                 type="number"
                                 min="0"
                                 placeholder="0.00"
-                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
+                                onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                             />
                         </div>
                          <div className="space-y-3 mb-5">
@@ -258,10 +356,11 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
                             </label>
                             <input 
                                 name="advanceAmount"
-                              
+                                type="number"
                                 min="0"
                                 placeholder="0.00"
-                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
+                                onWheel={(e) => (e.target as HTMLInputElement).blur()}
+                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                             />
                         </div>
                     </div>
@@ -269,7 +368,7 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
 
             </div>
 
-             <div className="pt-6 border-t border-slate-100 mt-2 mb-[-6px]">
+             <div className="pt-6 border-t border-slate-100 mt-2 mb-[-6px] flex justify-end">
                 <button 
                     type="submit" 
                     disabled={loading}

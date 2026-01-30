@@ -68,6 +68,8 @@ type JobSheet = {
     expectedAt: Date | null;
     estimatedCost: number | null;
     advanceAmount?: number | null;
+    category?: string;
+    technicalDetails?: Record<string, any> | null;
 };
 
 type Stats = {

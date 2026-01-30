@@ -604,12 +604,29 @@ export async function createJobSheet(formData: FormData) {
   if (category === 'MOTOR') {
       deviceType = 'Electric Motor'; // Force type
       technicalDetails = {
-          starter: formData.get("tech_starter") as string,
-          power: formData.get("tech_power") as string,
-          winding1: formData.get("tech_winding1") as string,
-          winding2: formData.get("tech_winding2") as string,
-          winding3: formData.get("tech_winding3") as string,
-          winding4: formData.get("tech_winding4") as string,
+          motor: {
+              power: formData.get("motor.power") as string,
+              starter: formData.get("motor.starter") as string,
+              winding: [
+                  formData.get("motor.winding1") as string,
+                  formData.get("motor.winding2") as string,
+                  formData.get("motor.winding3") as string,
+                  formData.get("motor.winding4") as string,
+              ],
+              coil: {
+                  running: {
+                      turns: formData.get("motor.running_turns") as string,
+                      gauge: formData.get("motor.running_gauge") as string,
+                      weight: formData.get("motor.running_weight") as string,
+                  },
+                  starting: {
+                      turns: formData.get("motor.starting_turns") as string,
+                      gauge: formData.get("motor.starting_gauge") as string,
+                      weight: formData.get("motor.starting_weight") as string,
+                  }
+              },
+              parts: formData.getAll("motor.parts") as string[]
+          }
       };
   }
 
@@ -714,12 +731,29 @@ export async function updateJobSheetDetails(formData: FormData) {
     let technicalDetails = null;
     if (category === 'MOTOR') {
         technicalDetails = {
-            starter: formData.get("tech_starter") as string,
-            power: formData.get("tech_power") as string,
-            winding1: formData.get("tech_winding1") as string,
-            winding2: formData.get("tech_winding2") as string,
-            winding3: formData.get("tech_winding3") as string,
-            winding4: formData.get("tech_winding4") as string,
+            motor: {
+                power: formData.get("motor.power") as string,
+                starter: formData.get("motor.starter") as string,
+                winding: [
+                    formData.get("motor.winding1") as string,
+                    formData.get("motor.winding2") as string,
+                    formData.get("motor.winding3") as string,
+                    formData.get("motor.winding4") as string,
+                ],
+                coil: {
+                    running: {
+                        turns: formData.get("motor.running_turns") as string,
+                        gauge: formData.get("motor.running_gauge") as string,
+                        weight: formData.get("motor.running_weight") as string,
+                    },
+                    starting: {
+                        turns: formData.get("motor.starting_turns") as string,
+                        gauge: formData.get("motor.starting_gauge") as string,
+                        weight: formData.get("motor.starting_weight") as string,
+                    }
+                },
+                parts: formData.getAll("motor.parts") as string[]
+            }
         };
     }
 

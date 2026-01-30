@@ -217,62 +217,125 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
 
                             {/* Technical Details Section (For Motors) */}
                             {((isEditing && job.category === 'MOTOR') || (!isEditing && job.technicalDetails)) && (
-                                <section className="animate-in fade-in slide-in-from-bottom-2">
+                                <section className="animate-in fade-in slide-in-from-bottom-2 space-y-4">
                                     <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                                         <Wrench className="h-4 w-4" /> Technical Specifications
                                     </h3>
-                                    <div className="bg-slate-50 rounded-xl p-6 border border-slate-100 grid grid-cols-2 lg:grid-cols-3 gap-6">
-                                        
-                                        <div>
-                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Starter Phase</label>
-                                             {isEditing && job.category === 'MOTOR' ? (
-                                                <input name="tech_starter" defaultValue={String(job.technicalDetails?.starter || '')} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
-                                            ) : (
-                                                <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.starter || '-'}</div>
-                                            )}
-                                        </div>
-                                        <div>
-                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Power / HP</label>
-                                            {isEditing && job.category === 'MOTOR' ? (
-                                                <input name="tech_power" defaultValue={String(job.technicalDetails?.power || '')} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
-                                            ) : (
-                                                <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.power || '-'}</div>
-                                            )}
-                                        </div>
-                                        <div>
-                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Winding 1</label>
-                                             {isEditing && job.category === 'MOTOR' ? (
-                                                <input name="tech_winding1" defaultValue={String(job.technicalDetails?.winding1 || '')} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
-                                            ) : (
-                                                <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.winding1 || '-'}</div>
-                                            )}
-                                        </div>
-                                        <div>
-                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Winding 2</label>
-                                             {isEditing && job.category === 'MOTOR' ? (
-                                                <input name="tech_winding2" defaultValue={String(job.technicalDetails?.winding2 || '')} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
-                                            ) : (
-                                                <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.winding2 || '-'}</div>
-                                            )}
-                                        </div>
-                                        <div>
-                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Winding 3</label>
-                                             {isEditing && job.category === 'MOTOR' ? (
-                                                <input name="tech_winding3" defaultValue={String(job.technicalDetails?.winding3 || '')} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
-                                            ) : (
-                                                <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.winding3 || '-'}</div>
-                                            )}
-                                        </div>
-                                        <div>
-                                            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Winding 4</label>
-                                             {isEditing && job.category === 'MOTOR' ? (
-                                                <input name="tech_winding4" defaultValue={String(job.technicalDetails?.winding4 || '')} className="w-full mt-1 p-2 border rounded-md font-bold text-slate-800" />
-                                            ) : (
-                                                <div className="text-base font-bold text-slate-800 mt-1">{job.technicalDetails?.winding4 || '-'}</div>
-                                            )}
-                                        </div>
+                                    
+                                    {/* Handle both old and new data structures */}
+                                    {(() => {
+                                        const td = job.technicalDetails as any;
+                                        const motor = td?.motor || td; // Fallback to flat structure if motor object doesn't exist
+                                        const isNewStructure = !!td?.motor;
 
-                                    </div>
+                                        return (
+                                            <div className="space-y-6">
+                                                {/* Motor Basics & Winding */}
+                                                <div className="bg-slate-50 rounded-xl p-6 border border-slate-100 grid grid-cols-2 lg:grid-cols-3 gap-6">
+                                                    <div>
+                                                        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Starter Type</label>
+                                                        {isEditing ? (
+                                                            <input name="motor.starter" defaultValue={motor?.starter || ''} className="w-full mt-1.5 p-2 bg-white border border-slate-300 rounded-lg font-bold text-slate-900 shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" />
+                                                        ) : (
+                                                            <div className="text-base font-bold text-slate-800 mt-1">{motor?.starter || '-'}</div>
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Power / HP</label>
+                                                        {isEditing ? (
+                                                            <input name="motor.power" defaultValue={motor?.power || ''} className="w-full mt-1.5 p-2 bg-white border border-slate-300 rounded-lg font-bold text-slate-900 shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" />
+                                                        ) : (
+                                                            <div className="text-base font-bold text-slate-800 mt-1">{motor?.power || '-'}</div>
+                                                        )}
+                                                    </div>
+                                                    {[1, 2, 3, 4].map((num) => {
+                                                        const windingVal = isNewStructure ? motor?.winding?.[num-1] : motor?.[`winding${num}`];
+                                                        return (
+                                                            <div key={num}>
+                                                                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Winding {num}</label>
+                                                                {isEditing ? (
+                                                                    <input name={`motor.winding${num}`} defaultValue={windingVal || ''} className="w-full mt-1.5 p-2 bg-white border border-slate-300 rounded-lg font-bold text-slate-900 shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" />
+                                                                ) : (
+                                                                    <div className="text-base font-bold text-slate-800 mt-1">{windingVal || '-'}</div>
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+
+                                                {/* Coil Details */}
+                                                {(motor?.coil || isEditing) && (
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                        {['running', 'starting'].map((type) => (
+                                                            <div key={type} className="bg-white border border-slate-100 rounded-xl p-5 shadow-sm">
+                                                                <h4 className="text-xs font-bold text-slate-400 uppercase mb-4 flex items-center gap-2">
+                                                                    <div className={cn("w-1.5 h-1.5 rounded-full", type === 'running' ? "bg-blue-500" : "bg-orange-500")} />
+                                                                    {type} Coil
+                                                                </h4>
+                                                                <div className="grid grid-cols-3 gap-4">
+                                                                    <div>
+                                                                        <div className="text-[10px] text-slate-500 font-bold uppercase">Turns</div>
+                                                                        {isEditing ? (
+                                                                            <input name={`motor.${type}_turns`} defaultValue={motor?.coil?.[type]?.turns || ''} className="w-full mt-1.5 p-2 bg-white border border-slate-300 rounded-lg text-sm font-bold text-slate-900 shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" placeholder="Turns" />
+                                                                        ) : (
+                                                                            <div className="text-sm font-bold text-slate-700">{motor?.coil?.[type]?.turns || '-'}</div>
+                                                                        )}
+                                                                    </div>
+                                                                    <div>
+                                                                        <div className="text-[10px] text-slate-500 font-bold uppercase">Gauge</div>
+                                                                        {isEditing ? (
+                                                                            <input name={`motor.${type}_gauge`} defaultValue={motor?.coil?.[type]?.gauge || ''} className="w-full mt-1.5 p-2 bg-white border border-slate-300 rounded-lg text-sm font-bold text-slate-900 shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" placeholder="Gauge" />
+                                                                        ) : (
+                                                                            <div className="text-sm font-bold text-slate-700">{motor?.coil?.[type]?.gauge || '-'}</div>
+                                                                        )}
+                                                                    </div>
+                                                                    <div>
+                                                                        <div className="text-[10px] text-slate-500 font-bold uppercase">Weight</div>
+                                                                        {isEditing ? (
+                                                                            <input name={`motor.${type}_weight`} type="number" step="0.001" defaultValue={motor?.coil?.[type]?.weight || ''} className="w-full mt-1.5 p-2 bg-white border border-slate-300 rounded-lg text-sm font-bold text-slate-900 shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none" placeholder="0.000" />
+                                                                        ) : (
+                                                                            <div className="text-sm font-bold text-slate-700">{motor?.coil?.[type]?.weight ? `${motor?.coil?.[type]?.weight}kg` : '-'}</div>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+
+                                                {/* Parts Replaced */}
+                                                {(motor?.parts?.length > 0 || isEditing) && (
+                                                    <div className="bg-slate-50 rounded-xl p-5 border border-slate-100">
+                                                        <h4 className="text-xs font-bold text-slate-400 uppercase mb-3 text-slate-400 tracking-wider">Parts Replaced</h4>
+                                                        {isEditing ? (
+                                                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                                                {['Running Coil', 'Starting Coil', 'Capacitor', 'Bearing', 'Fan', 'Shaft'].map((part) => (
+                                                                    <label key={part} className="flex items-center gap-2 p-2 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-50">
+                                                                        <input 
+                                                                            type="checkbox" 
+                                                                            name="motor.parts" 
+                                                                            value={part}
+                                                                            defaultChecked={motor?.parts?.includes(part)}
+                                                                            className="w-3.5 h-3.5 rounded border-slate-300 text-primary" 
+                                                                        />
+                                                                        <span className="text-xs font-bold text-slate-700">{part}</span>
+                                                                    </label>
+                                                                ))}
+                                                            </div>
+                                                        ) : (
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {motor?.parts?.map((part: string) => (
+                                                                    <span key={part} className="px-3 py-1 bg-white border border-slate-200 rounded-full text-xs font-bold text-slate-600 shadow-sm">
+                                                                        {part}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })()}
                                 </section>
                             )}
 

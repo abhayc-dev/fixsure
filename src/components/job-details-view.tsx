@@ -19,6 +19,7 @@ type JobSheet = {
     expectedAt: Date | null;
     estimatedCost: number | null;
     advanceAmount?: number | null;
+    technicalDetails?: Record<string, any> | null;
 };
 
 export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack: () => void }) {
@@ -148,12 +149,59 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
                             <tr>
                                 <td className="p-3 border border-slate-300 text-sm">{job.deviceType || 'Mobile'}</td>
                                 <td className="p-3 border border-slate-300 text-sm">{job.deviceModel}</td>
-                                <td className="p-3 border border-slate-300 text-sm text-slate-600">{job.problemDesc}</td>
+                                <td className="p-3 border border-slate-300 text-sm">{job.problemDesc}</td>
                                 <td className="p-3 border border-slate-300 text-sm text-slate-600">{job.accessories || '-'}</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+
+                {/* technical details for motor if exist */}
+                {job.technicalDetails && (
+                    <div className="mb-8 p-4 border border-slate-200 bg-slate-50/50 rounded-lg">
+                        <h3 className="font-bold text-xs uppercase mb-3 text-slate-500 tracking-wider">Technical Specifications</h3>
+                        <div className="grid grid-cols-3 gap-y-4 gap-x-8">
+                            {(() => {
+                                const td = job.technicalDetails as any;
+                                const motor = td?.motor || td;
+                                const isNew = !!td?.motor;
+                                
+                                return (
+                                    <>
+                                        <div>
+                                            <div className="text-[10px] uppercase font-bold text-slate-400">Power / HP</div>
+                                            <div className="text-sm font-bold">{motor?.power || '-'}</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-[10px] uppercase font-bold text-slate-400">Starter Type</div>
+                                            <div className="text-sm font-bold">{motor?.starter || '-'}</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-[10px] uppercase font-bold text-slate-400">Winding Details</div>
+                                            <div className="text-[10px] font-medium leading-tight text-slate-600">
+                                                {[1,2,3,4].map(n => isNew ? motor.winding?.[n-1] : motor[`winding${n}`]).filter(Boolean).join(', ') || '-'}
+                                            </div>
+                                        </div>
+                                        {motor?.coil && (
+                                            <div className="col-span-3 grid grid-cols-2 gap-4 pt-2 border-t border-slate-200">
+                                                {['running', 'starting'].map(type => (
+                                                    <div key={type}>
+                                                        <div className="text-[10px] uppercase font-extrabold text-slate-500 mb-1">{type} Coil</div>
+                                                        <div className="text-[10px] text-slate-600">
+                                                            Turns: <span className="font-bold text-black">{motor.coil[type]?.turns}</span> | 
+                                                            Gauge: <span className="font-bold text-black">{motor.coil[type]?.gauge}</span> | 
+                                                            Weight: <span className="font-bold text-black">{motor.coil[type]?.weight}kg</span>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </>
+                                );
+                            })()}
+                        </div>
+                    </div>
+                )}
 
                 {/* 5. Financials */}
                 <div className="flex flex-col items-end gap-2 mt-8">
