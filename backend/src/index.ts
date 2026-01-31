@@ -148,6 +148,7 @@ app.put('/api/jobs/:id', async (req, res) => {
                 technicalDetails: technicalDetails || null,
                 estimatedCost: estimatedCost !== undefined ? parseFloat(estimatedCost) : undefined,
                 advanceAmount: advanceAmount !== undefined ? parseFloat(advanceAmount) : undefined,
+                expectedAt: req.body.expectedAt ? new Date(req.body.expectedAt) : undefined,
             }
         });
         res.json(updatedJob);

@@ -598,30 +598,12 @@ export async function createJobSheet(formData: FormData) {
   let technicalDetails = null;
 
   if (category === 'MOTOR') {
-      deviceType = 'Electric Motor'; // Force type
+      deviceType = deviceType || 'Electric Motor'; // Use form value or fallback
       technicalDetails = {
           motor: {
               power: formData.get("motor.power") as string,
-              starter: formData.get("motor.starter") as string,
-              winding: [
-                  formData.get("motor.winding1") as string,
-                  formData.get("motor.winding2") as string,
-                  formData.get("motor.winding3") as string,
-                  formData.get("motor.winding4") as string,
-              ],
-              coil: {
-                  running: {
-                      turns: formData.get("motor.running_turns") as string,
-                      gauge: formData.get("motor.running_gauge") as string,
-                      weight: formData.get("motor.running_weight") as string,
-                  },
-                  starting: {
-                      turns: formData.get("motor.starting_turns") as string,
-                      gauge: formData.get("motor.starting_gauge") as string,
-                      weight: formData.get("motor.starting_weight") as string,
-                  }
-              },
-              parts: formData.getAll("motor.parts") as string[]
+              power_unit: formData.get("motor.power_unit") as string,
+              phase: formData.get("motor.phase") as string,
           }
       };
   }
@@ -646,7 +628,6 @@ export async function createJobSheet(formData: FormData) {
           deviceType,
           deviceModel,
           problemDesc,
-          accessories,
           technicalDetails,
           receivedAt,
           expectedAt,
@@ -723,32 +704,15 @@ export async function updateJobSheetDetails(formData: FormData) {
     
     const estimatedCost = parseFloat(formData.get("estimatedCost") as string) || 0;
     const advanceAmount = parseFloat(formData.get("advanceAmount") as string) || 0;
+    const expectedAt = formData.get("expectedAt") ? new Date(formData.get("expectedAt") as string) : null;
 
     let technicalDetails = null;
     if (category === 'MOTOR') {
         technicalDetails = {
             motor: {
                 power: formData.get("motor.power") as string,
-                starter: formData.get("motor.starter") as string,
-                winding: [
-                    formData.get("motor.winding1") as string,
-                    formData.get("motor.winding2") as string,
-                    formData.get("motor.winding3") as string,
-                    formData.get("motor.winding4") as string,
-                ],
-                coil: {
-                    running: {
-                        turns: formData.get("motor.running_turns") as string,
-                        gauge: formData.get("motor.running_gauge") as string,
-                        weight: formData.get("motor.running_weight") as string,
-                    },
-                    starting: {
-                        turns: formData.get("motor.starting_turns") as string,
-                        gauge: formData.get("motor.starting_gauge") as string,
-                        weight: formData.get("motor.starting_weight") as string,
-                    }
-                },
-                parts: formData.getAll("motor.parts") as string[]
+                power_unit: formData.get("motor.power_unit") as string,
+                phase: formData.get("motor.phase") as string,
             }
         };
     }
@@ -764,9 +728,9 @@ export async function updateJobSheetDetails(formData: FormData) {
             deviceType,
             deviceModel,
             problemDesc,
-            accessories,
             estimatedCost,
             advanceAmount,
+            expectedAt,
             technicalDetails
         })
     });

@@ -114,7 +114,7 @@ export default function DashboardClient({
     const [statusFilter, setStatusFilter] = useState('ALL');
     const [viewMode, setViewMode] = useState<'WARRANTIES' | 'JOBS' | 'REPORTS' | 'SETTINGS' | 'CREATE_WARRANTY' | 'CREATE_JOB' | 'JOB_DETAILS' | 'JOB_CUSTOMER_DETAILS' | 'WARRANTY_DETAILS' | 'WARRANTY_CERTIFICATE'>('WARRANTIES');
 
-    const [selectedJobSheet, setSelectedJobSheet] = useState<JobSheet | null>(null);
+    const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
     const [selectedWarranty, setSelectedWarranty] = useState<Warranty | null>(null);
 
     const [isRevenueVisible, setIsRevenueVisible] = useState(false);
@@ -143,7 +143,7 @@ export default function DashboardClient({
     };
 
     const handleViewJob = (job: JobSheet) => {
-        setSelectedJobSheet(job);
+        setSelectedJobId(job.id);
         setViewMode('JOB_DETAILS');
     };
 
@@ -175,6 +175,8 @@ export default function DashboardClient({
             j.jobId.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
+    const selectedJobSheet = initialJobSheets.find(j => j.id === selectedJobId) || null;
+
     // RENDER LOGIC
 
 
@@ -204,7 +206,10 @@ export default function DashboardClient({
     if (viewMode === 'JOB_DETAILS' && selectedJobSheet) {
         return (
             <div className="min-h-screen bg-white">
-                 <JobDetailsView job={selectedJobSheet} onBack={() => setViewMode('JOBS')} />
+                 <JobDetailsView job={selectedJobSheet} onBack={() => {
+                     setSelectedJobId(null);
+                     setViewMode('JOBS');
+                 }} />
             </div>
         );
     }
@@ -212,7 +217,10 @@ export default function DashboardClient({
     if (viewMode === 'JOB_CUSTOMER_DETAILS' && selectedJobSheet) {
         return (
             <div className="min-h-screen bg-[#f3f4f6] p-4">
-                 <JobCustomerView job={selectedJobSheet} onBack={() => setViewMode('JOBS')} />
+                 <JobCustomerView job={selectedJobSheet} onBack={() => {
+                     setSelectedJobId(null);
+                     setViewMode('JOBS');
+                 }} />
             </div>
         );
     }
@@ -774,7 +782,7 @@ export default function DashboardClient({
 
                                                                     <button
                                                                         onClick={() => {
-                                                                            setSelectedJobSheet(j);
+                                                                            setSelectedJobId(j.id);
                                                                             setViewMode('JOB_CUSTOMER_DETAILS');
                                                                         }}
                                                                         className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:text-primary hover:border-primary hover:bg-primary/5 transition-all"
