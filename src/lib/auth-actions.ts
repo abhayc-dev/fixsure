@@ -98,8 +98,8 @@ export async function signup(data: { email: string; password: string; phone: str
     return { success: true, shopName: shop.shopName };
 }
 
-export async function googleLogin(data: { email: string; name: string; googleId: string; phone?: string }) {
-    const { email, name, phone } = data;
+export async function googleLogin(data: { email: string; name: string; googleId: string; phone?: string; shopName?: string }) {
+    const { email, name, phone, shopName } = data;
 
     let shop = await db.shop.findUnique({
         where: { email }
@@ -120,7 +120,7 @@ export async function googleLogin(data: { email: string; name: string; googleId:
                 email,
                 ownerName: name,
                 phone: cleanPhone,
-                shopName: name + "'s Shop",
+                shopName: shopName || (name + "'s Shop"),
                 isVerified: true,
                 subscriptionStatus: "FREE_TRIAL",
                 subscriptionEnds: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)

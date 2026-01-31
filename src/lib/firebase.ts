@@ -3,14 +3,18 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_APIKEY,
-  authDomain: "fixsure-app.firebaseapp.com",
-  projectId: "fixsure-app",
-  storageBucket: "fixsure-app.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef1234"
+  authDomain: "fixsure-1ff35.firebaseapp.com",
+  projectId: "fixsure-1ff35",
+  storageBucket: "fixsure-1ff35.firebasestorage.app",
+  messagingSenderId: "400145967239",
+  appId: "1:400145967239:web:9408cac822c5b72269f022",
+  measurementId: "G-GW6R3C3EMN"
 };
 
-// Initialize Firebase
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-export const auth = getAuth(app);
+// Initialize Firebase only if API key is present
+const app = (process.env.NEXT_PUBLIC_FIREBASE_APIKEY && process.env.NEXT_PUBLIC_FIREBASE_APIKEY !== "undefined")
+  ? (getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0])
+  : null;
+
+export const auth = app ? getAuth(app) : ({} as any);
 export const googleProvider = new GoogleAuthProvider();
