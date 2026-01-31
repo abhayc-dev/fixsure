@@ -5,10 +5,10 @@ import { Loader2, Plus, Wrench, Smartphone, User, MapPin, Calendar, Receipt, Fil
 import { createJobSheet } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 
-export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => void }) {
+export default function CreateJobSheetForm({ onSuccess, shopCategory }: { onSuccess: () => void, shopCategory?: string }) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState("GENERAL");
+  const [selectedCategory, setSelectedCategory] = useState(shopCategory || "GENERAL");
 
   const handleSubmit = async (formData: FormData) => {
     setLoading(true);
@@ -105,27 +105,30 @@ export default function CreateJobSheetForm({ onSuccess }: { onSuccess: () => voi
                         <Smartphone className="w-4 h-4" /> Technical Info
                     </h3>
 
-                    <div className="space-y-3">
-                        <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">
-                            Job Category
-                        </label>
-                        <div className="relative">
-                            <select 
-                                name="category"
-                                value={selectedCategory}
-                                onChange={(e) => setSelectedCategory(e.target.value)}
-                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm appearance-none"
-                            >
-                                <option value="GENERAL">General Repair</option>
-                                <option value="MOBILE">Mobile Repair</option>
-                                <option value="TV">TV Repairing</option>
-                                <option value="MOTOR">Motor Repairing</option>
-                            </select>
-                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    {/* Category is pre-selected and hidden for a cleaner experience if shop category exists */}
+                    {!shopCategory && (
+                        <div className="space-y-3">
+                            <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">
+                                Job Category
+                            </label>
+                            <div className="relative">
+                                <select 
+                                    name="category"
+                                    value={selectedCategory}
+                                    onChange={(e) => setSelectedCategory(e.target.value)}
+                                    className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm appearance-none"
+                                >
+                                    <option value="GENERAL">General Repair</option>
+                                    <option value="MOBILE">Mobile Repair</option>
+                                    <option value="TV">TV Repairing</option>
+                                    <option value="MOTOR">Motor Repairing</option>
+                                </select>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )}
 
                     {selectedCategory === 'MOTOR' ? (
                         <div className="mt-8 space-y-8 animate-in fade-in slide-in-from-top-4 duration-500 md:col-span-2">

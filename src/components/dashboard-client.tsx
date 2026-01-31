@@ -404,7 +404,7 @@ export default function DashboardClient({
                     {viewMode === 'CREATE_WARRANTY' ? (
                         <CreateWarrantyForm onSuccess={() => setViewMode('WARRANTIES')} />
                     ) : viewMode === 'CREATE_JOB' ? (
-                        <CreateJobSheetForm onSuccess={() => setViewMode('JOBS')} />
+                        <CreateJobSheetForm onSuccess={() => setViewMode('JOBS')} shopCategory={shop.category} />
                     ) : viewMode === 'JOB_DETAILS' && selectedJobSheet ? (
                         <JobDetailsView job={selectedJobSheet} onBack={() => setViewMode('JOBS')} />
                     ) : viewMode === 'SETTINGS' ? (

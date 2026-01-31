@@ -18,6 +18,7 @@ model Shop {
   address           String?
   city              String?
   role              Role     @default(USER)
+  category          String   @default("GENERAL") // MOBILE, MOTOR, TV, GENERAL
   
   // Auth
   otp               String?

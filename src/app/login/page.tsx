@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ShieldCheck, ArrowRight, Loader2, Mail, Lock, Phone, Store, User as UserIcon } from "lucide-react";
+import { ShieldCheck, ArrowRight, Loader2, Mail, Lock, Phone, Store, User as UserIcon, LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
@@ -22,6 +22,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [shopName, setShopName] = useState("");
+  const [category, setCategory] = useState("MOBILE"); // Default to Mobile
 
   // For verification errors or status messages
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
@@ -96,7 +97,7 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await signup({ email, password, phone, shopName });
+      const res = await signup({ email, password, phone, shopName, category });
       if (res.success) {
         if (res.shopName === "New Shop Info Required") {
             router.push("/dashboard/settings");
@@ -130,6 +131,7 @@ export default function LoginPage() {
         googleId: user.uid,
         phone: mode === "signup" ? phone : undefined,
         shopName: mode === "signup" ? shopName : undefined,
+        category: mode === "signup" ? category : undefined,
       });
 
       if (res.success) {
@@ -220,6 +222,30 @@ export default function LoginPage() {
                         />
                       </div>
                       {fieldErrors.shopName && <p className="text-[10px] text-red-500 font-bold ml-1">{fieldErrors.shopName}</p>}
+                  </div>
+              )}
+
+              {mode === "signup" && (
+                  <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Business Category</label>
+                      <div className="relative group">
+                        <LayoutGrid className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-primary transition-colors" />
+                        <select
+                            className="w-full h-11 pl-11 pr-4 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-semibold text-sm appearance-none cursor-pointer"
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}
+                        >
+                            <option value="MOBILE">Mobile Repairing</option>
+                            <option value="MOTOR">Motor Winding / Repair</option>
+                            <option value="TV">TV & Electronics</option>
+                            <option value="GENERAL">General Support / Other</option>
+                        </select>
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <svg className="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+                      </div>
                   </div>
               )}
 

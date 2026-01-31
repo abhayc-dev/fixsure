@@ -585,7 +585,8 @@ export async function createJobSheet(formData: FormData) {
   const customerPhone = formData.get("customerPhone") as string;
   const customerAddress = formData.get("customerAddress") as string;
   
-  const category = (formData.get("category") as string) || "GENERAL";
+  // Use shop's pre-configured category so owner doesn't have to select it every time
+  const category = shop.category || "GENERAL";
   let deviceType = formData.get("deviceType") as string;
   const deviceModel = formData.get("deviceModel") as string;
   const problemDesc = formData.get("problemDesc") as string;

@@ -61,8 +61,8 @@ export async function loginWithEmail(email: string, password: string) {
     return { success: true, role: shop.role, shopName: shop.shopName };
 }
 
-export async function signup(data: { email: string; password: string; phone: string; shopName: string }) {
-    const { password, phone, shopName } = data;
+export async function signup(data: { email: string; password: string; phone: string; shopName: string; category?: string }) {
+    const { password, phone, shopName, category = "GENERAL" } = data;
     const email = data.email.toLowerCase();
 
     if (!phone || phone.length < 10) {
@@ -85,6 +85,7 @@ export async function signup(data: { email: string; password: string; phone: str
             password: hashedPassword,
             phone: cleanPhone,
             shopName,
+            category,
             isVerified: true,
             subscriptionStatus: "FREE_TRIAL",
             subscriptionEnds: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
@@ -101,8 +102,8 @@ export async function signup(data: { email: string; password: string; phone: str
     return { success: true, shopName: shop.shopName };
 }
 
-export async function googleLogin(data: { email: string; name: string; googleId: string; phone?: string; shopName?: string }) {
-    const { name, phone, shopName } = data;
+export async function googleLogin(data: { email: string; name: string; googleId: string; phone?: string; shopName?: string; category?: string }) {
+    const { name, phone, shopName, category = "GENERAL" } = data;
     const email = data.email.toLowerCase();
 
     let shop = await db.shop.findUnique({
@@ -125,6 +126,7 @@ export async function googleLogin(data: { email: string; name: string; googleId:
                 ownerName: name,
                 phone: cleanPhone,
                 shopName: shopName || (name + "'s Shop"),
+                category,
                 isVerified: true,
                 subscriptionStatus: "FREE_TRIAL",
                 subscriptionEnds: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
