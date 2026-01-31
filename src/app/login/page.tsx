@@ -77,9 +77,9 @@ export default function LoginPage() {
     try {
       const res = await loginWithEmail(email, password);
       if (res.success) {
-        if (res.role === "ADMIN") window.location.href = "/admin";
-        else window.location.href = "/dashboard";
-        return; // Keep loader active during redirect
+        if (res.role === "ADMIN") router.push("/admin");
+        else router.push("/dashboard");
+        return; // Keep loader active
       } else {
         setError(res.error || "Login failed");
       }
@@ -99,11 +99,11 @@ export default function LoginPage() {
       const res = await signup({ email, password, phone, shopName });
       if (res.success) {
         if (res.shopName === "New Shop Info Required") {
-            window.location.href = "/dashboard/settings";
+            router.push("/dashboard/settings");
         } else {
-            window.location.href = "/dashboard";
+            router.push("/dashboard");
         }
-        return; // Keep loader active during redirect
+        return; // Keep loader active
       } else {
         setError(res.error || "Signup failed");
       }
@@ -133,7 +133,7 @@ export default function LoginPage() {
       });
 
       if (res.success) {
-        window.location.href = "/dashboard";
+        router.push("/dashboard");
         return; // Keep loader active
       } else if (res.needsPhone) {
         setMode("signup");
