@@ -112,3 +112,61 @@ The API returns a consistent error format for failed requests:
 2. **WhatsApp Integration:** Use the intent `https://wa.me/{phone}/?text={message}` for customer notifications.
 3. **Draft Mode:** Since `technicalDetails` can be complex, implement a "Draft" feature in the app to save progress before final submission.
 4. **Refreshing:** Use Pull-to-Refresh on the Job list to sync with the web dashboard.
+## 8. Real-world Data Example
+This is exactly how a complete Job object looks when retrieved from the API:
+
+```json
+{ 
+    "id": "9b491554-ca5f-4599-b32c-eaeae3b19c84",
+    "jobId": "JO-42857",
+    "shopId": "7799c248-71df-4a69-a564-a73531294aed",
+    "customerName": "Abhay Chaurasiya",
+    "customerPhone": "930550552",
+    "customerAddress": "Chakiya",
+    "deviceType": "SEWELL",
+    "deviceModel": "1222454345454",
+    "problemDesc": "wwfe wfe fef efe f ef r",
+    "accessories": null,
+    "receivedAt": "2026-01-31T10:19:58.437Z",
+    "expectedAt": "2026-02-06T00:00:00.000Z",
+    "completedAt": null,
+    "status": "RECEIVED",
+    "estimatedCost": 3501,
+    "advanceAmount": 500,
+    "finalCost": null,
+    "category": "MOTOR",
+    "technicalDetails": {
+        "motor": {
+            "phase": "Triple",
+            "power": "9",
+            "speed": "32",
+            "current": "23",
+            "capacitor": "23",
+            "power_unit": "kW",
+            "coilDetails": {
+                "running": [
+                    {
+                        "swg": "22",
+                        "turns": "2",
+                        "weight": "2"
+                    },
+                    {
+                        "swg": "",
+                        "turns": "",
+                        "weight": ""
+                    }
+                ],
+                "starting": [
+                    {
+                        "swg": "2",
+                        "turns": "2",
+                        "weight": "2"
+                    }
+                ]
+            },
+            "starter_length": "23",
+            "starter_diameter": "66"
+        }
+    }
+}
+```
