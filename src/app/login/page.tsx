@@ -145,7 +145,8 @@ export default function LoginPage() {
       if (err.code === "auth/popup-closed-by-user") {
         setError("Sign-in cancelled. Please try again.");
       } else if (err.code === "auth/unauthorized-domain") {
-        setError("Domain not authorized. Add 'localhost' to Firebase Console > Auth > Settings.");
+        const domain = window.location.hostname;
+        setError(`Domain "${domain}" is not authorized in Firebase Console. Add it under Authentication > Settings > Authorized domains.`);
       } else {
         setError(err.message || "Google login failed. Check your Firebase config.");
       }
