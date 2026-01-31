@@ -604,6 +604,11 @@ export async function createJobSheet(formData: FormData) {
               power: formData.get("motor.power") as string,
               power_unit: formData.get("motor.power_unit") as string,
               phase: formData.get("motor.phase") as string,
+              starter_length: formData.get("motor.starter_length") as string,
+              starter_diameter: formData.get("motor.starter_diameter") as string,
+              speed: formData.get("motor.speed") as string,
+              capacitor: formData.get("motor.capacitor") as string,
+              current: formData.get("motor.current") as string,
           }
       };
   }
@@ -708,11 +713,25 @@ export async function updateJobSheetDetails(formData: FormData) {
 
     let technicalDetails = null;
     if (category === 'MOTOR') {
+        const coilDetailsStr = formData.get("motor.coilDetails") as string;
+        let coilDetails = null;
+        try {
+            coilDetails = coilDetailsStr ? JSON.parse(coilDetailsStr) : null;
+        } catch (e) {
+            console.error("Failed to parse coilDetails", e);
+        }
+
         technicalDetails = {
             motor: {
                 power: formData.get("motor.power") as string,
                 power_unit: formData.get("motor.power_unit") as string,
                 phase: formData.get("motor.phase") as string,
+                starter_length: formData.get("motor.starter_length") as string,
+                starter_diameter: formData.get("motor.starter_diameter") as string,
+                speed: formData.get("motor.speed") as string,
+                capacitor: formData.get("motor.capacitor") as string,
+                current: formData.get("motor.current") as string,
+                coilDetails: coilDetails
             }
         };
     }

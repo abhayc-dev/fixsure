@@ -12,7 +12,9 @@ datasource db {
 // 1. Shop Owner (The Primary User)
 model Shop {
   id                String   @id @default(uuid()) // Unique internal ID
-  phone             String   @unique              // Login via OTP
+  phone             String   @unique
+  email             String?  @unique
+  password          String?
   shopName          String
   ownerName         String?
   address           String?

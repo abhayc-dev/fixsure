@@ -12,6 +12,8 @@ const connectionString = process.env.DATABASE_URL!;
 const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 
+import bcrypt from 'bcryptjs';
+
 const prisma = new PrismaClient({ adapter });
 const PORT = process.env.PORT || process.env.BACKEND_PORT || 8000;
 
@@ -21,6 +23,65 @@ app.use(express.json());
 // Basic Health Check
 app.get('/', (req, res) => {
     res.json({ message: 'FixSure API is running' });
+});
+
+/**
+ * AUTH ENDPOINTS (For Mobile App)
+ */
+
+// Login
+app.post('/api/auth/login', async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ error: 'Email and password are required' });
+
+    try {
+        const shop = await prisma.shop.findUnique({ where: { email: email.toLowerCase() } });
+        if (!shop || !shop.password) return res.status(401).json({ error: 'Invalid email or password' });
+
+        const isMatch = await bcrypt.compare(password, shop.password);
+        if (!isMatch) return res.status(401).json({ error: 'Invalid email or password' });
+
+        // Remove password from response
+        const { password: _, ...shopInfo } = shop;
+        res.json({ success: true, shop: shopInfo });
+    } catch (error) {
+        res.status(500).json({ error: 'Authentication failed' });
+    }
+});
+
+// Signup
+app.post('/api/auth/signup', async (req, res) => {
+    const { email, password, phone, shopName, category } = req.body;
+    
+    if (!email || !password || !phone || !shopName) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    try {
+        const cleanPhone = phone.replace(/\D/g, '').slice(-10);
+        const passwordHash = await bcrypt.hash(password, 10);
+
+        const newShop = await prisma.shop.create({
+            data: {
+                email: email.toLowerCase(),
+                password: passwordHash,
+                phone: cleanPhone,
+                shopName,
+                category: category || 'GENERAL',
+                isVerified: true, // Auto-verify for mobile signups for now
+                subscriptionStatus: 'FREE_TRIAL',
+                subscriptionEnds: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
+            }
+        });
+
+        const { password: _, ...shopInfo } = newShop;
+        res.status(201).json({ success: true, shop: shopInfo });
+    } catch (error: any) {
+        if (error.code === 'P2002') {
+            return res.status(400).json({ error: 'Email or phone already registered' });
+        }
+        res.status(500).json({ error: 'Registration failed' });
+    }
 });
 
 /**
