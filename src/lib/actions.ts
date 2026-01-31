@@ -5,16 +5,16 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-// Helper to get authorized shop from session
-export async function getCurrentShop() {
+import { cache } from "react";
+
+// Helper to get authorized shop from session - Memoized for the duration of a single request
+export const getCurrentShop = cache(async () => {
   const cookieStore = await cookies();
   const sessionId = cookieStore.get("shop_session")?.value;
 
   if (!sessionId) {
     redirect("/login");
   }
-
-  console.log("DEBUG: getCurrentShop called with sessionId:", sessionId);
 
   const shop = await db.shop.findUnique({
     where: { id: sessionId },
@@ -25,7 +25,7 @@ export async function getCurrentShop() {
   }
 
   return shop;
-}
+});
 
 export async function createWarranty(formData: FormData) {
   const shop = await getCurrentShop();
@@ -137,57 +137,52 @@ export async function getStats() {
         }
     });
 
-    // 3. Weekly Trend (Last 7 Days)
-    const weeklyChart = [];
-    for (let i = 6; i >= 0; i--) {
+    // 3. Weekly Trend (Last 7 Days) - FETCH IN PARALLEL
+    const weeklyPromises = Array.from({ length: 7 }, (_, i) => {
         const d = new Date();
-        d.setDate(d.getDate() - i);
+        d.setDate(d.getDate() - (6 - i));
         const start = new Date(d.setHours(0,0,0,0));
         const end = new Date(d.setHours(23,59,59,999));
         
-        const dayAgg = await db.warranty.aggregate({
+        return db.warranty.aggregate({
             _sum: { repairCost: true },
             where: {
                 shopId: shop.id,
                 issuedAt: { gte: start, lte: end }
             }
-        });
-        weeklyChart.push({
+        }).then(agg => ({
             label: start.toLocaleDateString('en-US', { weekday: 'short' }),
-            value: dayAgg._sum.repairCost || 0
-        });
-    }
+            value: agg._sum.repairCost || 0
+        }));
+    });
 
-    // 4. Yearly/Monthly Trend (Last 12 Months)
-    const monthlyChart = [];
-    const jobChart = [];
-    
-    for (let i = 11; i >= 0; i--) {
-        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    // 4. Yearly/Monthly Trend (Last 12 Months) - FETCH IN PARALLEL
+    const monthlyPromises = Array.from({ length: 12 }, (_, i) => {
+        const d = new Date(now.getFullYear(), now.getMonth() - (11 - i), 1);
         const start = new Date(d.getFullYear(), d.getMonth(), 1);
-        const end = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59); // Last day of month
+        const end = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59);
 
-        const monthAgg = await db.warranty.aggregate({
+        return db.warranty.aggregate({
             _sum: { repairCost: true },
             _count: { id: true },
             where: {
                 shopId: shop.id,
                 issuedAt: { gte: start, lte: end }
             }
-        });
-        
-        const label = start.toLocaleDateString('en-US', { month: 'short' });
-        
-        monthlyChart.push({
-            label,
-            value: monthAgg._sum.repairCost || 0
-        });
-        
-        jobChart.push({
-            label,
-            value: monthAgg._count.id || 0
-        })
-    }
+        }).then(agg => ({
+            label: start.toLocaleDateString('en-US', { month: 'short' }),
+            revenue: agg._sum.repairCost || 0,
+            jobs: agg._count.id || 0
+        }));
+    });
+
+    const [weeklyChart, monthlyResults] = await Promise.all([
+        Promise.all(weeklyPromises),
+        Promise.all(monthlyPromises)
+    ]);
+
+    const monthlyChart = monthlyResults.map(r => ({ label: r.label, value: r.revenue }));
+    const jobChart = monthlyResults.map(r => ({ label: r.label, value: r.jobs }));
     
     // 5. Job Distribution from Backend
     const jobStatsRes = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/stats/jobs?shopId=${shop.id}`);

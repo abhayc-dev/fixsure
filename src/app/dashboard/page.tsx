@@ -4,10 +4,12 @@ import DashboardClient from "@/components/dashboard-client";
 export const dynamic = 'force-dynamic'; // Ensure we always fetch fresh data
 
 export default async function DashboardPage() {
-  const warranties = await getWarranties();
-  const jobSheets = await getJobSheets();
-  const stats = await getStats();
-  const shop = await getShopDetails();
+  const [warranties, jobSheets, stats, shop] = await Promise.all([
+    getWarranties(),
+    getJobSheets(),
+    getStats(),
+    getShopDetails()
+  ]);
   // console.log("Dashboard Stats:", JSON.stringify(stats, null, 2));
 
   // Convert Date objects to strings if needed for client component prop serialization 
