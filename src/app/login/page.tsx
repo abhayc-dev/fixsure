@@ -79,14 +79,14 @@ export default function LoginPage() {
       if (res.success) {
         if (res.role === "ADMIN") window.location.href = "/admin";
         else window.location.href = "/dashboard";
+        return; // Keep loader active during redirect
       } else {
         setError(res.error || "Login failed");
       }
     } catch (err) {
       setError("Something went wrong");
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -103,14 +103,14 @@ export default function LoginPage() {
         } else {
             window.location.href = "/dashboard";
         }
+        return; // Keep loader active during redirect
       } else {
         setError(res.error || "Signup failed");
       }
     } catch (err) {
       setError("Something went wrong");
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   const handleGoogleLogin = async () => {
@@ -133,8 +133,8 @@ export default function LoginPage() {
       });
 
       if (res.success) {
-        // Use window.location.href for login success to ensure cookies are sent on the first request to dashboard
         window.location.href = "/dashboard";
+        return; // Keep loader active
       } else if (res.needsPhone) {
         setMode("signup");
         setError("Account not found. Please fill in your Phone and Shop Name above, then click Google Login again to create your account.");
@@ -151,9 +151,8 @@ export default function LoginPage() {
       } else {
         setError(err.message || "Google login failed. Check your Firebase config.");
       }
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
 
