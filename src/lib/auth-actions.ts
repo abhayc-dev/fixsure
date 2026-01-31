@@ -9,8 +9,10 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@gmail.com";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "1234567";
 
 export async function loginWithEmail(email: string, password: string) {
+    const normalizedEmail = email.toLowerCase();
+    
     // Check for hardcoded Admin
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    if (normalizedEmail === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
         // Create or get Admin user in DB
         let admin = await db.shop.findUnique({ where: { email : ADMIN_EMAIL } });
         if (!admin) {
@@ -37,7 +39,7 @@ export async function loginWithEmail(email: string, password: string) {
     }
 
     const shop = await db.shop.findUnique({
-        where: { email }
+        where: { email: normalizedEmail }
     });
 
     if (!shop || !shop.password) {
@@ -60,7 +62,8 @@ export async function loginWithEmail(email: string, password: string) {
 }
 
 export async function signup(data: { email: string; password: string; phone: string; shopName: string }) {
-    const { email, password, phone, shopName } = data;
+    const { password, phone, shopName } = data;
+    const email = data.email.toLowerCase();
 
     if (!phone || phone.length < 10) {
         return { success: false, error: "Mobile number is mandatory" };
@@ -99,7 +102,8 @@ export async function signup(data: { email: string; password: string; phone: str
 }
 
 export async function googleLogin(data: { email: string; name: string; googleId: string; phone?: string; shopName?: string }) {
-    const { email, name, phone, shopName } = data;
+    const { name, phone, shopName } = data;
+    const email = data.email.toLowerCase();
 
     let shop = await db.shop.findUnique({
         where: { email }
@@ -128,11 +132,15 @@ export async function googleLogin(data: { email: string; name: string; googleId:
         });
     }
 
-    (await cookies()).set("shop_session", shop.id, {
+    const sessionId = shop.id;
+    console.log(`DEBUG: Setting session cookie for shop ${sessionId} (Production: ${process.env.NODE_ENV === "production"})`);
+
+    (await cookies()).set("shop_session", sessionId, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         maxAge: 60 * 60 * 24 * 30,
-        path: "/"
+        path: "/",
+        sameSite: "lax"
     });
 
     return { success: true, role: shop.role, shopName: shop.shopName };

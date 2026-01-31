@@ -77,8 +77,8 @@ export default function LoginPage() {
     try {
       const res = await loginWithEmail(email, password);
       if (res.success) {
-        if (res.role === "ADMIN") router.push("/admin");
-        else router.push("/dashboard");
+        if (res.role === "ADMIN") window.location.href = "/admin";
+        else window.location.href = "/dashboard";
       } else {
         setError(res.error || "Login failed");
       }
@@ -99,9 +99,9 @@ export default function LoginPage() {
       const res = await signup({ email, password, phone, shopName });
       if (res.success) {
         if (res.shopName === "New Shop Info Required") {
-            router.push("/dashboard/settings");
+            window.location.href = "/dashboard/settings";
         } else {
-            router.push("/dashboard");
+            window.location.href = "/dashboard";
         }
       } else {
         setError(res.error || "Signup failed");
@@ -133,10 +133,11 @@ export default function LoginPage() {
       });
 
       if (res.success) {
-        router.push("/dashboard");
+        // Use window.location.href for login success to ensure cookies are sent on the first request to dashboard
+        window.location.href = "/dashboard";
       } else if (res.needsPhone) {
         setMode("signup");
-        setError("Mobile number and Shop name are required to complete signup.");
+        setError("Account not found. Please fill in your Phone and Shop Name above, then click Google Login again to create your account.");
       } else {
         setError(res.error || "Google login failed");
       }
