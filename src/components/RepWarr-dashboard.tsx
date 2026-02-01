@@ -7,6 +7,7 @@ import {
     Plus,
     Search,
     MoreHorizontal,
+    MoreVertical,
     Calendar,
     Smartphone,
     CheckCircle,
@@ -23,7 +24,13 @@ import {
     Wrench,
     Filter,
     MessageCircle,
-    Printer
+    Printer,
+    DollarSign,
+    Inbox,
+    Activity,
+    Truck,
+    ChevronDown,
+    Bell
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createWarranty, verifyAccessPin, setAccessPin, createJobSheet } from "@/lib/actions";
@@ -217,7 +224,7 @@ export default function DashboardClient({
     if (viewMode === 'JOB_CUSTOMER_DETAILS' && selectedJobSheet) {
         return (
             <div className="min-h-screen bg-[#f3f4f6] p-4">
-                 <JobCustomerView job={selectedJobSheet} onBack={() => {
+                 <JobCustomerView job={selectedJobSheet} shop={shop} onBack={() => {
                      setSelectedJobId(null);
                      setViewMode('JOBS');
                  }} />
@@ -228,160 +235,166 @@ export default function DashboardClient({
 
 
     return (
-        <div className="flex h-screen bg-[#f3f4f6]">
+        <div className="flex h-screen bg-[#F8FAFC]">
             {/* Sidebar Navigation */}
-            <aside className="w-64 bg-[#1e293b] text-white flex-shrink-0 flex flex-col justify-between hidden md:flex">
-                <div>
+            <aside className="w-64 bg-[#0F172A] text-white flex-shrink-0 flex flex-col justify-between hidden md:flex border-r border-slate-800/50 relative overflow-hidden">
+                {/* Subtle Glow Background */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[80px] -z-0 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full blur-[80px] -z-0 pointer-events-none" />
+
+                <div className="relative z-10 flex flex-col h-full">
                     {/* Brand */}
-                    <div className="h-16 flex items-center justify-center border-b border-white/10">
-                        <ShieldCheck className="h-8 w-8 text-primary" />
+                    <div className="h-24 flex items-center px-8 mb-4">
+                        <Link href="/" className="flex items-center gap-3 group transition-all">
+                            <div className="p-2.5 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-all border border-primary/20 shadow-lg shadow-primary/5">
+                                <ShieldCheck className="h-7 w-7 text-primary" />
+                            </div>
+                            <span className="text-2xl font-black tracking-tight text-white group-hover:text-primary transition-colors font-display">FixSure</span>
+                        </Link>
                     </div>
 
                     {/* Nav Items */}
-                    <nav className="p-4 space-y-1">
-                        <div className="space-y-4 mb-6">
+                    <nav className="px-4 space-y-1.5">
+                        <div className="px-4 mb-3">
+                             <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.25em] ml-1 opacity-70">Core Actions</p>
+                        </div>
+                        <div className="space-y-3 mb-10">
                             <button
                                 onClick={() => setViewMode('CREATE_WARRANTY')}
                                 disabled={!isPlanActive || !stats.isVerified}
                                 className={cn(
-                                    "flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-bold bg-primary text-white hover:bg-primary/90 transition-all shadow-lg shadow-primary/20",
-                                    (!isPlanActive || !stats.isVerified) && "opacity-50 cursor-not-allowed",
-                                    viewMode === 'CREATE_WARRANTY' && "ring-2 ring-white ring-offset-2 ring-offset-[#1e293b]"
+                                    "flex items-center gap-3.5 w-full px-5 py-4 rounded-2xl text-[13px] font-black transition-all group",
+                                    (!isPlanActive || !stats.isVerified) 
+                                        ? "opacity-40 cursor-not-allowed bg-slate-800/50 text-slate-500" 
+                                        : "bg-primary text-white hover:shadow-2xl hover:shadow-primary/30 hover:-translate-y-1 active:scale-95",
+                                    viewMode === 'CREATE_WARRANTY' && "ring-2 ring-primary ring-offset-4 ring-offset-[#0F172A]"
                                 )}
                             >
-                                <Plus className="h-5 w-5" />
-                                Add Warranty
+                                <Plus className="h-5 w-5 group-hover:rotate-90 transition-transform" />
+                                <span className="font-display uppercase tracking-wider">Add Warranty</span>
                             </button>
 
                             <button
                                 onClick={() => setViewMode('CREATE_JOB')}
                                 disabled={!isPlanActive || !stats.isVerified}
                                 className={cn(
-                                    "flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-bold bg-white text-primary border border-primary hover:bg-white/90 transition-all shadow-sm",
-                                    (!isPlanActive || !stats.isVerified) && "opacity-50 cursor-not-allowed",
-                                    viewMode === 'CREATE_JOB' && "ring-2 ring-primary ring-offset-2 ring-offset-[#1e293b]"
+                                    "flex items-center gap-3.5 w-full px-5 py-4 rounded-2xl text-[13px] font-black transition-all group",
+                                    (!isPlanActive || !stats.isVerified) 
+                                        ? "opacity-40 cursor-not-allowed bg-slate-800/50 text-slate-500" 
+                                        : "bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:-translate-y-1 active:scale-95",
+                                    viewMode === 'CREATE_JOB' && "bg-white/10 border-primary/50"
                                 )}
                             >
-                                <Wrench className="h-5 w-5" />
-                                Create Repair Sheet
+                                <Wrench className="h-5 w-5 group-hover:rotate-12 transition-transform text-primary" />
+                                <span className="font-display uppercase tracking-wider text-slate-200">Repair Entry</span>
                             </button>
                         </div>
 
-                        <button
-                            onClick={() => setViewMode('WARRANTIES')}
-                            className={cn(
-                                "flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium transition-all",
-                                (viewMode === 'WARRANTIES' || viewMode === 'WARRANTY_DETAILS') ? "bg-white/10 text-white shadow-sm border border-white/5" : "text-slate-300 hover:bg-white/5 hover:text-white"
-                            )}
-                        >
-                            <CheckCircle className="h-5 w-5" />
-                            Warranties Data
-                        </button>
-
-                        <button
-                            onClick={() => setViewMode('JOBS')}
-                            className={cn(
-                                "flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium transition-all",
-                                (viewMode === 'JOBS' || viewMode === 'JOB_DETAILS') ? "bg-white/10 text-white shadow-sm border border-white/5" : "text-slate-300 hover:bg-white/5 hover:text-white"
-                            )}
-                        >
-                            <Wrench className="h-5 w-5" />
-                            Repair Data
-                        </button>
-
-                        <button
-                            onClick={() => setViewMode('REPORTS')}
-                            className={cn(
-                                "flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium transition-all",
-                                viewMode === 'REPORTS' ? "bg-white/10 text-white shadow-sm border border-white/5" : "text-slate-300 hover:bg-white/5 hover:text-white"
-                            )}
-                        >
-                            <Calendar className="h-5 w-5" />
-                            Reports & Stats
-                        </button>
-
-                        <button
-                            onClick={() => setViewMode('SETTINGS')}
-                            className={cn(
-                                "flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium transition-all",
-                                viewMode === 'SETTINGS' ? "bg-white/10 text-white shadow-sm border border-white/5" : "text-slate-300 hover:bg-white/5 hover:text-white"
-                            )}
-                        >
-                            <Settings className="h-5 w-5" />
-                            Shop Settings
-                        </button>
+                        <div className="px-4 mb-3">
+                             <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.25em] ml-1 opacity-70">Management</p>
+                        </div>
+                        
+                        {[
+                            { id: 'WARRANTIES', icon: CheckCircle, label: 'Warranties' },
+                            { id: 'JOBS', icon: Wrench, label: 'Repair Jobs' },
+                            { id: 'REPORTS', icon: Activity, label: 'Reports' },
+                            { id: 'SETTINGS', icon: Settings, label: 'Settings' }
+                        ].map((item) => {
+                            const Icon = item.icon;
+                            const isActive = viewMode === item.id || (item.id === 'JOBS' && viewMode === 'JOB_DETAILS') || (item.id === 'WARRANTIES' && viewMode === 'WARRANTY_DETAILS');
+                            
+                            return (
+                                <button
+                                    key={item.id}
+                                    onClick={() => setViewMode(item.id as any)}
+                                    className={cn(
+                                        "flex items-center gap-3.5 w-full px-5 py-3.5 rounded-2xl text-[13px] font-bold transition-all group",
+                                        isActive 
+                                            ? "bg-gradient-to-r from-primary/15 to-transparent text-primary border-l-4 border-primary rounded-l-none" 
+                                            : "text-slate-400 hover:bg-white/5 hover:text-white"
+                                    )}
+                                >
+                                    <Icon className={cn("h-5 w-5 transition-colors", isActive ? "text-primary" : "group-hover:text-primary")} />
+                                    <span className="font-display tracking-wide">{item.label}</span>
+                                </button>
+                            );
+                        })}
                     </nav>
                 </div>
 
-                <div className="p-4 border-t border-white/10">
+                <div className="p-4 relative z-10">
                     {/* User Profile Mini */}
-                    <div className="bg-white/5 rounded-lg p-3 mb-3 flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm shrink-0">
-                            {(shop.ownerName || shop.shopName || "SO").substring(0, 2).toUpperCase()}
+                    <div className="bg-slate-800/40 backdrop-blur-md rounded-2xl p-4 border border-white/5 mb-4 group hover:bg-slate-800/60 transition-all cursor-default">
+                        <div className="flex items-center gap-3">
+                            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-[#FF8E72] flex items-center justify-center text-white font-bold text-sm shrink-0 shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
+                                {(shop.ownerName || shop.shopName || "SO").substring(0, 2).toUpperCase()}
+                            </div>
+                            <div className="overflow-hidden">
+                                <div className="font-bold truncate text-sm text-white leading-tight">
+                                    {shop.ownerName || "Shop Owner"}
+                                </div>
+                                <div className="text-[10px] text-slate-400 truncate uppercase tracking-wider mt-0.5">
+                                    {shop.shopName}
+                                </div>
+                            </div>
                         </div>
-                        <div className="overflow-hidden">
-                            <div className="font-medium truncate text-sm text-white">
-                                {shop.ownerName || "Shop Owner"}
-                            </div>
-                            <div className="text-xs text-slate-400 truncate">
-                                {shop.shopName}
-                            </div>
-
-                            <div className={cn("text-[10px] flex items-center gap-1 mt-1 font-medium", isPlanActive ? "text-green-400" : "text-red-400")}>
-                                <span className={cn("w-1.5 h-1.5 rounded-full shrink-0", isPlanActive ? "bg-green-400" : "bg-red-400")}></span>
+                        
+                        <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between">
+                            <div className={cn("text-[9px] flex items-center gap-1.5 font-bold uppercase tracking-widest", isPlanActive ? "text-emerald-400" : "text-rose-400")}>
+                                <div className={cn("w-1.5 h-1.5 rounded-full", isPlanActive ? "bg-emerald-400 animate-pulse" : "bg-rose-400")} />
                                 {stats.subscription.replace('_', ' ')}
                             </div>
+                            <button onClick={() => setShowLogoutConfirm(true)} className="p-1.5 rounded-lg hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 transition-colors" title="Logout">
+                                <LogOut className="h-3.5 w-3.5" />
+                            </button>
                         </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-2">
-                        <button onClick={() => setShowLogoutConfirm(true)} className="flex items-center justify-center p-2 rounded-md hover:bg-red-500/20 text-slate-300 hover:text-red-400 transition-colors w-full" title="Logout">
-                            <LogOut className="h-4 w-4 mr-2" /> Logout
-                        </button>
                     </div>
                 </div>
             </aside>
 
+
             {/* Main Content Area */}
-            <main className="flex-1 overflow-auto flex flex-col ">
+            <main className="flex-1 overflow-auto flex flex-col relative">
+                {/* Header Overlay Gradient (desktop only) */}
+                <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none -z-0" />
+
                 {/* Top Header Mobile / Desktop Title */}
-                <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sticky top-0 z-40 p-5">
-                    <div className="flex items-center gap-3 ">
-                        {/* Mobile Menu Button - simplified (hidden for now as we focus on desktop layout refactor) */}
-                        <div className="md:hidden">
-                            <ShieldCheck className="h-6 w-6 text-primary" />
+                {/* Elite Header */}
+                <header className="h-24 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 sticky top-0 z-40 flex items-center px-6 md:px-10">
+                    {/* Title Section */}
+                    <div className="flex items-center gap-5 flex-none py-4">
+                        <div className="w-1.5 h-10 bg-primary rounded-full shrink-0 shadow-[0_0_15px_rgba(255,100,66,0.25)]" />
+                        <div className="flex flex-col flex-none">
+                            <h1 className="text-2xl md:text-3xl font-black text-slate-900 font-display uppercase whitespace-nowrap leading-none tracking-tight">
+                                {viewMode === 'WARRANTIES' && "Warranty Data"}
+                                {viewMode === 'JOBS' && "Repair Data"}
+                                {viewMode === 'REPORTS' && "Insight Hub"}
+                                {viewMode === 'SETTINGS' && "Control Center"}
+                                {viewMode === 'CREATE_WARRANTY' && "New Warranty"}
+                                {viewMode === 'CREATE_JOB' && "New Job Sheet"}
+                            </h1>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-2 whitespace-nowrap opacity-60">
+                                FixSure Control Systems v2.0
+                            </p>
                         </div>
-                        <h1 className="text-xl font-bold text-gray-800 ">
-                            {viewMode === 'WARRANTIES' && "Warranty Store Data"}
-                            {/* Show 'Repair Job Sheets' even for DETAILS view so breadcrumb path feels correct or add sub-title */}
-                            {(viewMode === 'JOBS' || viewMode === 'JOB_DETAILS') && "Repair Store Data"}
-                            {viewMode === 'REPORTS' && "Business Reports"}
-                            {viewMode === 'SETTINGS' && "Shop Management"}
-                            {viewMode === 'CREATE_WARRANTY' && "New Warranty"}
-                            {viewMode === 'CREATE_JOB' && "New Job Sheet"}
-                        </h1>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                        {/* Global Actions - Removed 'New Job Sheet' since it's on the left now */}
-                        {viewMode !== 'REPORTS' && viewMode !== 'SETTINGS' && viewMode !== 'CREATE_WARRANTY' && viewMode !== 'CREATE_JOB' && viewMode !== 'JOB_DETAILS' && (
-                            <>
-                                <button
-                                    onClick={() => setViewMode('CREATE_WARRANTY')}
-                                    disabled={!isPlanActive || !stats.isVerified}
-                                    className={cn(
-                                        "flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-all font-medium text-sm shadow-md shadow-primary/20",
-                                        !isPlanActive && "opacity-50 cursor-not-allowed"
-                                    )}
-                                >
-                                    <Plus className="h-4 w-4" /> New Warranty
-                                </button>
-                            </>
-                        )}
+                    {/* Elastic Spacer */}
+                    <div className="flex-1 min-w-[2rem]" />
+
+                    {/* Actions Section */}
+                    <div className="flex items-center gap-6 flex-none pr-2">
+                         <div className="flex items-center gap-4 px-5 py-2.5 bg-slate-50/80 rounded-2xl border border-slate-100 hidden xl:flex shadow-inner">
+                             <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                             <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest font-display whitespace-nowrap">System Active</span>
+                         </div>
+
+                      
                     </div>
                 </header>
 
-                <div className="p-6 max-w-7xl w-full mx-auto space-y-6">
+
+                <div className="p-10 max-w-7xl w-full mx-auto space-y-10">
 
                     {/* Blocked / Expired Banners */}
                     {!stats.isVerified && (
@@ -428,7 +441,7 @@ export default function DashboardClient({
                                         <p className="text-sm text-slate-400">Visible on customer receipts</p>
                                     </div>
                                 </div>
-                                <div className="pt-2">
+                                <div className="pt-2 text-black">
                                     <ProfileForm shop={shop} />
                                 </div>
                             </div>
@@ -450,359 +463,447 @@ export default function DashboardClient({
                             </div>
                         </div>
                     ) : viewMode === 'REPORTS' ? (
-                        <div className="space-y-6 animate-fade-in">
-                            {/* ... existing reports content ... */}
-                            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                                <div className="flex items-center justify-between mb-6">
-                                    <h2 className="text-lg font-bold text-gray-800">Business Performance</h2>
-                                    {!isRevenueVisible ? (
-                                        <button
-                                            onClick={handleRevenueToggle}
-                                            className="flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80"
-                                        >
-                                            <Eye className="h-4 w-4" /> Show Details
-                                        </button>
-                                    ) : (
-                                        <button
-                                            onClick={handleRevenueToggle}
-                                            className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-700"
-                                        >
-                                            <EyeOff className="h-4 w-4" /> Hide Details
-                                        </button>
-                                    )}
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                    <div className="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100">
-                                        <div className="text-sm text-blue-600 font-medium mb-1">Total Warranties</div>
-                                        <div className="text-2xl font-bold text-blue-900">{stats.total}</div>
-                                    </div>
-                                    <div className="p-4 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-100">
-                                        <div className="text-sm text-green-600 font-medium mb-1">Active Warranties</div>
-                                        <div className="text-2xl font-bold text-green-900">{stats.active}</div>
-                                    </div>
-                                    <div className="p-4 rounded-xl bg-gradient-to-br from-purple-50 to-fuchsia-50 border border-purple-100">
-                                        <div className="text-sm text-purple-600 font-medium mb-1">Monthly Revenue</div>
-                                        <div className="text-2xl font-bold text-purple-900">
-                                            {isRevenueVisible ? `₹${stats.monthlyRevenue.toLocaleString()}` : '••••••'}
-                                        </div>
-                                    </div>
-                                    <div className="p-4 rounded-xl bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-100">
-                                        <div className="text-sm text-orange-600 font-medium mb-1">Total Revenue</div>
-                                        <div className="text-2xl font-bold text-orange-900">
-                                            {isRevenueVisible ? `₹${stats.revenue.toLocaleString()}` : '••••••'}
-                                        </div>
-                                    </div>
-                                </div>
+                        <div className="space-y-8 animate-fade-in pb-20">
+                            {/* Premium Stats Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                <ReportStatCard 
+                                    label="Total Issuance" 
+                                    value={stats.total} 
+                                    icon={ShieldCheck} 
+                                    color="blue" 
+                                />
+                                <ReportStatCard 
+                                    label="Active Assets" 
+                                    value={stats.active} 
+                                    icon={CheckCircle} 
+                                    color="emerald" 
+                                />
+                                <ReportStatCard 
+                                    label="Monthly Yield" 
+                                    value={stats.monthlyRevenue} 
+                                    icon={Activity} 
+                                    color="purple" 
+                                    isRevenue 
+                                    isVisible={isRevenueVisible} 
+                                    onToggle={handleRevenueToggle}
+                                />
+                                <ReportStatCard 
+                                    label="Annual Volume" 
+                                    value={stats.revenue} 
+                                    icon={DollarSign} 
+                                    color="orange" 
+                                    isRevenue 
+                                    isVisible={isRevenueVisible} 
+                                    onToggle={handleRevenueToggle}
+                                />
                             </div>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                {/* Left: Customer/Job Volume Trend (now Circular) */}
-                                <div className="bg-red-100 p-6 rounded-lg border border-gray-100 shadow-sm flex flex-col justify-center">
-                                    <h3 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-6">Job Status Overview</h3>
-                                    <DashCircularChart data={stats.jobDistribution || []} />
+                            {/* Main Analysis Block */}
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                {/* Left: Analytics Chart */}
+                                <div className="lg:col-span-2 bg-white rounded-[2rem] p-8 border border-slate-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                                    <div className="flex items-center justify-between mb-8">
+                                        <div>
+                                            <h3 className="text-xl font-black text-slate-900 leading-none">Revenue Growth</h3>
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Fiscal Performance 2024</p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            {/* Period Switches would go here */}
+                                        </div>
+                                    </div>
+                                    <div className="h-[300px] w-full">
+                                         <DashRevenueChart data={stats.monthlyChart} isVisible={isRevenueVisible} />
+                                    </div>
                                 </div>
 
-                                {/* Right: Revenue Trend */}
-                                <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                                    <DashRevenueChart data={stats.monthlyChart} isVisible={isRevenueVisible} />
+                                {/* Right: Distribution Analysis */}
+                                <div className="bg-slate-900 rounded-[2rem] p-8 text-white shadow-2xl shadow-slate-200 overflow-hidden relative group">
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl -z-0" />
+                                    
+                                    <div className="relative z-10">
+                                        <h3 className="text-lg font-black leading-none mb-1">Job Matrix</h3>
+                                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-8">System Distribution</p>
+                                        
+                                        <div className="flex justify-center py-4">
+                                            <DashCircularChart data={stats.jobDistribution || []} />
+                                        </div>
+
+                                        <div className="mt-8 space-y-4">
+                                            {(stats.jobDistribution || []).map((item, idx) => {
+                                                const totalInDistribution = stats.jobDistribution.reduce((acc, curr) => acc + curr.value, 0);
+                                                const percentage = totalInDistribution > 0 ? Math.round((item.value / totalInDistribution) * 100) : 0;
+                                                
+                                                return (
+                                                    <div key={idx} className="flex items-center justify-between group/item">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.1)] transition-transform group-hover/item:scale-125" style={{ backgroundColor: item.color }} />
+                                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] transition-colors group-hover/item:text-slate-200">{item.label}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-4">
+                                                            <span className="text-xs font-black text-slate-500">{item.value}</span>
+                                                            <span className="text-sm font-black text-white w-10 text-right">{percentage}%</span>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     ) : viewMode === 'WARRANTIES' ? (
-                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-[calc(100vh-12rem)]">
-                            {/* Search Bar */}
-                            <div className="p-4 border-b border-gray-100 flex gap-4">
-                                <div className="relative flex-1">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
-                                    <input
-                                        placeholder="Search by name, phone, or warranty ID..."
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="w-full h-10 pl-10 pr-4 rounded-xl bg-gray-50 border-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-sm font-medium"
-                                    />
-                                </div>
-                                <button className="h-10 px-4 rounded-xl bg-gray-50 text-gray-600 font-medium hover:bg-gray-100 transition-colors flex items-center gap-2 text-sm border border-gray-100">
-                                    <Filter className="h-4 w-4" /> Filter
-                                </button>
+                        <div className="space-y-6">
+                            {/* Stats Summary Panel */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in">
+                                <StatCard 
+                                    title="Total Certificates" 
+                                    value={stats.total.toString()} 
+                                    sub="+4% from last week" 
+                                    icon={ShieldCheck} 
+                                />
+                                <StatCard 
+                                    title="Active Protection" 
+                                    value={stats.active.toString()} 
+                                    sub="Healthy Fleet" 
+                                    highlight 
+                                    icon={CheckCircle} 
+                                />
+                                <StatCard 
+                                    title="Store Revenue" 
+                                    value={`₹${stats.revenue.toLocaleString()}`} 
+                                    sub="Total Earnings" 
+                                    secure 
+                                    isVisible={isRevenueVisible} 
+                                    onToggle={handleRevenueToggle} 
+                                    icon={DollarSign} 
+                                />
                             </div>
 
-                            {/* Table */}
-                            <div className="flex-1 overflow-auto rounded-xl border border-slate-100 bg-white shadow-sm mt-5">
-                                <table className="w-full text-sm text-left border-collapse">
-                                    <thead className="bg-slate-50/80 backdrop-blur-sm text-slate-500 font-bold border-b border-slate-200 uppercase text-[11px] tracking-wider sticky top-0 z-20">
-                                        <tr>
-                                            <th className="px-6 py-4 font-semibold">Warranty ID</th>
-                                            <th className="px-8 py-4 font-semibold">Customer</th>
-                                            <th className="px-6 py-4 font-semibold">Device / Issue</th>
-                                            <th className="px-6 py-4 text-right font-semibold">Amount</th>
-                                            <th className="px-6 py-4 font-semibold">Expires</th>
-                                            <th className="px-6 py-4 font-semibold">Status</th>
-                                            <th className="px-8 py-4 text-right font-semibold">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-slate-100">
-                                        {filteredWarranties.length === 0 ? (
-                                            <tr>
-                                                <td colSpan={7} className="py-20 text-center text-slate-400">
-                                                    <div className="flex flex-col items-center justify-center gap-3">
-                                                        <Search className="h-10 w-10 opacity-20" />
-                                                        <p>No warranties found.</p>
-                                                    </div>
-                                                </td>
+                            <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 flex flex-col overflow-hidden animate-slide-up">
+                                {/* Enhanced Control Bar */}
+                                 <div className="p-8 bg-slate-50/40 backdrop-blur-sm flex flex-col md:flex-row gap-6 items-center border-b border-slate-200/50">
+                                    <div className="relative flex-1 group w-full">
+                                        <div className="absolute left-5 top-1/2 -translate-y-1/2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm group-focus-within:border-primary group-focus-within:shadow-lg group-focus-within:shadow-primary/5 transition-all">
+                                           <Search className="text-slate-400 h-4 w-4" />
+                                        </div>
+                                        <input
+                                            placeholder="Search by name, phone, or ID code..."
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            className="w-full h-14 pl-16 pr-6 rounded-[1.25rem] bg-white border border-slate-200/60 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-sm font-bold text-slate-700 placeholder:text-slate-400"
+                                        />
+                                    </div>
+                                    <div className="flex gap-3 w-full md:w-auto">
+                                        <button className="h-14 px-8 rounded-[1.25rem] bg-white text-slate-600 font-black hover:bg-slate-50 transition-all flex items-center gap-3 text-xs border border-slate-200 active:scale-95 uppercase tracking-[0.2em] font-display shadow-sm">
+                                            <Filter className="h-4 w-4 text-primary" /> Filter
+                                        </button>
+                                        <button 
+                                            onClick={() => setViewMode('CREATE_WARRANTY')}
+                                            className="h-12 px-6 rounded-2xl bg-primary text-white font-bold hover:shadow-lg hover:shadow-primary/30 transition-all flex items-center gap-2 text-xs active:scale-95 uppercase tracking-widest flex-1 md:flex-none"
+                                        >
+                                            <Plus className="h-4 w-4" /> New Case
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Premium Table */}
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-sm text-left border-collapse">
+                                        <thead>
+                                            <tr className="bg-slate-50/60 text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] border-b border-slate-100 font-display">
+                                                <th className="px-10 py-6">Identity</th>
+                                                <th className="px-8 py-6">Customer Entry</th>
+                                                <th className="px-8 py-6">Machine Spec</th>
+                                                <th className="px-8 py-6 text-right">Valuation</th>
+                                                <th className="px-8 py-6">Term</th>
+                                                <th className="px-8 py-6">Live Status</th>
+                                                <th className="px-10 py-6 text-right">Management</th>
                                             </tr>
-                                        ) : (
-                                            filteredWarranties.map((w) => (
-                                                <tr key={w.id} className="hover:bg-slate-50 transition-colors group">
-                                                    {/* Warranty ID */}
-                                                    <td className="px-6 py-5 whitespace-nowrap">
-                                                        <button
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-50">
+                                            {filteredWarranties.length === 0 ? (
+                                                <tr>
+                                                    <td colSpan={7} className="py-32 text-center text-slate-300">
+                                                        <div className="flex flex-col items-center justify-center gap-4">
+                                                            <div className="p-6 bg-slate-50 rounded-full border border-slate-100">
+                                                                <Search className="h-12 w-12 opacity-20" />
+                                                            </div>
+                                                            <p className="font-bold uppercase tracking-widest text-[11px]">No matching records found</p>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                filteredWarranties.map((w) => (
+                                                    <tr key={w.id} className="hover:bg-slate-50/50 transition-all group">
+                                                        {/* ID */}
+                                                        <td className="px-8 py-6">
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[10px] font-black text-primary/50 uppercase leading-none">ID CODE</span>
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setSelectedWarranty(w);
+                                                                        setViewMode('WARRANTY_CERTIFICATE');
+                                                                    }}
+                                                                    className="text-sm font-black text-slate-900 font-mono mt-1 hover:text-primary transition-colors cursor-pointer"
+                                                                >
+                                                                    {w.shortCode}
+                                                                </button>
+                                                            </div>
+                                                        </td>
+
+                                                        {/* Customer */}
+                                                        <td 
+                                                            className="px-6 py-6 font-medium cursor-pointer group/customer"
                                                             onClick={() => {
                                                                 setSelectedWarranty(w);
                                                                 setViewMode('WARRANTY_CERTIFICATE');
                                                             }}
-                                                            className="font-mono text-xs font-bold text-primary bg-primary/5 px-2 py-1 rounded-md border border-primary/10 hover:bg-primary/20 hover:scale-105 transition-all cursor-pointer"
                                                         >
-                                                            {w.shortCode}
-                                                        </button>
-                                                    </td>
-
-                                                    {/* Customer */}
-                                                    <td className="px-6 py-5">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="h-9 w-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-600 shrink-0">
-                                                                {w.customerName.substring(0, 2).toUpperCase()}
-                                                            </div>
-                                                            <div>
-                                                                <div className="font-semibold text-slate-900 leading-tight">{w.customerName}</div>
-                                                                <div className="text-xs text-slate-500 mt-0.5 font-medium">{w.customerPhone}</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-
-                                                    {/* Device */}
-                                                    <td className="px-6 py-5">
-                                                        <div className="flex items-start gap-3">
-                                                            <div className="h-8 w-8 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 shrink-0 mt-0.5">
-                                                                <Smartphone className="h-4 w-4" />
-                                                            </div>
-                                                            <div>
-                                                                <div className="font-medium text-slate-900 text-sm leading-tight">{w.deviceModel}</div>
-                                                                <div className="text-[10px] font-bold uppercase tracking-wide text-slate-400 mt-1 bg-slate-50 inline-block px-1.5 py-0.5 rounded border border-slate-100">
-                                                                    {w.repairType}
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 border border-white flex items-center justify-center text-xs font-black text-slate-500 shrink-0 shadow-sm transition-transform group-hover/customer:scale-110">
+                                                                    {w.customerName.substring(0, 2).toUpperCase()}
+                                                                </div>
+                                                                <div className="flex flex-col">
+                                                                    <div className="font-black text-slate-900 group-hover/customer:text-primary transition-colors">{w.customerName}</div>
+                                                                    <div className="text-[10px] text-slate-400 font-bold tracking-widest uppercase">{w.customerPhone}</div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </td>
+                                                        </td>
 
-                                                    {/* Amount */}
-                                                    <td className="px-6 py-5 text-right">
-                                                        <div className="font-mono font-bold text-slate-700">
-                                                            ₹{(w.repairCost || 0).toLocaleString()}
-                                                        </div>
-                                                    </td>
+                                                         {/* Device */}
+                                                        <td 
+                                                            className="px-8 py-6 font-medium cursor-pointer"
+                                                            onClick={() => {
+                                                                setSelectedWarranty(w);
+                                                                setViewMode('WARRANTY_CERTIFICATE');
+                                                            }}
+                                                        >
+                                                            <div className="flex flex-col gap-1.5 p-3.5 bg-slate-50/50 rounded-2xl border border-slate-100/50 hover:bg-white transition-all hover:shadow-sm group/device">
+                                                                <div className="text-sm font-black text-slate-800 flex items-center gap-2 font-display group-hover/device:text-primary transition-colors">
+                                                                    <Smartphone className="h-3.5 w-3.5 text-primary/60" />
+                                                                    {w.deviceModel}
+                                                                </div>
+                                                                <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 bg-white text-slate-400 rounded-lg w-fit border border-slate-200/50">
+                                                                    {w.repairType}
+                                                                </span>
+                                                            </div>
+                                                        </td>
 
-                                                    {/* Expires */}
-                                                    <td className="px-6 py-5 whitespace-nowrap" suppressHydrationWarning>
-                                                        <div className="flex items-center text-slate-700 font-bold text-xs group-hover:text-primary transition-colors">
-                                                            <Clock className="h-3.5 w-3.5 mr-2 opacity-60" />
-                                                            <span suppressHydrationWarning>
-                                                                {w.expiresAt ? new Date(w.expiresAt).toLocaleDateString() : '-'}
-                                                            </span>
-                                                        </div>
-                                                    </td>
+                                                        {/* Revenue */}
+                                                        <td className="px-8 py-6 text-right">
+                                                            <div className="flex flex-col items-end">
+                                                                <span className="text-[9px] font-black text-slate-300 uppercase leading-none mb-1.5 tracking-widest font-display">CERT VALUE</span>
+                                                                <div className="font-mono font-black text-slate-900 text-lg font-display">
+                                                                    ₹{(w.repairCost || 0).toLocaleString()}
+                                                                </div>
+                                                            </div>
+                                                        </td>
 
-                                                    {/* Status */}
-                                                    <td className="px-6 py-5 whitespace-nowrap">
-                                                        <StatusBadge status={w.status} expiresAt={w.expiresAt} />
-                                                    </td>
+                                                        {/* Date */}
+                                                        <td className="px-6 py-6">
+                                                            <div className="flex flex-col" suppressHydrationWarning>
+                                                                <span className="text-[9px] font-black text-slate-400 uppercase leading-none mb-1">VALID TILL</span>
+                                                                <div className="text-sm font-black text-slate-700 flex items-center gap-2">
+                                                                    <Clock className="h-3 w-3 text-slate-400" />
+                                                                    <span suppressHydrationWarning>
+                                                                        {w.expiresAt ? new Date(w.expiresAt).toLocaleDateString() : '-'}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </td>
 
-                                                    {/* Actions */}
-                                                    {/* Actions */}
-                                                    <td className="px-6 py-5 text-right font-medium">
-                                                        <div className="flex items-center justify-end gap-3">
-                                                            <button
-                                                                onClick={() => handleViewWarranty(w)}
-                                                                className="p-2 text-slate-500 hover:text-primary hover:bg-primary/5 rounded-full transition-colors"
-                                                                title="View Details"
-                                                            >
-                                                                <Eye className="h-4 w-4" />
-                                                            </button>
-                                                            <ActionMenu warranty={w} />
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        )}
-                                    </tbody>
-                                </table>
-                                <div className="pb-32" />
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="animate-fade-in h-[calc(100vh-12rem)] flex flex-col">
-                            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col h-full">
-                                {/* Search Bar - Reused Style */}
-                                <div className="p-4 border-b border-slate-100 flex gap-4">
-                                    <div className="relative flex-1">
-                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
-                                        <input
-                                            placeholder="Search jobs..."
-                                            value={searchTerm}
-                                            onChange={(e) => setSearchTerm(e.target.value)}
-                                            className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-sm font-medium placeholder:text-slate-500"
-                                        />
-                                    </div>
+                                                         {/* Status */}
+                                                        <td className="px-8 py-6">
+                                                            <div className="flex flex-col">
+                                                                <span className="text-[9px] font-black text-slate-300 uppercase leading-none mb-2 tracking-widest font-display">LIVE STATE</span>
+                                                                <StatusBadge status={w.status} expiresAt={w.expiresAt} />
+                                                            </div>
+                                                        </td>
 
-                                    <select
-                                        value={statusFilter}
-                                        onChange={(e) => setStatusFilter(e.target.value)}
-                                        className="h-10 px-4 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 focus:bg-white text-sm font-medium text-slate-600 outline-none cursor-pointer hover:bg-slate-100 transition-colors"
-                                    >
-                                        <option value="ALL">All Status</option>
-                                        <option value="RECEIVED">Received</option>
-                                        <option value="IN_PROGRESS">In Progress</option>
-                                        <option value="READY">Ready</option>
-                                        <option value="DELIVERED">Delivered</option>
-                                        <option value="CANCELLED">Cancelled</option>
-                                    </select>
-                                </div>
-
-                                {/* Table */}
-                                <div className="flex-1 overflow-auto">
-                                    {viewMode === 'JOBS' ? (
-                                        <table className="w-full text-sm text-left border-separate border-spacing-0">
-                                            <thead className="bg-slate-50/95 backdrop-blur z-10 sticky top-0 text-slate-500 font-bold uppercase text-[11px] tracking-wider border-b border-slate-100">
-                                                <tr>
-                                                    <th className="px-6 py-4 rounded-tl-xl border-b border-slate-100">Job ID</th>
-                                                    <th className="px-6 py-4 border-b border-slate-100">Customer</th>
-                                                    <th className="px-6 py-4 border-b border-slate-100">Device</th>
-                                                    <th className="px-6 py-4 border-b border-slate-100">Problem</th>
-                                                    <th className="px-6 py-4 border-b border-slate-100">Est. Delivery</th>
-                                                    <th className="px-6 py-4 border-b border-slate-100">Status</th>
-                                                    <th className="px-6 py-4 text-right border-b border-slate-100">Est. Cost</th>
-                                                    <th className="px-6 py-4 text-center rounded-tr-xl border-b border-slate-100">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="bg-white">
-                                                {filteredJobSheets.length === 0 ? (
-                                                    <tr>
-                                                        <td colSpan={8} className="py-20 text-center text-gray-300">
-                                                            <div className="flex flex-col items-center gap-3">
-                                                                <Search className="h-8 w-8 text-slate-200" />
-                                                                <span>No jobs found matching your search.</span>
+                                                        {/* Actions */}
+                                                        <td className="px-10 py-6 text-right">
+                                                            <div className="flex items-center justify-end gap-3 transition-all duration-500">
+                                                                <button
+                                                                    onClick={() => handleViewWarranty(w)}
+                                                                    className="p-3 text-slate-400 hover:text-white hover:bg-slate-900 rounded-2xl transition-all shadow-sm active:scale-90 border border-transparent hover:border-slate-800"
+                                                                    title="Open Dossier"
+                                                                >
+                                                                    <Eye className="h-4 w-4" />
+                                                                </button>
+                                                                <ActionMenu warranty={w} />
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                ) : (
-                                                    filteredJobSheets.map((j) => (
-                                                        <tr key={j.id} className="hover:bg-slate-50/80 transition-all duration-200 group border-b border-slate-50">
-                                                            <td className="px-6 py-5 align-middle">
+                                                ))
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className="p-6 bg-slate-50/30 border-t border-slate-100 text-center">
+                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Vault is encrypted and secure</p>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="space-y-6 animate-fade-in ">
+                            {/* Stats Summary for Jobs */}
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                                <JobSummaryCard title="In Intake" count={filteredJobSheets.filter(j => j.status === 'RECEIVED').length} color="blue" />
+                                <JobSummaryCard title="Under Repair" count={filteredJobSheets.filter(j => j.status === 'IN_PROGRESS').length} color="amber" />
+                                <JobSummaryCard title="Ready to Go" count={filteredJobSheets.filter(j => j.status === 'READY').length} color="emerald" />
+                                <JobSummaryCard title="Delivered" count={filteredJobSheets.filter(j => j.status === 'DELIVERED').length} color="slate" />
+                            </div>
+
+                            <div className="bg-white rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 overflow-hidden flex flex-col min-h-[500px]">
+                                {/* Control Bar */}
+                                <div className="p-8 bg-slate-50/40 backdrop-blur-sm flex flex-col lg:flex-row gap-6 items-center border-b border-slate-200/50">
+                                    <div className="relative flex-1 group w-full">
+                                        <div className="absolute left-5 top-1/2 -translate-y-1/2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm group-focus-within:border-primary group-focus-within:shadow-lg group-focus-within:shadow-primary/5 transition-all">
+                                           <Search className="text-slate-400 h-4 w-4" />
+                                        </div>
+                                        <input
+                                            placeholder="Find job by name, device, or repair ID..."
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            className="w-full h-14 pl-16 pr-6 rounded-[1.25rem] bg-white border border-slate-200/60 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-sm font-bold text-slate-700 placeholder:text-slate-400"
+                                        />
+                                    </div>
+                                    <div className="flex gap-3 w-full lg:w-auto overflow-x-auto pb-2 lg:pb-0 no-scrollbar">
+                                        {['ALL', 'RECEIVED', 'IN_PROGRESS', 'READY', 'DELIVERED'].map((s) => (
+                                            <button
+                                                key={s}
+                                                onClick={() => setStatusFilter(s)}
+                                                className={cn(
+                                                    "h-12 px-6 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] whitespace-nowrap transition-all border active:scale-95 font-display shadow-sm cursor-pointer",
+                                                    statusFilter === s 
+                                                        ? "bg-primary text-white border-primary shadow-xl shadow-slate-200" 
+                                                        : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50"
+                                                )}
+                                            >
+                                                {s === 'IN_PROGRESS' ? 'WORKING' : s.replace('_', ' ')}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="overflow-x-auto">
+                                     <table className="w-full text-sm text-left border-collapse">
+                                        <thead>
+                                            <tr className="bg-slate-50/60 text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] border-b border-slate-100 font-display">
+                                                <th className="px-10 py-6">Sequence</th>
+                                                <th className="px-8 py-6">Client Profile</th>
+                                                <th className="px-8 py-6">Machine Class</th>
+                                                <th className="px-8 py-6">Report Log</th>
+                                                <th className="px-8 py-6">Schedule</th>
+                                                <th className="px-8 py-6">Current State</th>
+                                                <th className="px-10 py-6 text-right">Valuation</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="bg-white">
+                                            {filteredJobSheets.length === 0 ? (
+                                                <tr>
+                                                    <td colSpan={8} className="py-32 text-center">
+                                                        <div className="flex flex-col items-center gap-4">
+                                                            <div className="h-20 w-20 bg-slate-50 rounded-[40%] flex items-center justify-center rotate-12 border border-slate-100">
+                                                                <Wrench className="h-8 w-8 text-slate-300" />
+                                                            </div>
+                                                            <span className="text-[11px] font-black uppercase tracking-widest text-slate-300">No active job matrices found</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                filteredJobSheets.map((j) => (
+                                                    <tr key={j.id} className="hover:bg-slate-50/50 transition-all duration-300 group">
+                                                        <td className="px-8 py-6">
+                                                            <div className="flex items-center gap-4">
                                                                 <button
                                                                     onClick={() => handleViewJob(j)}
-                                                                    className="flex flex-col text-left group-hover:scale-105 transition-transform"
+                                                                    className="flex flex-col text-left group-hover:scale-105 transition-transform cursor-pointer"
                                                                 >
-                                                                    <span className="text-primary font-bold tracking-tight text-xs opacity-70">RI-</span>
-                                                                    <span className="text-slate-900 font-bold font-mono text-sm group-hover:text-primary transition-colors">{j.jobId.split('-')[1]}</span>
+                                                                    <span className="text-primary font-black tracking-widest text-[9px]">RI-STORE</span>
+                                                                    <span className="text-slate-900 font-black font-mono text-sm mt-0.5 hover:text-red-500">{j.jobId.split('-')[1]}</span>
                                                                 </button>
-                                                            </td>
-                                                            <td className="px-6 py-5 align-middle">
-                                                                <div className="flex flex-col gap-0.5">
-                                                                    <div className="font-bold text-slate-800 text-sm">{j.customerName}</div>
-                                                                    <a href={`tel:${j.customerPhone}`} className="text-xs text-slate-400 font-medium hover:text-primary transition-colors flex items-center gap-1">
-                                                                        {j.customerPhone}
-                                                                    </a>
-                                                                </div>
-                                                            </td>
-                                                            <td className="px-6 py-5 align-middle text-slate-700 font-semibold text-sm capitalize">{j.deviceModel}</td>
-                                                            <td className="px-6 py-5 align-middle">
-                                                                <div className="text-slate-500 text-xs font-medium max-w-[150px] truncate bg-slate-100 px-2 py-1 rounded-md" title={j.problemDesc}>
-                                                                    {j.problemDesc}
-                                                                </div>
-                                                            </td>
-                                                            <td className="px-6 py-5 align-middle text-slate-600 font-medium text-sm">
-                                                                {j.expectedAt ? (
-                                                                    <div className="flex items-center gap-1.5 bg-white border border-slate-100 px-2 py-1 rounded-md w-fit">
-                                                                        <Calendar className="h-3 w-3 text-slate-400" />
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setSelectedJobId(j.id);
+                                                                        setViewMode('JOB_CUSTOMER_DETAILS');
+                                                                    }}
+                                                                    className="p-2 bg-slate-50 text-slate-400 hover:text-primary hover:bg-white rounded-xl transition-all border border-transparent hover:border-slate-100 shadow-sm active:scale-90 cursor-pointer"
+                                                                    title="View Customer Blueprint"
+                                                                >
+                                                                    <Eye className="h-4 w-4" />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                        <td 
+                                                            className="px-6 py-6 cursor-pointer group/cell"
+                                                            onClick={() => {
+                                                                setSelectedJobId(j.id);
+                                                                setViewMode('JOB_CUSTOMER_DETAILS');
+                                                            }}
+                                                        >
+                                                            <div className="flex flex-col gap-0.5">
+                                                                <div className="font-black text-slate-900 text-sm group-hover/cell:text-primary transition-colors">{j.customerName}</div>
+                                                                <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{j.customerPhone}</div>
+                                                            </div>
+                                                        </td>
+                                                        <td 
+                                                            className="px-6 py-6 font-black text-slate-800 text-sm uppercase cursor-pointer hover:text-primary transition-colors"
+                                                            onClick={() => {
+                                                                setSelectedJobId(j.id);
+                                                                setViewMode('JOB_CUSTOMER_DETAILS');
+                                                            }}
+                                                        >
+                                                            {j.deviceModel}
+                                                        </td>
+                                                        <td className="px-6 py-6 max-w-[200px]">
+                                                            <div className="text-slate-500 text-[10px] font-bold uppercase tracking-tight line-clamp-2 leading-relaxed bg-slate-50 px-2.5 py-1.5 rounded-2xl border border-slate-100" title={j.problemDesc}>
+                                                                {j.problemDesc}
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-6">
+                                                            {j.expectedAt ? (
+                                                                <div className="flex flex-col">
+                                                                    <span className="text-[9px] font-black text-slate-400 uppercase leading-none mb-1">DUE</span>
+                                                                    <div className="flex items-center gap-1.5 font-black text-slate-700 text-sm">
+                                                                        <Calendar className="h-3 w-3 text-primary/50" />
                                                                         {new Date(j.expectedAt).toLocaleDateString(undefined, { day: '2-digit', month: 'short' })}
                                                                     </div>
-                                                                ) : (
-                                                                    <span className="text-slate-300 px-2">-</span>
-                                                                )}
-                                                            </td>
-                                                            <td className="px-6 py-5 align-middle">
-                                                                <span className={cn(
-                                                                    "px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-sm border",
-                                                                    j.status === 'RECEIVED' ? "bg-blue-50 text-blue-700 border-blue-100" :
-                                                                        j.status === 'IN_PROGRESS' ? "bg-amber-50 text-amber-700 border-amber-100" :
-                                                                            j.status === 'READY' ? "bg-emerald-50 text-emerald-700 border-emerald-100" :
-                                                                                j.status === 'DELIVERED' ? "bg-slate-100 text-slate-600 border-slate-200" :
-                                                                                    "bg-red-50 text-red-700 border-red-100"
-                                                                )}>
-                                                                    <span className={cn("w-1.5 h-1.5 rounded-full",
-                                                                        j.status === 'RECEIVED' ? "bg-blue-500" :
-                                                                            j.status === 'IN_PROGRESS' ? "bg-amber-500 animate-pulse" :
-                                                                                j.status === 'READY' ? "bg-emerald-500" :
-                                                                                    j.status === 'DELIVERED' ? "bg-slate-400" :
-                                                                                        "bg-red-500"
-                                                                    )}></span>
-                                                                    {j.status.replace('_', ' ')}
-                                                                </span>
-                                                            </td>
-                                                            <td className="px-6 py-5 align-middle font-bold text-slate-900 text-right text-base">
-                                                                {j.estimatedCost ? `₹${j.estimatedCost.toLocaleString()}` : <span className="text-slate-300">-</span>}
-                                                            </td>
-                                                            <td className="px-6 py-5 align-middle text-center">
-                                                                <div className="flex items-center justify-end gap-2">
-                                                                    <button
-                                                                        onClick={() => {
-                                                                            // WhatsApp Logic - Same as before
-                                                                            const message = encodeURIComponent(
-                                                                                `${String.fromCodePoint(0x1F44B)} Hello *${j.customerName}*,\n\n` +
-                                                                                `Update from *${shop.shopName}* regarding your repair:\n\n` +
-                                                                                `${String.fromCodePoint(0x1F4F1)} *Device:* ${j.deviceModel}\n` +
-                                                                                `${String.fromCodePoint(0x1F194)} *Job ID:* ${j.jobId}\n` +
-                                                                                `${String.fromCodePoint(0x1F4CA)} *Current Status:* *${j.status}*\n` +
-                                                                                (j.status === 'READY' ? `\n${String.fromCodePoint(0x1F4B0)} *Bill Amount:* ₹${j.estimatedCost || '0'}\n${String.fromCodePoint(0x2705)} *Your device is READY for pickup!*\n` : '') +
-                                                                                `\n--------------------------------\n` +
-                                                                                `Thank you for trusting us! ${String.fromCodePoint(0x1F64F)}\n` +
-                                                                                `_Powered by FixSure_ ${String.fromCodePoint(0x1F6E1)}`
-                                                                            );
-                                                                            console.log("WhatsApp Message:", decodeURIComponent(message));
-                                                                            window.open(`https://api.whatsapp.com/send?phone=${j.customerPhone.replace(/\D/g, '')}&text=${message}`, '_blank');
-                                                                        }}
-                                                                        className="bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100 hover:border-emerald-200 h-8 px-3 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5"
-                                                                        title="Notify Customer"
-                                                                    >
-                                                                        <MessageCircle className="h-3.5 w-3.5" />
-                                                                        <span className="hidden xl:inline">Notify</span>
-                                                                    </button>
-
-                                                                    <JobActionMenu job={j} shop={shop} />
-
-                                                                    <button
-                                                                        onClick={() => {
-                                                                            setSelectedJobId(j.id);
-                                                                            setViewMode('JOB_CUSTOMER_DETAILS');
-                                                                        }}
-                                                                        className="h-8 w-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:text-primary hover:border-primary hover:bg-primary/5 transition-all"
-                                                                        title="View Customer Details"
-                                                                    >
-                                                                        <Eye className="h-4 w-4" />
-                                                                    </button>
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                    ))
-                                                )}
-                                            </tbody>
-                                        </table>
-                                    ) : null}
+                                                            ) : (
+                                                                <span className="text-slate-200">--/--</span>
+                                                            )}
+                                                        </td>
+                                                        <td className="px-6 py-6">
+                                                            <EditableJobStatus job={j} />
+                                                        </td>
+                                                        <td className="px-10 py-6 text-right">
+                                                            <div className="flex flex-col items-end">
+                                                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">QUOTE</span>
+                                                                <div className="font-black text-slate-900 text-base">
+                                                                    {j.estimatedCost ? `₹${j.estimatedCost.toLocaleString()}` : '---'}
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className="p-4 bg-slate-50/20 border-t border-slate-100/50 flex justify-between items-center">
+                                     <div className="flex gap-4">
+                                         <div className="flex items-center gap-2">
+                                             <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                                             <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Active Processing</span>
+                                         </div>
+                                     </div>
+                                     <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">{filteredJobSheets.length} Records Loaded</span>
                                 </div>
                             </div>
                         </div>
                     )}
-
                 </div>
             </main>
 
@@ -1004,28 +1105,31 @@ function StatCard({
     icon?: any
 }) {
     return (
-        <div className="p-7 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group h-full">
-            <div className="mb-4 flex items-start justify-between">
-                <div className="p-2.5 bg-slate-50 text-slate-500 rounded-xl group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                    {Icon ? <Icon className="h-5 w-5" /> : <Clock className="h-5 w-5" />}
+        <div className="p-8 bg-white rounded-[2rem] border border-slate-200/60 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-500 flex flex-col justify-between group h-full relative overflow-hidden">
+            {/* Background Glow */}
+            <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-3xl -z-0 group-hover:bg-primary/10 transition-colors" />
+            
+            <div className="mb-6 flex items-start justify-between relative z-10">
+                <div className="p-4 bg-slate-50 text-slate-400 rounded-2xl group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm border border-slate-100 group-hover:border-primary">
+                    {Icon ? <Icon className="h-6 w-6" /> : <Clock className="h-6 w-6" />}
                 </div>
                 {secure && onToggle && (
                     <button
                         onClick={onToggle}
-                        className="text-slate-300 hover:text-primary transition-colors focus:outline-none p-1"
+                        className="text-slate-300 hover:text-primary transition-colors focus:outline-none p-2 bg-slate-50 hover:bg-white rounded-xl border border-transparent hover:border-slate-100 shadow-sm"
                     >
-                        {isVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {isVisible ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
                 )}
             </div>
 
-            <div>
-                <h3 className="text-sm font-semibold text-slate-500 mb-1">{title}</h3>
-                <div className={cn("text-3xl font-bold mb-2 tracking-tight", highlight ? "text-primary" : "text-slate-900")}>
+            <div className="relative z-10">
+                <h3 className="text-[11px] font-black text-slate-400 mb-2 uppercase tracking-[0.2em] font-display opacity-80">{title}</h3>
+                <div className={cn("text-3xl font-black mb-3 tracking-tight font-display", highlight ? "text-primary" : "text-slate-900")}>
                     {secure && !isVisible ? "••••••" : value}
                 </div>
+                <div className="text-[10px] text-emerald-600 font-black bg-emerald-50/50 w-fit px-3 py-1.5 rounded-xl border border-emerald-100/50 uppercase tracking-widest">{sub}</div>
             </div>
-            <div className="text-xs text-emerald-600 font-bold bg-emerald-50 w-fit px-2 py-1 rounded-md">{sub}</div>
         </div>
     );
 }
@@ -1098,10 +1202,10 @@ function PinModal({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
             <div className="w-full max-w-sm bg-card rounded-2xl shadow-2xl border border-border animate-scale-in p-6">
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-lg font-bold">
+                    <h2 className="text-lg font-bold text-primary">
                         {mode === 'SET' ? "Set Security PIN" : "Enter Security PIN"}
                     </h2>
-                    <button onClick={onClose} className="p-2 hover:bg-secondary rounded-full">
+                    <button onClick={onClose} className="p-2 hover:bg-secondary rounded-full hover:text-red-500 cursor-pointer">
                         <X className="h-5 w-5" />
                     </button>
                 </div>
@@ -1125,7 +1229,7 @@ function PinModal({
                                 value={digit}
                                 onChange={(e) => handleInput(i, e.target.value)}
                                 onKeyDown={(e) => handleKeyDown(i, e)}
-                                className="w-12 h-14 text-center text-2xl font-bold rounded-lg border border-input bg-background focus:ring-2 focus:ring-primary focus:outline-none"
+                                className="w-12 h-14 text-center text-2xl font-bold rounded-lg border border-input bg-gray-400 focus:ring-2 focus:ring-primary focus:outline-none"
                             />
                         ))}
                     </div>
@@ -1139,7 +1243,7 @@ function PinModal({
                     <button
                         type="submit"
                         disabled={loading || pin.some(p => !p)}
-                        className="w-full py-3 rounded-lg bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                        className="w-full py-3 rounded-lg bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 cursor-pointer"
                     >
                         {loading && <Loader2 className="h-4 w-4 animate-spin" />}
                         {mode === 'SET' ? "Set PIN" : "Verify PIN"}
@@ -1458,6 +1562,147 @@ function JobSheetModal({ onClose }: { onClose: () => void }) {
                     </div>
                 </form>
             </div>
+        </div>
+    );
+}
+
+function JobSummaryCard({ title, count, color }: { title: string, count: number, color: 'blue' | 'amber' | 'emerald' | 'slate' }) {
+    const colorMap = {
+        blue: "from-blue-500/10 to-transparent border-blue-500/20 text-blue-600",
+        amber: "from-amber-500/10 to-transparent border-amber-500/20 text-amber-600",
+        emerald: "from-emerald-500/10 to-transparent border-emerald-500/20 text-emerald-600",
+        slate: "from-slate-500/10 to-transparent border-slate-500/20 text-slate-600"
+    };
+
+    return (
+        <div className={cn("p-8 bg-white rounded-[2rem] border border-slate-200 shadow-sm flex flex-col gap-4 bg-gradient-to-br transition-all hover:shadow-2xl hover:-translate-y-1.5 duration-500 group relative overflow-hidden", colorMap[color])}>
+            <div className="absolute top-0 right-0 w-20 h-20 bg-current opacity-[0.03] rounded-full blur-2xl -z-0" />
+            
+            <span className="text-[11px] font-black uppercase tracking-[0.25em] opacity-60 font-display relative z-10">{title}</span>
+            <div className="flex items-center justify-between relative z-10">
+                <span className="text-4xl font-black font-display tracking-tight">{count}</span>
+                <div className={cn("p-4 rounded-2xl bg-white/60 border border-current/10 shadow-sm backdrop-blur-sm group-hover:scale-110 transition-transform duration-500")}>
+                    {color === 'blue' && <Inbox className="h-6 w-6" />}
+                    {color === 'amber' && <Activity className="h-6 w-6" />}
+                    {color === 'emerald' && <CheckCircle className="h-6 w-6" />}
+                    {color === 'slate' && <Truck className="h-6 w-6" />}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function JobStatusBadge({ status }: { status: string }) {
+    const config: Record<string, { bg: string, border: string, text: string, dot: string }> = {
+        'RECEIVED': { bg: "bg-blue-50", border: "border-blue-100", text: "text-blue-700", dot: "bg-blue-500" },
+        'IN_PROGRESS': { bg: "bg-amber-50", border: "border-amber-100", text: "text-amber-700", dot: "bg-amber-500 animate-pulse" },
+        'READY': { bg: "bg-emerald-50", border: "border-emerald-100", text: "text-emerald-700", dot: "bg-emerald-500" },
+        'DELIVERED': { bg: "bg-slate-50", border: "border-slate-200", text: "text-slate-600", dot: "bg-slate-400" },
+        'CANCELLED': { bg: "bg-rose-50", border: "border-rose-100", text: "text-rose-700", dot: "bg-rose-500" }
+    };
+
+    const c = config[status] || config['RECEIVED'];
+
+    return (
+        <span className={cn(
+            "px-3 py-1.5 rounded-2xl text-[10px] font-black uppercase tracking-widest inline-flex items-center gap-2 border shadow-sm",
+            c.bg, c.text, c.border
+        )}>
+            <div className={cn("w-1.5 h-1.5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.1)]", c.dot)} />
+            {status.replace('_', ' ')}
+        </span>
+    );
+}
+
+function ReportStatCard({ label, value, icon: Icon, color, isRevenue, isVisible, onToggle }: any) {
+    const colorStyles: any = {
+        blue: "bg-blue-50 text-blue-600 border-blue-100",
+        emerald: "bg-emerald-50 text-emerald-600 border-emerald-100",
+        purple: "bg-purple-50 text-purple-600 border-purple-100",
+        orange: "bg-orange-50 text-orange-600 border-orange-100"
+    };
+
+    return (
+        <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200/60 shadow-sm group hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
+            <div className="flex items-center justify-between mb-6">
+                <div className={cn("p-4 rounded-2xl border transition-colors shadow-sm", colorStyles[color])}>
+                    <Icon className="h-6 w-6" />
+                </div>
+                {isRevenue && (
+                    <button 
+                        onClick={onToggle}
+                        className="p-2.5 hover:bg-slate-100 rounded-xl text-slate-400 transition-colors border border-transparent hover:border-slate-200"
+                    >
+                        {isVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                )}
+            </div>
+            <div>
+                <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 font-display opacity-80">{label}</p>
+                <h3 className="text-3xl font-black text-slate-900 font-display tracking-tight">
+                    {isRevenue && !isVisible ? '••••••' : (isRevenue ? `₹${value.toLocaleString()}` : value.toLocaleString())}
+                </h3>
+            </div>
+        </div>
+    );
+}
+
+
+
+function EditableJobStatus({ job }: { job: JobSheet }) {
+    const [loading, setLoading] = useState(false);
+    
+    const statuses = ['RECEIVED', 'IN_PROGRESS', 'READY', 'DELIVERED', 'CANCELLED'];
+    
+    const handleStatusChange = async (newStatus: string) => {
+        if (newStatus === job.status) return;
+        setLoading(true);
+        try {
+            await updateJobStatus(job.id, newStatus);
+        } catch (error) {
+            console.error("Failed to update status:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const config: Record<string, { bg: string, border: string, text: string, dot: string }> = {
+        'RECEIVED': { bg: "bg-blue-50", border: "border-blue-100", text: "text-blue-700", dot: "bg-blue-500" },
+        'IN_PROGRESS': { bg: "bg-amber-50", border: "border-amber-100", text: "text-amber-700", dot: "bg-amber-500 animate-pulse" },
+        'READY': { bg: "bg-emerald-50", border: "border-emerald-100", text: "text-emerald-700", dot: "bg-emerald-500" },
+        'DELIVERED': { bg: "bg-slate-50", border: "border-slate-200", text: "text-slate-600", dot: "bg-slate-400" },
+        'CANCELLED': { bg: "bg-rose-50", border: "border-rose-100", text: "text-rose-700", dot: "bg-rose-500" }
+    };
+
+    const c = config[job.status] || config['RECEIVED'];
+
+    return (
+        <div className="relative group/status">
+            {loading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-10 rounded-2xl">
+                    <Loader2 className="h-3 w-3 animate-spin text-slate-400" />
+                </div>
+            )}
+            <select
+                value={job.status}
+                onChange={(e) => handleStatusChange(e.target.value)}
+                disabled={loading}
+                className={cn(
+                    "appearance-none pl-7 pr-4 py-1.5 rounded-2xl text-[10px] font-black uppercase tracking-widest inline-flex items-center gap-2 border shadow-sm cursor-pointer outline-none transition-all hover:ring-2 hover:ring-primary/10",
+                    c.bg, c.text, c.border,
+                    loading && "opacity-50"
+                )}
+            >
+                {statuses.map(s => (
+                    <option key={s} value={s} className="bg-white text-slate-900 font-bold uppercase py-2">
+                        {s.replace('_', ' ')}
+                    </option>
+                ))}
+            </select>
+            <div className={cn(
+                "absolute left-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full pointer-events-none",
+                c.dot
+            )} />
         </div>
     );
 }

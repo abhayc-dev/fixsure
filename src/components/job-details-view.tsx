@@ -187,19 +187,29 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
                     )}
 
                     <div className="w-1/2 flex justify-between text-sm py-1 border-b border-dashed border-slate-200">
-                        <span className="font-bold text-slate-500 uppercase text-[10px]">Estimated Price</span>
+                        <span className="font-bold text-slate-500 uppercase text-[10px]">Total Repair Cost</span>
                         <span className="font-bold">Rs. {total}</span>
                     </div>
                     <div className="w-1/2 flex justify-between text-sm py-1 border-b border-dashed border-slate-200">
-                        <span className="font-bold text-emerald-600 uppercase text-[10px]">Advance Paid</span>
-                        <span className="font-bold text-emerald-600">Rs. {job.status === 'DELIVERED' ? total : advance}</span>
+                        <span className="font-bold text-emerald-600 uppercase text-[10px]">Advance Received</span>
+                        <span className="font-bold text-emerald-600">Rs. {advance}</span>
                     </div>
+                    <div className="w-1/2 flex justify-between text-sm py-1 border-b border-dashed border-slate-200">
+                        <span className="font-bold text-blue-600 uppercase text-[10px]">Paid on Delivery</span>
+                        <span className="font-bold text-blue-600">Rs. {job.status === 'DELIVERED' ? balance : 0}</span>
+                    </div>
+
+                    <div className="w-1/2 flex justify-between text-sm py-1 border-t-2 border-slate-900 mt-2">
+                        <span className="font-black text-slate-800 uppercase text-[10px]">Total Amount Received</span>
+                        <span className="font-black text-slate-900">Rs. {job.status === 'DELIVERED' ? total : advance}</span>
+                    </div>
+
                     <div className={cn(
                         "w-1/2 flex justify-between text-xl mt-2 p-3 rounded-lg transition-all",
                         (job.status === 'DELIVERED' || balance === 0) ? "bg-emerald-600 text-white" : "bg-slate-900 text-white"
                     )}>
                         <span className="font-bold uppercase text-xs flex items-center">
-                            {(job.status === 'DELIVERED' || balance === 0) ? "Total Received" : "Balance Due"}
+                            {(job.status === 'DELIVERED' || balance === 0) ? "Final Dues Cleared" : "Outstanding Balance"}
                         </span>
                         <span className="font-black">Rs. {(job.status === 'DELIVERED' || balance === 0) ? 0 : balance}</span>
                     </div>

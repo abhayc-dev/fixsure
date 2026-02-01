@@ -1,8 +1,8 @@
-import { ArrowLeft, Calendar, Smartphone, User, Receipt, MapPin, Wrench, MessageCircle, Trash2, Edit2, Save, X, ChevronRight, Plus, FileText } from "lucide-react";
+import { ArrowLeft, Calendar, Smartphone, User, Receipt, MapPin, Wrench, MessageCircle, Trash2, Edit2, Save, X, ChevronRight, Plus, FileText, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { deleteJobSheet, updateJobSheetDetails } from "@/lib/actions";
+import { deleteJobSheet, updateJobSheetDetails, updateJobStatus } from "@/lib/actions";
 
 type JobSheet = {
     id: string;
@@ -23,7 +23,7 @@ type JobSheet = {
     technicalDetails?: any | null;
 };
 
-export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack: () => void }) {
+export default function JobCustomerView({ job, shop, onBack }: { job: JobSheet, shop: any, onBack: () => void }) {
     const router = useRouter();
     
     // Calculate Balance
@@ -37,6 +37,7 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
     const [isPartsEditing, setIsPartsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [statusUpdating, setStatusUpdating] = useState(false);
 
     // Helper for Motor Data
     const td = job.technicalDetails || {};
@@ -101,16 +102,62 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
     };
 
     const handleNotify = () => {
-         const message = encodeURIComponent(
+        const isMotor = job.category === 'MOTOR';
+        const itemLabel = isMotor ? 'Machine' : 'Device';
+        const emoji = isMotor ? String.fromCodePoint(0x2699) : String.fromCodePoint(0x1F4F1); // ⚙️ vs 📱
+        
+        // Build Parts List for WhatsApp (Only for Ready/Delivered)
+        let partsSection = "";
+        if (isMotor && partsReplaced.length > 0 && (job.status === 'READY' || job.status === 'DELIVERED')) {
+            partsSection = `\n${String.fromCodePoint(0x1F6E0)} *Parts Replaced:*\n` + 
+                        partsReplaced.map((p: any) => `  • ${p.name} (x${p.qty})`).join('\n') + "\n";
+        }
+
+        let statusMsg = "";
+        if (isMotor) {
+            switch(job.status) {
+                case 'RECEIVED':
+                    statusMsg = `${String.fromCodePoint(0x1F4E5)} *We have received your machine for service.* Our technicians will start the inspection shortly.`;
+                    break;
+                case 'IN_PROGRESS':
+                    statusMsg = `${String.fromCodePoint(0x2692)} *Technician is working on your machine.* We are ensuring the highest quality in repair.`;
+                    break;
+                case 'READY':
+                    statusMsg = `${String.fromCodePoint(0x2705)} *Repair Successful!* Your machine has been fully serviced and tested. It is now ready for pickup.\n\n${String.fromCodePoint(0x1F4B5)} *Pending Balance:* ₹${balance}`;
+                    break;
+                case 'DELIVERED':
+                    statusMsg = `${String.fromCodePoint(0x1F4E6)} *Job Finalized.* The machine has been delivered and all dues have been cleared. Thank you for choosing us!`;
+                    break;
+                case 'CANCELLED':
+                    statusMsg = `${String.fromCodePoint(0x274C)} *This job has been cancelled.* Please contact us to coordinate the return of your machine.`;
+                    break;
+            }
+        }
+
+        const messageContent = isMotor ? (
+            `${String.fromCodePoint(0x1F44B)} Hello *${job.customerName}*,\n\n` +
+            `*JOB UPDATE:* ${job.jobId}\n` +
+            `--------------------------------\n` +
+            `${String.fromCodePoint(0x2699)} *Machine Type:* ${job.deviceType || 'General'}\n` +
+            `${String.fromCodePoint(0x231B)} *Serial / Model:* ${job.deviceModel}\n` +
+            `${String.fromCodePoint(0x1F4CA)} *Status:* *${job.status.replace('_', ' ')}*\n` +
+            partsSection +
+            `\n${statusMsg}` +
+            `\n\n--------------------------------\n` +
+            `*${shop?.shopName || 'Best Service & Repairing'}*\n` +
+            `Quality you can trust! ${String.fromCodePoint(0x1F64F)}`
+        ) : (
             `${String.fromCodePoint(0x1F44B)} Hello *${job.customerName}*,\n\n` +
             `Update regarding your repair (Job ID: ${job.jobId}):\n\n` +
-            `${String.fromCodePoint(0x1F4F1)} *Device:* ${job.deviceModel}\n` +
-            `${String.fromCodePoint(0x1F4CA)} *Status:* *${job.status}*\n` +
-            (job.status === 'READY' ? `\n${String.fromCodePoint(0x1F4B0)} *Bill Amount:* ₹${total}\n${String.fromCodePoint(0x2705)} *Your device is READY for pickup!*\n` : '') +
+            `${emoji} *${itemLabel}:* ${job.deviceModel}\n` +
+            `${String.fromCodePoint(0x1F4CA)} *Status:* *${job.status.replace('_', ' ')}*\n` +
+            (job.status === 'READY' ? `\n${String.fromCodePoint(0x1F4B0)} *Bill Amount:* ₹${total}\n${String.fromCodePoint(0x2705)} *Your ${itemLabel.toLowerCase()} is READY for pickup!*\n` : '') +
             `\n--------------------------------\n` +
+            `*${shop?.shopName || 'Best Service & Repairing'}*\n` +
             `Thank you for trusting us! ${String.fromCodePoint(0x1F64F)}`
         );
-        window.open(`https://api.whatsapp.com/send?phone=${job.customerPhone.replace(/\D/g, '')}&text=${message}`, '_blank');
+
+        window.open(`https://api.whatsapp.com/send?phone=${job.customerPhone.replace(/\D/g, '')}&text=${encodeURIComponent(messageContent)}`, '_blank');
     };
 
     const handleDelete = async () => {
@@ -136,12 +183,27 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
             router.refresh();
             setIsCoilEditing(false);
             setIsPartsEditing(false);
+            setIsTechEditing(false);
             setIsEditing(false);
         } catch (error) {
             console.error(error);
             alert("Failed to update job details.");
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleStatusChange = async (newStatus: string) => {
+        if (newStatus === job.status) return;
+        setStatusUpdating(true);
+        try {
+            await updateJobStatus(job.id, newStatus);
+            router.refresh();
+        } catch (error) {
+            console.error(error);
+            alert("Failed to update status.");
+        } finally {
+            setStatusUpdating(false);
         }
     };
 
@@ -285,18 +347,36 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                             defaultValue={job.status} 
                                             className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-lg px-3 py-1 text-[9px] font-black uppercase tracking-widest outline-none"
                                         >
-                                            {['PENDING', 'READY', 'DELIVERED', 'CANCELLED'].map(s => (
-                                                <option key={s} value={s} className="bg-slate-900 text-white">{s}</option>
+                                            {['RECEIVED', 'IN_PROGRESS', 'READY', 'DELIVERED', 'CANCELLED'].map(s => (
+                                                <option key={s} value={s} className="bg-slate-900 text-white">{s.replace('_', ' ')}</option>
                                             ))}
                                         </select>
                                     ) : (
-                                        <div className={cn(
-                                            "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest",
-                                            job.status === 'READY' ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : 
-                                            job.status === 'DELIVERED' ? "bg-emerald-500 text-white" :
-                                            "bg-indigo-500/20 text-indigo-400 border border-indigo-500/30"
-                                        )}>
-                                            {job.status}
+                                        <div className="relative group/status w-full">
+                                            {statusUpdating && (
+                                                <div className="absolute inset-x-0 -top-6 flex justify-center">
+                                                    <Loader2 className="h-3 w-3 animate-spin text-indigo-400" />
+                                                </div>
+                                            )}
+                                            <select
+                                                disabled={statusUpdating}
+                                                value={job.status}
+                                                onChange={(e) => handleStatusChange(e.target.value)}
+                                                className={cn(
+                                                    "appearance-none cursor-pointer px-4 py-1.5 rounded-full text-[9px] font-[1000] uppercase tracking-widest outline-none transition-all w-full text-center border-2 border-transparent hover:scale-105 active:scale-95",
+                                                    job.status === 'READY' ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:border-emerald-500/40" : 
+                                                    job.status === 'DELIVERED' ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/10 hover:bg-emerald-600" :
+                                                    job.status === 'CANCELLED' ? "bg-rose-500/10 text-rose-400 border-rose-500/20" :
+                                                    "bg-indigo-500/10 text-indigo-400 border-indigo-500/20 hover:border-indigo-400/40"
+                                                )}
+                                            >
+                                                {['RECEIVED', 'IN_PROGRESS', 'READY', 'DELIVERED', 'CANCELLED'].map(s => (
+                                                    <option key={s} value={s} className="bg-slate-900 text-white font-black">{s.replace('_', ' ')}</option>
+                                                ))}
+                                            </select>
+                                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-0 group-hover/status:opacity-100 transition-opacity">
+                                                <Edit2 className="h-2.5 w-2.5 text-current opacity-50" />
+                                            </div>
                                         </div>
                                     )}
                                 </div>
@@ -307,14 +387,14 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                             </div>
 
                             {!(isEditing || isTechEditing || isCoilEditing || isPartsEditing) ? (
-                                <button type="button" onClick={handleNotify} className="w-full bg-indigo-500 hover:bg-indigo-600 py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 group shadow-xl shadow-indigo-900/40">
+                                <button type="button" onClick={handleNotify} className="w-full bg-indigo-500 hover:bg-indigo-600 py-3.5 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 group shadow-xl shadow-indigo-900/40">
                                     <MessageCircle className="h-4 w-4 text-white group-hover:rotate-12 transition-transform" />
-                                    <span className="text-[11px] font-black uppercase tracking-widest">Share on WhatsApp</span>
+                                    <span className="text-[10px] font-black uppercase tracking-widest">Share Update</span>
                                 </button>
                             ) : (
-                                <button type="submit" disabled={loading} className="w-full bg-emerald-500 hover:bg-emerald-600 py-4 rounded-xl flex items-center justify-center gap-[-5] transition-all active:scale-95 group shadow-xl shadow-emerald-900/40">
-                                    <Save className="h-4 text-white" />
-                                    <span className="text-[9px] font-black  uppercase tracking-widest">{loading ? 'Saving...' : 'Commit Changes'}</span>
+                                <button type="submit" disabled={loading} className="w-full bg-emerald-500 hover:bg-emerald-600 py-3.5 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 group shadow-xl shadow-emerald-900/40">
+                                    <Save className="h-4 w-4 text-white" />
+                                    <span className="text-[10px] font-black uppercase tracking-widest">{loading ? 'Saving...' : 'Commit Changes'}</span>
                                 </button>
                             )}
                         </div>
@@ -428,17 +508,26 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Motor Specification Details</p>
                                          </div>
                                          {isTechEditing ? (
-                                            <button 
-                                                type="submit" 
-                                                disabled={loading}
-                                                className={cn(
-                                                    "mt-10 self-start px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-sm border",
-                                                    "bg-amber-500 text-white border-amber-600",
-                                                    loading && "opacity-50 cursor-not-allowed"
-                                                )}
-                                            >
-                                                {loading ? 'Saving...' : 'Apply Changes'}
-                                            </button>
+                                            <div className="flex flex-col gap-3 mt-10">
+                                                <button 
+                                                    type="submit" 
+                                                    disabled={loading}
+                                                    className={cn(
+                                                        "self-start px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-sm border w-full",
+                                                        "bg-amber-500 text-white border-amber-600",
+                                                        loading && "opacity-50 cursor-not-allowed"
+                                                    )}
+                                                >
+                                                    {loading ? 'Saving...' : 'Apply Changes'}
+                                                </button>
+                                                <button 
+                                                    type="button" 
+                                                    onClick={() => setIsTechEditing(false)}
+                                                    className="self-start px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-sm border bg-white border-slate-200 text-slate-600 hover:bg-slate-50 w-full"
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
                                          ) : (
                                             <button 
                                                 type="button" 
@@ -511,17 +600,26 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                          </div>
                                      </div>
                                      {isCoilEditing ? (
-                                         <button 
-                                            type="submit" 
-                                            disabled={loading}
-                                            className={cn(
-                                                "px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border shadow-sm",
-                                                "bg-emerald-500 text-white border-emerald-600",
-                                                loading && "opacity-50 cursor-not-allowed"
-                                            )}
-                                         >
-                                             {loading ? 'Saving...' : <><Save className="h-4 w-4" /> Save Configuration</>}
-                                         </button>
+                                         <div className="flex items-center gap-3">
+                                             <button 
+                                                type="button"
+                                                onClick={() => setIsCoilEditing(false)}
+                                                className="px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border border-slate-200 text-slate-500 hover:bg-slate-50"
+                                             >
+                                                 Cancel
+                                             </button>
+                                             <button 
+                                                type="submit" 
+                                                disabled={loading}
+                                                className={cn(
+                                                    "px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border shadow-sm",
+                                                    "bg-emerald-500 text-white border-emerald-600",
+                                                    loading && "opacity-50 cursor-not-allowed"
+                                                )}
+                                             >
+                                                 {loading ? 'Saving...' : <><Save className="h-4 w-4" /> Save Configuration</>}
+                                             </button>
+                                         </div>
                                      ) : (
                                          <button 
                                             type="button" 
@@ -612,17 +710,26 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                          </div>
                                      </div>
                                      {isPartsEditing ? (
-                                         <button 
-                                            type="submit" 
-                                            disabled={loading}
-                                            className={cn(
-                                                "px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border shadow-sm",
-                                                "bg-rose-500 text-white border-rose-600",
-                                                loading && "opacity-50 cursor-not-allowed"
-                                            )}
-                                         >
-                                             {loading ? 'Saving...' : <><Save className="h-4 w-4" /> Finalize Inventory</>}
-                                         </button>
+                                         <div className="flex items-center gap-3">
+                                             <button 
+                                                type="button"
+                                                onClick={() => setIsPartsEditing(false)}
+                                                className="px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border border-slate-200 text-slate-500 hover:bg-slate-50"
+                                             >
+                                                 Cancel
+                                             </button>
+                                             <button 
+                                                type="submit" 
+                                                disabled={loading}
+                                                className={cn(
+                                                    "px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border shadow-sm",
+                                                    "bg-rose-500 text-white border-rose-600",
+                                                    loading && "opacity-50 cursor-not-allowed"
+                                                )}
+                                             >
+                                                 {loading ? 'Saving...' : <><Save className="h-4 w-4" /> Finalize Inventory</>}
+                                             </button>
+                                         </div>
                                      ) : (
                                          <button 
                                             type="button" 
@@ -776,25 +883,33 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                      </div>
                                  </div>
 
-                                 <div className="flex flex-col justify-end gap-6 text-right">
-                                     <div className="grid grid-cols-2 gap-x-12 gap-y-6">
-                                         <div className="space-y-2">
-                                             <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block">Job Quote</span>
-                                             {isEditing ? (
-                                                 <input name="estimatedCost" type="number" defaultValue={job.estimatedCost || 0} className="w-32 bg-white/5 border border-white/10 rounded-xl px-4 py-2 font-mono font-black text-right outline-none focus:bg-white/10" />
-                                             ) : (
-                                                 <p className="text-2xl font-black tracking-tight">₹{total.toLocaleString()}</p>
-                                             )}
-                                         </div>
-                                         <div className="space-y-2">
-                                             <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest block">Paid Advance</span>
-                                             {isEditing ? (
-                                                 <input name="advanceAmount" type="number" defaultValue={job.advanceAmount || 0} className="w-32 bg-white/5 border border-white/10 rounded-xl px-4 py-2 font-mono font-black text-right text-emerald-400 outline-none focus:bg-white/10" />
-                                             ) : (
-                                                 <p className="text-2xl font-black tracking-tight text-emerald-400">₹{advance.toLocaleString()}</p>
-                                             )}
-                                         </div>
-                                     </div>
+                                  <div className="flex flex-col justify-end gap-6 text-right">
+                                      <div className="grid grid-cols-2 gap-x-8 gap-y-6">
+                                          <div className="space-y-2">
+                                              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block">Final Bill</span>
+                                              {isEditing ? (
+                                                  <input name="estimatedCost" type="number" defaultValue={job.estimatedCost || 0} className="w-32 bg-white/5 border border-white/10 rounded-xl px-4 py-2 font-mono font-black text-right outline-none focus:bg-white/10" />
+                                              ) : (
+                                                  <p className="text-2xl font-black tracking-tight text-white/80">₹{total.toLocaleString()}</p>
+                                              )}
+                                          </div>
+                                          <div className="space-y-2">
+                                              <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest block">Advance</span>
+                                              {isEditing ? (
+                                                  <input name="advanceAmount" type="number" defaultValue={job.advanceAmount || 0} className="w-32 bg-white/5 border border-white/10 rounded-xl px-4 py-2 font-mono font-black text-right text-emerald-400 outline-none focus:bg-white/10" />
+                                              ) : (
+                                                  <p className="text-2xl font-black tracking-tight text-emerald-400">₹{advance.toLocaleString()}</p>
+                                              )}
+                                          </div>
+                                          <div className="space-y-2">
+                                              <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest block uppercase">At Delivery</span>
+                                              <p className="text-2xl font-black tracking-tight text-blue-400">₹{(job.status === 'DELIVERED' ? balance : 0).toLocaleString()}</p>
+                                          </div>
+                                          <div className="space-y-2">
+                                              <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest block uppercase">Total Paid</span>
+                                              <p className="text-2xl font-black tracking-tight text-indigo-400">₹{(job.status === 'DELIVERED' ? total : advance).toLocaleString()}</p>
+                                          </div>
+                                      </div>
                                      <div className="h-[1px] bg-white/10 w-full" />
                                      <div className="flex items-center justify-end gap-4">
                                          <Calendar className="h-4 w-4 text-slate-600" />

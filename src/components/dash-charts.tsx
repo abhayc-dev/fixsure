@@ -22,23 +22,23 @@ export function DashCircularChart({
     });
 
     // SVG geometry
-    const size = 200;
+    const size = 220;
     const strokeWidth = 20;
     const radius = (size - strokeWidth) / 2;
     const center = size / 2;
     const circumference = 2 * Math.PI * radius;
 
     return (
-        <div className="flex flex-col md:flex-row items-center gap-8">
-            <div className="relative w-[200px] h-[200px] flex-shrink-0">
-                <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="transform -rotate-90">
+        <div className="flex flex-col items-center justify-center w-full">
+            <div className="relative w-[220px] h-[220px] flex-shrink-0">
+                <svg width="220" height="220" viewBox="0 0 220 220" className="transform -rotate-90">
                     {/* Background Circle */}
                     <circle 
-                        cx={center} 
-                        cy={center} 
+                        cx="110" 
+                        cy="110" 
                         r={radius} 
                         fill="transparent" 
-                        stroke="#f1f5f9" 
+                        stroke="rgba(255,255,255,0.05)" 
                         strokeWidth={strokeWidth} 
                     />
                     
@@ -50,8 +50,8 @@ export function DashCircularChart({
                          return (
                             <circle
                                 key={i}
-                                cx={center}
-                                cy={center}
+                                cx="110"
+                                cy="110"
                                 r={radius}
                                 fill="transparent"
                                 stroke={d.color}
@@ -59,30 +59,17 @@ export function DashCircularChart({
                                 strokeDasharray={dashArray}
                                 strokeDashoffset={dashOffset}
                                 strokeLinecap="round"
-                                className="transition-all duration-500 ease-out hover:opacity-80"
+                                className="transition-all duration-700 ease-in-out hover:opacity-80"
                             />
                          );
                     })}
                 </svg>
                 
                 {/* Center Text */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none transform">
-                     <span className="text-3xl font-bold text-slate-800">{total}</span>
-                     <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Jobs</span>
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                     <span className="text-4xl font-black text-white font-display mb-1">{total}</span>
+                     <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Total Assets</span>
                 </div>
-            </div>
-            
-            {/* Legend */}
-            <div className="flex-1 grid grid-cols-2 gap-4 w-full">
-                {data.map((d, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                         <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: d.color }}></div>
-                         <div className="flex flex-col">
-                             <span className="text-xs font-medium text-slate-500">{d.label}</span>
-                             <span className="text-sm font-bold text-slate-800">{d.value}</span>
-                         </div>
-                    </div>
-                ))}
             </div>
         </div>
     );
