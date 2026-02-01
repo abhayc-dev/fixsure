@@ -23,7 +23,7 @@ type JobSheet = {
 };
 
 export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack: () => void }) {
-    
+
     // Calculate Balance
     const total = job.estimatedCost || 0;
     const advance = job.advanceAmount || 0;
@@ -45,7 +45,7 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
             });
 
             const imgData = canvas.toDataURL('image/png');
-            
+
             const pdf = new jsPDF({
                 orientation: 'portrait',
                 unit: 'mm',
@@ -59,7 +59,7 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
 
             let renderWidth = pdfWidth;
             let renderHeight = pdfHeight;
-            
+
             if (pdfHeight > pageHeight) {
                 renderHeight = pageHeight;
                 renderWidth = (imgProps.width * pageHeight) / imgProps.height;
@@ -80,9 +80,9 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
 
     return (
         <div className="w-full h-full bg-white flex flex-col items-center p-8 overflow-y-auto">
-             {/* Back Actions */}
-             <div className="w-full max-w-[800px] flex justify-start mb-6 print:hidden">
-                <button 
+            {/* Back Actions */}
+            <div className="w-full max-w-[800px] flex justify-start mb-6 print:hidden">
+                <button
                     onClick={onBack}
                     className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium transition-colors"
                 >
@@ -92,7 +92,7 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
 
             {/* THE INVOICE SHEET */}
             <div ref={ticketRef} className="w-full max-w-[800px] bg-white p-8 border border-slate-200 shadow-sm print:shadow-none print:border-none text-black">
-                
+
                 {/* 1. Header Section */}
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-normal text-slate-800 mb-2">Best Service & Repairing</h1>
@@ -103,13 +103,13 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
                 <div className="border-t border-slate-200 my-6"></div>
 
                 {/* 2. Title */}
-                <h2 className="text-2xl font-bold text-center uppercase mb-8 tracking-wide">REPAIR INVOICE / JOB SHEET</h2>
+                <h2 className="text-2xl font-bold text-center mb-8 tracking-wide">Repair Invoice / Job Sheet</h2>
 
                 {/* 3. Details Columns */}
                 <div className="grid grid-cols-2 gap-8 mb-8">
                     {/* Customer Details */}
                     <div>
-                        <h3 className="font-bold text-sm uppercase mb-3 text-slate-500">CUSTOMER DETAILS:</h3>
+                        <h3 className="font-bold text-sm mb-3 text-slate-500">Customer Details:</h3>
                         <div className="text-sm font-bold text-black mb-1 text-lg">{job.customerName}</div>
                         <div className="text-sm text-slate-800 mb-1 font-medium italic">Phone: {job.customerPhone}</div>
                         <div className="text-sm text-slate-600">Addr: {job.customerAddress || 'N/A'}</div>
@@ -117,7 +117,7 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
 
                     {/* Job Details */}
                     <div>
-                        <h3 className="font-bold text-sm uppercase mb-3 text-slate-500">JOB DETAILS:</h3>
+                        <h3 className="font-bold text-sm mb-3 text-slate-500">Job Details:</h3>
                         <div className="text-sm text-slate-800 mb-1"><span className="font-bold">Job ID:</span> # {job.jobId}</div>
                         <div className="text-sm text-slate-800 mb-1"><span className="font-bold">Received:</span> {new Date(job.receivedAt).toLocaleDateString()}</div>
                         <div className="text-sm text-slate-800"><span className="font-bold">Delivery:</span> {job.expectedAt ? new Date(job.expectedAt).toLocaleDateString() : 'N/A'}</div>
@@ -130,19 +130,19 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
                         Device Specification
                     </div>
                     <div className="p-0">
-                         <div className="grid grid-cols-2 divide-x divide-y divide-slate-200 border-b border-slate-200">
-                             <div className="p-3 bg-slate-50">
-                                 <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Equipment / Motor Type</label>
-                                 <div className="text-sm font-bold">{job.deviceType || '-'}</div>
-                             </div>
-                             <div className="p-3 bg-white">
-                                 <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Model / Serial No.</label>
-                                 <div className="text-sm font-bold">{job.deviceModel || '-'}</div>
-                             </div>
-                         </div>
-                         
-                         {job.technicalDetails?.motor && (
-                             <div className="grid grid-cols-2 divide-x divide-slate-200 border-b border-slate-200">
+                        <div className="grid grid-cols-2 divide-x divide-y divide-slate-200 border-b border-slate-200">
+                            <div className="p-3 bg-slate-50">
+                                <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Equipment / Motor Type</label>
+                                <div className="text-sm font-bold">{job.deviceType || '-'}</div>
+                            </div>
+                            <div className="p-3 bg-white">
+                                <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Model / Serial No.</label>
+                                <div className="text-sm font-bold">{job.deviceModel || '-'}</div>
+                            </div>
+                        </div>
+
+                        {job.technicalDetails?.motor && (
+                            <div className="grid grid-cols-2 divide-x divide-slate-200 border-b border-slate-200">
                                 <div className="p-3 bg-white">
                                     <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Motor Power</label>
                                     <div className="text-sm font-bold">{job.technicalDetails.motor.power} {job.technicalDetails.motor.power_unit}</div>
@@ -151,10 +151,10 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
                                     <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Phase</label>
                                     <div className="text-sm font-bold">{job.technicalDetails.motor.phase} phase</div>
                                 </div>
-                             </div>
-                         )}
+                            </div>
+                        )}
 
-                     </div>
+                    </div>
                 </div>
 
                 {/* Remarks & Warranty on Invoice */}
@@ -182,7 +182,7 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
                     {/* PAID STAMP */}
                     {(job.status === 'DELIVERED' || balance === 0) && (
                         <div className="absolute left-0 top-0 transform rotate-[-15deg] border-[4px] border-emerald-600 px-6 py-2 rounded-xl bg-white/50 backdrop-blur-[2px] z-10 opacity-70">
-                            <span className="text-4xl font-[900] text-emerald-600 uppercase tracking-tighter opacity-80">PAID</span>
+                            <span className="text-4xl font-[900] text-emerald-600 tracking-tighter opacity-80">Paid</span>
                         </div>
                     )}
 
@@ -218,12 +218,12 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
                 {/* 6. Footer Signature */}
                 <div className="mt-20 flex justify-between items-end">
                     <div className="text-[10px] text-slate-400 font-medium">
-                        * This is a computer generated document.<br/>
+                        * This is a computer generated document.<br />
                         * Please bring this sheet at the time of delivery.
                     </div>
                     <div className="text-center">
-                         <div className="w-40 border-b border-slate-900 mb-2"></div>
-                         <div className="text-[10px] font-bold uppercase tracking-widest">Authorized Signature</div>
+                        <div className="w-40 border-b border-slate-900 mb-2"></div>
+                        <div className="text-[10px] font-bold uppercase tracking-widest">Authorized Signature</div>
                     </div>
                 </div>
 
@@ -231,7 +231,7 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
 
             {/* Print/Download Button */}
             <div className="w-full max-w-[800px] flex justify-end mt-6 print:hidden">
-                <button 
+                <button
                     onClick={handleDownloadPdf}
                     className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg shadow-primary/20"
                     disabled={downloading}

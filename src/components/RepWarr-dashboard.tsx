@@ -205,7 +205,7 @@ export default function DashboardClient({
     if (viewMode === 'WARRANTY_CERTIFICATE' && selectedWarranty) {
         return (
             <div className="min-h-screen bg-[#f3f4f6] p-4">
-                 <WarrantyCardView warranty={selectedWarranty} shop={shop} onBack={handleBackToDetails} />
+                <WarrantyCardView warranty={selectedWarranty} shop={shop} onBack={handleBackToDetails} />
             </div>
         );
     }
@@ -213,10 +213,10 @@ export default function DashboardClient({
     if (viewMode === 'JOB_DETAILS' && selectedJobSheet) {
         return (
             <div className="min-h-screen bg-white">
-                 <JobDetailsView job={selectedJobSheet} onBack={() => {
-                     setSelectedJobId(null);
-                     setViewMode('JOBS');
-                 }} />
+                <JobDetailsView job={selectedJobSheet} onBack={() => {
+                    setSelectedJobId(null);
+                    setViewMode('JOBS');
+                }} />
             </div>
         );
     }
@@ -224,10 +224,10 @@ export default function DashboardClient({
     if (viewMode === 'JOB_CUSTOMER_DETAILS' && selectedJobSheet) {
         return (
             <div className="min-h-screen bg-[#f3f4f6] p-4">
-                 <JobCustomerView job={selectedJobSheet} shop={shop} onBack={() => {
-                     setSelectedJobId(null);
-                     setViewMode('JOBS');
-                 }} />
+                <JobCustomerView job={selectedJobSheet} shop={shop} onBack={() => {
+                    setSelectedJobId(null);
+                    setViewMode('JOBS');
+                }} />
             </div>
         );
     }
@@ -256,7 +256,7 @@ export default function DashboardClient({
                     {/* Nav Items */}
                     <nav className="px-4 space-y-1.5">
                         <div className="px-4 mb-3">
-                             <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.25em] ml-1 opacity-70">Core Actions</p>
+                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.25em] ml-1 opacity-70">Core Actions</p>
                         </div>
                         <div className="space-y-3 mb-10">
                             <button
@@ -264,8 +264,8 @@ export default function DashboardClient({
                                 disabled={!isPlanActive || !stats.isVerified}
                                 className={cn(
                                     "flex items-center gap-3.5 w-full px-5 py-4 rounded-2xl text-[13px] font-black transition-all group",
-                                    (!isPlanActive || !stats.isVerified) 
-                                        ? "opacity-40 cursor-not-allowed bg-slate-800/50 text-slate-500" 
+                                    (!isPlanActive || !stats.isVerified)
+                                        ? "opacity-40 cursor-not-allowed bg-slate-800/50 text-slate-500"
                                         : "bg-primary text-white hover:shadow-2xl hover:shadow-primary/30 hover:-translate-y-1 active:scale-95",
                                     viewMode === 'CREATE_WARRANTY' && "ring-2 ring-primary ring-offset-4 ring-offset-[#0F172A]"
                                 )}
@@ -279,8 +279,8 @@ export default function DashboardClient({
                                 disabled={!isPlanActive || !stats.isVerified}
                                 className={cn(
                                     "flex items-center gap-3.5 w-full px-5 py-4 rounded-2xl text-[13px] font-black transition-all group",
-                                    (!isPlanActive || !stats.isVerified) 
-                                        ? "opacity-40 cursor-not-allowed bg-slate-800/50 text-slate-500" 
+                                    (!isPlanActive || !stats.isVerified)
+                                        ? "opacity-40 cursor-not-allowed bg-slate-800/50 text-slate-500"
                                         : "bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:-translate-y-1 active:scale-95",
                                     viewMode === 'CREATE_JOB' && "bg-white/10 border-primary/50"
                                 )}
@@ -291,9 +291,9 @@ export default function DashboardClient({
                         </div>
 
                         <div className="px-4 mb-3">
-                             <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.25em] ml-1 opacity-70">Management</p>
+                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.25em] ml-1 opacity-70">Management</p>
                         </div>
-                        
+
                         {[
                             { id: 'WARRANTIES', icon: CheckCircle, label: 'Warranties' },
                             { id: 'JOBS', icon: Wrench, label: 'Repair Jobs' },
@@ -302,15 +302,15 @@ export default function DashboardClient({
                         ].map((item) => {
                             const Icon = item.icon;
                             const isActive = viewMode === item.id || (item.id === 'JOBS' && viewMode === 'JOB_DETAILS') || (item.id === 'WARRANTIES' && viewMode === 'WARRANTY_DETAILS');
-                            
+
                             return (
                                 <button
                                     key={item.id}
                                     onClick={() => setViewMode(item.id as any)}
                                     className={cn(
                                         "flex items-center gap-3.5 w-full px-5 py-3.5 rounded-2xl text-[13px] font-bold transition-all group",
-                                        isActive 
-                                            ? "bg-gradient-to-r from-primary/15 to-transparent text-primary border-l-4 border-primary rounded-l-none" 
+                                        isActive
+                                            ? "bg-gradient-to-r from-primary/15 to-transparent text-primary border-l-4 border-primary rounded-l-none"
                                             : "text-slate-400 hover:bg-white/5 hover:text-white"
                                     )}
                                 >
@@ -338,7 +338,7 @@ export default function DashboardClient({
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between">
                             <div className={cn("text-[9px] flex items-center gap-1.5 font-bold uppercase tracking-widest", isPlanActive ? "text-emerald-400" : "text-rose-400")}>
                                 <div className={cn("w-1.5 h-1.5 rounded-full", isPlanActive ? "bg-emerald-400 animate-pulse" : "bg-rose-400")} />
@@ -365,7 +365,7 @@ export default function DashboardClient({
                     <div className="flex items-center gap-5 flex-none py-4">
                         <div className="w-1.5 h-10 bg-primary rounded-full shrink-0 shadow-[0_0_15px_rgba(255,100,66,0.25)]" />
                         <div className="flex flex-col flex-none">
-                            <h1 className="text-2xl md:text-3xl font-black text-slate-900 font-display uppercase whitespace-nowrap leading-none tracking-tight">
+                            <h1 className="text-2xl md:text-3xl font-black text-slate-900 font-display whitespace-nowrap leading-none tracking-tight">
                                 {viewMode === 'WARRANTIES' && "Warranty Data"}
                                 {viewMode === 'JOBS' && "Repair Data"}
                                 {viewMode === 'REPORTS' && "Insight Hub"}
@@ -373,7 +373,7 @@ export default function DashboardClient({
                                 {viewMode === 'CREATE_WARRANTY' && "New Warranty"}
                                 {viewMode === 'CREATE_JOB' && "New Job Sheet"}
                             </h1>
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-2 whitespace-nowrap opacity-60">
+                            <p className="text-[10px] font-black text-slate-400 tracking-[0.3em] mt-2 whitespace-nowrap opacity-60">
                                 FixSure Control Systems v2.0
                             </p>
                         </div>
@@ -384,12 +384,12 @@ export default function DashboardClient({
 
                     {/* Actions Section */}
                     <div className="flex items-center gap-6 flex-none pr-2">
-                         <div className="flex items-center gap-4 px-5 py-2.5 bg-slate-50/80 rounded-2xl border border-slate-100 hidden xl:flex shadow-inner">
-                             <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                             <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest font-display whitespace-nowrap">System Active</span>
-                         </div>
+                        <div className="flex items-center gap-4 px-5 py-2.5 bg-slate-50/80 rounded-2xl border border-slate-100 hidden xl:flex shadow-inner">
+                            <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <span className="text-[10px] font-black text-slate-500 tracking-widest font-display whitespace-nowrap">System Active</span>
+                        </div>
 
-                      
+
                     </div>
                 </header>
 
@@ -466,34 +466,34 @@ export default function DashboardClient({
                         <div className="space-y-8 animate-fade-in pb-20">
                             {/* Premium Stats Grid */}
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                <ReportStatCard 
-                                    label="Total Issuance" 
-                                    value={stats.total} 
-                                    icon={ShieldCheck} 
-                                    color="blue" 
+                                <ReportStatCard
+                                    label="Total Issuance"
+                                    value={stats.total}
+                                    icon={ShieldCheck}
+                                    color="blue"
                                 />
-                                <ReportStatCard 
-                                    label="Active Assets" 
-                                    value={stats.active} 
-                                    icon={CheckCircle} 
-                                    color="emerald" 
+                                <ReportStatCard
+                                    label="Active Assets"
+                                    value={stats.active}
+                                    icon={CheckCircle}
+                                    color="emerald"
                                 />
-                                <ReportStatCard 
-                                    label="Monthly Yield" 
-                                    value={stats.monthlyRevenue} 
-                                    icon={Activity} 
-                                    color="purple" 
-                                    isRevenue 
-                                    isVisible={isRevenueVisible} 
+                                <ReportStatCard
+                                    label="Monthly Yield"
+                                    value={stats.monthlyRevenue}
+                                    icon={Activity}
+                                    color="purple"
+                                    isRevenue
+                                    isVisible={isRevenueVisible}
                                     onToggle={handleRevenueToggle}
                                 />
-                                <ReportStatCard 
-                                    label="Annual Volume" 
-                                    value={stats.revenue} 
-                                    icon={DollarSign} 
-                                    color="orange" 
-                                    isRevenue 
-                                    isVisible={isRevenueVisible} 
+                                <ReportStatCard
+                                    label="Annual Volume"
+                                    value={stats.revenue}
+                                    icon={DollarSign}
+                                    color="orange"
+                                    isRevenue
+                                    isVisible={isRevenueVisible}
                                     onToggle={handleRevenueToggle}
                                 />
                             </div>
@@ -505,25 +505,25 @@ export default function DashboardClient({
                                     <div className="flex items-center justify-between mb-8">
                                         <div>
                                             <h3 className="text-xl font-black text-slate-900 leading-none">Revenue Growth</h3>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Fiscal Performance 2024</p>
+                                            <p className="text-[10px] font-bold text-slate-400 tracking-widest mt-2">Fiscal Performance 2024</p>
                                         </div>
                                         <div className="flex gap-2">
                                             {/* Period Switches would go here */}
                                         </div>
                                     </div>
                                     <div className="h-[300px] w-full">
-                                         <DashRevenueChart data={stats.monthlyChart} isVisible={isRevenueVisible} />
+                                        <DashRevenueChart data={stats.monthlyChart} isVisible={isRevenueVisible} />
                                     </div>
                                 </div>
 
                                 {/* Right: Distribution Analysis */}
                                 <div className="bg-slate-900 rounded-[2rem] p-8 text-white shadow-2xl shadow-slate-200 overflow-hidden relative group">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl -z-0" />
-                                    
+
                                     <div className="relative z-10">
                                         <h3 className="text-lg font-black leading-none mb-1">Job Matrix</h3>
-                                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-8">System Distribution</p>
-                                        
+                                        <p className="text-[10px] font-bold text-slate-500 tracking-[0.2em] mb-8">System Distribution</p>
+
                                         <div className="flex justify-center py-4">
                                             <DashCircularChart data={stats.jobDistribution || []} />
                                         </div>
@@ -532,12 +532,12 @@ export default function DashboardClient({
                                             {(stats.jobDistribution || []).map((item, idx) => {
                                                 const totalInDistribution = stats.jobDistribution.reduce((acc, curr) => acc + curr.value, 0);
                                                 const percentage = totalInDistribution > 0 ? Math.round((item.value / totalInDistribution) * 100) : 0;
-                                                
+
                                                 return (
                                                     <div key={idx} className="flex items-center justify-between group/item">
                                                         <div className="flex items-center gap-3">
                                                             <div className="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.1)] transition-transform group-hover/item:scale-125" style={{ backgroundColor: item.color }} />
-                                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] transition-colors group-hover/item:text-slate-200">{item.label}</span>
+                                                            <span className="text-[10px] font-black text-slate-400 tracking-[0.15em] transition-colors group-hover/item:text-slate-200">{item.label}</span>
                                                         </div>
                                                         <div className="flex items-center gap-4">
                                                             <span className="text-xs font-black text-slate-500">{item.value}</span>
@@ -555,36 +555,36 @@ export default function DashboardClient({
                         <div className="space-y-6">
                             {/* Stats Summary Panel */}
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in">
-                                <StatCard 
-                                    title="Total Certificates" 
-                                    value={stats.total.toString()} 
-                                    sub="+4% from last week" 
-                                    icon={ShieldCheck} 
+                                <StatCard
+                                    title="Total Certificates"
+                                    value={stats.total.toString()}
+                                    sub="+4% from last week"
+                                    icon={ShieldCheck}
                                 />
-                                <StatCard 
-                                    title="Active Protection" 
-                                    value={stats.active.toString()} 
-                                    sub="Healthy Fleet" 
-                                    highlight 
-                                    icon={CheckCircle} 
+                                <StatCard
+                                    title="Active Protection"
+                                    value={stats.active.toString()}
+                                    sub="Healthy Fleet"
+                                    highlight
+                                    icon={CheckCircle}
                                 />
-                                <StatCard 
-                                    title="Store Revenue" 
-                                    value={`₹${stats.revenue.toLocaleString()}`} 
-                                    sub="Total Earnings" 
-                                    secure 
-                                    isVisible={isRevenueVisible} 
-                                    onToggle={handleRevenueToggle} 
-                                    icon={DollarSign} 
+                                <StatCard
+                                    title="Store Revenue"
+                                    value={`₹${stats.revenue.toLocaleString()}`}
+                                    sub="Total Earnings"
+                                    secure
+                                    isVisible={isRevenueVisible}
+                                    onToggle={handleRevenueToggle}
+                                    icon={DollarSign}
                                 />
                             </div>
 
                             <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 flex flex-col overflow-hidden animate-slide-up">
                                 {/* Enhanced Control Bar */}
-                                 <div className="p-8 bg-slate-50/40 backdrop-blur-sm flex flex-col md:flex-row gap-6 items-center border-b border-slate-200/50">
+                                <div className="p-8 bg-slate-50/40 backdrop-blur-sm flex flex-col md:flex-row gap-6 items-center border-b border-slate-200/50">
                                     <div className="relative flex-1 group w-full">
                                         <div className="absolute left-5 top-1/2 -translate-y-1/2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm group-focus-within:border-primary group-focus-within:shadow-lg group-focus-within:shadow-primary/5 transition-all">
-                                           <Search className="text-slate-400 h-4 w-4" />
+                                            <Search className="text-slate-400 h-4 w-4" />
                                         </div>
                                         <input
                                             placeholder="Search by name, phone, or ID code..."
@@ -594,12 +594,12 @@ export default function DashboardClient({
                                         />
                                     </div>
                                     <div className="flex gap-3 w-full md:w-auto">
-                                        <button className="h-14 px-8 rounded-[1.25rem] bg-white text-slate-600 font-black hover:bg-slate-50 transition-all flex items-center gap-3 text-xs border border-slate-200 active:scale-95 uppercase tracking-[0.2em] font-display shadow-sm">
+                                        <button className="h-14 px-8 rounded-[1.25rem] bg-white text-slate-600 font-black hover:bg-slate-50 transition-all flex items-center gap-3 text-xs border border-slate-200 active:scale-95 tracking-[0.2em] font-display shadow-sm">
                                             <Filter className="h-4 w-4 text-primary" /> Filter
                                         </button>
-                                        <button 
+                                        <button
                                             onClick={() => setViewMode('CREATE_WARRANTY')}
-                                            className="h-12 px-6 rounded-2xl bg-primary text-white font-bold hover:shadow-lg hover:shadow-primary/30 transition-all flex items-center gap-2 text-xs active:scale-95 uppercase tracking-widest flex-1 md:flex-none"
+                                            className="h-12 px-6 rounded-2xl bg-primary text-white font-bold hover:shadow-lg hover:shadow-primary/30 transition-all flex items-center gap-2 text-xs active:scale-95 tracking-widest flex-1 md:flex-none"
                                         >
                                             <Plus className="h-4 w-4" /> New Case
                                         </button>
@@ -610,7 +610,7 @@ export default function DashboardClient({
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-sm text-left border-collapse">
                                         <thead>
-                                            <tr className="bg-slate-50/60 text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] border-b border-slate-100 font-display">
+                                            <tr className="bg-slate-50/60 text-[10px] font-black text-slate-400 tracking-[0.25em] border-b border-slate-100 font-display">
                                                 <th className="px-10 py-6">Identity</th>
                                                 <th className="px-8 py-6">Customer Entry</th>
                                                 <th className="px-8 py-6">Machine Spec</th>
@@ -628,7 +628,7 @@ export default function DashboardClient({
                                                             <div className="p-6 bg-slate-50 rounded-full border border-slate-100">
                                                                 <Search className="h-12 w-12 opacity-20" />
                                                             </div>
-                                                            <p className="font-bold uppercase tracking-widest text-[11px]">No matching records found</p>
+                                                            <p className="font-bold tracking-widest text-[11px]">No matching records found</p>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -638,7 +638,7 @@ export default function DashboardClient({
                                                         {/* ID */}
                                                         <td className="px-8 py-6">
                                                             <div className="flex flex-col">
-                                                                <span className="text-[10px] font-black text-primary/50 uppercase leading-none">ID CODE</span>
+                                                                <span className="text-[10px] font-black text-primary/50 leading-none">ID CODE</span>
                                                                 <button
                                                                     onClick={() => {
                                                                         setSelectedWarranty(w);
@@ -652,7 +652,7 @@ export default function DashboardClient({
                                                         </td>
 
                                                         {/* Customer */}
-                                                        <td 
+                                                        <td
                                                             className="px-6 py-6 font-medium cursor-pointer group/customer"
                                                             onClick={() => {
                                                                 setSelectedWarranty(w);
@@ -665,13 +665,13 @@ export default function DashboardClient({
                                                                 </div>
                                                                 <div className="flex flex-col">
                                                                     <div className="font-black text-slate-900 group-hover/customer:text-primary transition-colors">{w.customerName}</div>
-                                                                    <div className="text-[10px] text-slate-400 font-bold tracking-widest uppercase">{w.customerPhone}</div>
+                                                                    <div className="text-[10px] text-slate-400 font-bold tracking-widest">{w.customerPhone}</div>
                                                                 </div>
                                                             </div>
                                                         </td>
 
-                                                         {/* Device */}
-                                                        <td 
+                                                        {/* Device */}
+                                                        <td
                                                             className="px-8 py-6 font-medium cursor-pointer"
                                                             onClick={() => {
                                                                 setSelectedWarranty(w);
@@ -683,7 +683,7 @@ export default function DashboardClient({
                                                                     <Smartphone className="h-3.5 w-3.5 text-primary/60" />
                                                                     {w.deviceModel}
                                                                 </div>
-                                                                <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 bg-white text-slate-400 rounded-lg w-fit border border-slate-200/50">
+                                                                <span className="text-[9px] font-black tracking-widest px-2 py-0.5 bg-white text-slate-400 rounded-lg w-fit border border-slate-200/50">
                                                                     {w.repairType}
                                                                 </span>
                                                             </div>
@@ -692,7 +692,7 @@ export default function DashboardClient({
                                                         {/* Revenue */}
                                                         <td className="px-8 py-6 text-right">
                                                             <div className="flex flex-col items-end">
-                                                                <span className="text-[9px] font-black text-slate-300 uppercase leading-none mb-1.5 tracking-widest font-display">CERT VALUE</span>
+                                                                <span className="text-[9px] font-black text-slate-300 leading-none mb-1.5 tracking-widest font-display">CERT VALUE</span>
                                                                 <div className="font-mono font-black text-slate-900 text-lg font-display">
                                                                     ₹{(w.repairCost || 0).toLocaleString()}
                                                                 </div>
@@ -702,7 +702,7 @@ export default function DashboardClient({
                                                         {/* Date */}
                                                         <td className="px-6 py-6">
                                                             <div className="flex flex-col" suppressHydrationWarning>
-                                                                <span className="text-[9px] font-black text-slate-400 uppercase leading-none mb-1">VALID TILL</span>
+                                                                <span className="text-[9px] font-black text-slate-400 leading-none mb-1">VALID TILL</span>
                                                                 <div className="text-sm font-black text-slate-700 flex items-center gap-2">
                                                                     <Clock className="h-3 w-3 text-slate-400" />
                                                                     <span suppressHydrationWarning>
@@ -712,10 +712,10 @@ export default function DashboardClient({
                                                             </div>
                                                         </td>
 
-                                                         {/* Status */}
+                                                        {/* Status */}
                                                         <td className="px-8 py-6">
                                                             <div className="flex flex-col">
-                                                                <span className="text-[9px] font-black text-slate-300 uppercase leading-none mb-2 tracking-widest font-display">LIVE STATE</span>
+                                                                <span className="text-[9px] font-black text-slate-300 leading-none mb-2 tracking-widest font-display">LIVE STATE</span>
                                                                 <StatusBadge status={w.status} expiresAt={w.expiresAt} />
                                                             </div>
                                                         </td>
@@ -740,7 +740,7 @@ export default function DashboardClient({
                                     </table>
                                 </div>
                                 <div className="p-6 bg-slate-50/30 border-t border-slate-100 text-center">
-                                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Vault is encrypted and secure</p>
+                                    <p className="text-[10px] font-black text-slate-400 tracking-[0.3em]">Vault is encrypted and secure</p>
                                 </div>
                             </div>
                         </div>
@@ -759,7 +759,7 @@ export default function DashboardClient({
                                 <div className="p-8 bg-slate-50/40 backdrop-blur-sm flex flex-col lg:flex-row gap-6 items-center border-b border-slate-200/50">
                                     <div className="relative flex-1 group w-full">
                                         <div className="absolute left-5 top-1/2 -translate-y-1/2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm group-focus-within:border-primary group-focus-within:shadow-lg group-focus-within:shadow-primary/5 transition-all">
-                                           <Search className="text-slate-400 h-4 w-4" />
+                                            <Search className="text-slate-400 h-4 w-4" />
                                         </div>
                                         <input
                                             placeholder="Find job by name, device, or repair ID..."
@@ -774,9 +774,9 @@ export default function DashboardClient({
                                                 key={s}
                                                 onClick={() => setStatusFilter(s)}
                                                 className={cn(
-                                                    "h-12 px-6 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] whitespace-nowrap transition-all border active:scale-95 font-display shadow-sm cursor-pointer",
-                                                    statusFilter === s 
-                                                        ? "bg-primary text-white border-primary shadow-xl shadow-slate-200" 
+                                                    "h-12 px-6 rounded-2xl font-black text-[10px] tracking-[0.2em] whitespace-nowrap transition-all border active:scale-95 font-display shadow-sm cursor-pointer",
+                                                    statusFilter === s
+                                                        ? "bg-primary text-white border-primary shadow-xl shadow-slate-200"
                                                         : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50"
                                                 )}
                                             >
@@ -787,9 +787,9 @@ export default function DashboardClient({
                                 </div>
 
                                 <div className="overflow-x-auto">
-                                     <table className="w-full text-sm text-left border-collapse">
+                                    <table className="w-full text-sm text-left border-collapse">
                                         <thead>
-                                            <tr className="bg-slate-50/60 text-[10px] font-black text-slate-400 uppercase tracking-[0.25em] border-b border-slate-100 font-display">
+                                            <tr className="bg-slate-50/60 text-[10px] font-black text-slate-400 tracking-[0.25em] border-b border-slate-100 font-display">
                                                 <th className="px-10 py-6">Sequence</th>
                                                 <th className="px-8 py-6">Client Profile</th>
                                                 <th className="px-8 py-6">Machine Class</th>
@@ -836,7 +836,7 @@ export default function DashboardClient({
                                                                 </button>
                                                             </div>
                                                         </td>
-                                                        <td 
+                                                        <td
                                                             className="px-6 py-6 cursor-pointer group/cell"
                                                             onClick={() => {
                                                                 setSelectedJobId(j.id);
@@ -845,11 +845,11 @@ export default function DashboardClient({
                                                         >
                                                             <div className="flex flex-col gap-0.5">
                                                                 <div className="font-black text-slate-900 text-sm group-hover/cell:text-primary transition-colors">{j.customerName}</div>
-                                                                <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{j.customerPhone}</div>
+                                                                <div className="text-[10px] text-slate-400 font-bold tracking-wider">{j.customerPhone}</div>
                                                             </div>
                                                         </td>
-                                                        <td 
-                                                            className="px-6 py-6 font-black text-slate-800 text-sm uppercase cursor-pointer hover:text-primary transition-colors"
+                                                        <td
+                                                            className="px-6 py-6 font-black text-slate-800 text-sm cursor-pointer hover:text-primary transition-colors"
                                                             onClick={() => {
                                                                 setSelectedJobId(j.id);
                                                                 setViewMode('JOB_CUSTOMER_DETAILS');
@@ -858,14 +858,14 @@ export default function DashboardClient({
                                                             {j.deviceModel}
                                                         </td>
                                                         <td className="px-6 py-6 max-w-[200px]">
-                                                            <div className="text-slate-500 text-[10px] font-bold uppercase tracking-tight line-clamp-2 leading-relaxed bg-slate-50 px-2.5 py-1.5 rounded-2xl border border-slate-100" title={j.problemDesc}>
+                                                            <div className="text-slate-500 text-[10px] font-bold tracking-tight line-clamp-2 leading-relaxed bg-slate-50 px-2.5 py-1.5 rounded-2xl border border-slate-100" title={j.problemDesc}>
                                                                 {j.problemDesc}
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-6">
                                                             {j.expectedAt ? (
                                                                 <div className="flex flex-col">
-                                                                    <span className="text-[9px] font-black text-slate-400 uppercase leading-none mb-1">DUE</span>
+                                                                    <span className="text-[9px] font-black text-slate-400 leading-none mb-1">DUE</span>
                                                                     <div className="flex items-center gap-1.5 font-black text-slate-700 text-sm">
                                                                         <Calendar className="h-3 w-3 text-primary/50" />
                                                                         {new Date(j.expectedAt).toLocaleDateString(undefined, { day: '2-digit', month: 'short' })}
@@ -880,7 +880,7 @@ export default function DashboardClient({
                                                         </td>
                                                         <td className="px-10 py-6 text-right">
                                                             <div className="flex flex-col items-end">
-                                                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">QUOTE</span>
+                                                                <span className="text-[9px] font-black text-slate-400 tracking-widest mb-1">QUOTE</span>
                                                                 <div className="font-black text-slate-900 text-base">
                                                                     {j.estimatedCost ? `₹${j.estimatedCost.toLocaleString()}` : '---'}
                                                                 </div>
@@ -893,13 +893,13 @@ export default function DashboardClient({
                                     </table>
                                 </div>
                                 <div className="p-4 bg-slate-50/20 border-t border-slate-100/50 flex justify-between items-center">
-                                     <div className="flex gap-4">
-                                         <div className="flex items-center gap-2">
-                                             <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                                             <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Active Processing</span>
-                                         </div>
-                                     </div>
-                                     <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">{filteredJobSheets.length} Records Loaded</span>
+                                    <div className="flex gap-4">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                                            <span className="text-[9px] font-black text-slate-400 tracking-widest">Active Processing</span>
+                                        </div>
+                                    </div>
+                                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">{filteredJobSheets.length} Records Loaded</span>
                                 </div>
                             </div>
                         </div>
@@ -956,7 +956,7 @@ function StatusBadge({ status, expiresAt }: { status: string, expiresAt: Date })
 
     return (
         <span className={cn(
-            "inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide",
+            "inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide",
             styles[displayStatus] || styles['EXPIRED']
         )}>
             <StatusIcon className="h-3 w-3 mr-1.5" strokeWidth={2.5} />
@@ -993,7 +993,7 @@ function ActionMenu({ warranty }: { warranty: Warranty }) {
                     <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
                     <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20 animate-fade-in">
                         <div className="py-1">
-                            <div className="px-4 py-2 text-xs font-bold text-gray-400 uppercase">Update Status</div>
+                            <div className="px-4 py-2 text-xs font-bold text-gray-400">Update Status</div>
                             {['ACTIVE', 'CLAIMED', 'VOID', 'EXPIRED'].map((s) => (
                                 <button
                                     key={s}
@@ -1054,7 +1054,7 @@ function JobActionMenu({ job, shop }: { job: JobSheet, shop: any }) {
                         </div>
 
                         <div className="py-1">
-                            <div className="px-4 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Update Status</div>
+                            <div className="px-4 py-2 text-[10px] font-bold text-gray-400 tracking-wider">Update Status</div>
                             {[
                                 { label: 'Received', value: 'RECEIVED' },
                                 { label: 'In Progress', value: 'IN_PROGRESS' },
@@ -1108,7 +1108,7 @@ function StatCard({
         <div className="p-8 bg-white rounded-[2rem] border border-slate-200/60 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-500 flex flex-col justify-between group h-full relative overflow-hidden">
             {/* Background Glow */}
             <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-3xl -z-0 group-hover:bg-primary/10 transition-colors" />
-            
+
             <div className="mb-6 flex items-start justify-between relative z-10">
                 <div className="p-4 bg-slate-50 text-slate-400 rounded-2xl group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm border border-slate-100 group-hover:border-primary">
                     {Icon ? <Icon className="h-6 w-6" /> : <Clock className="h-6 w-6" />}
@@ -1124,11 +1124,11 @@ function StatCard({
             </div>
 
             <div className="relative z-10">
-                <h3 className="text-[11px] font-black text-slate-400 mb-2 uppercase tracking-[0.2em] font-display opacity-80">{title}</h3>
+                <h3 className="text-[11px] font-black text-slate-400 mb-2 tracking-[0.2em] font-display opacity-80">{title}</h3>
                 <div className={cn("text-3xl font-black mb-3 tracking-tight font-display", highlight ? "text-primary" : "text-slate-900")}>
                     {secure && !isVisible ? "••••••" : value}
                 </div>
-                <div className="text-[10px] text-emerald-600 font-black bg-emerald-50/50 w-fit px-3 py-1.5 rounded-xl border border-emerald-100/50 uppercase tracking-widest">{sub}</div>
+                <div className="text-[10px] text-emerald-600 font-black bg-emerald-50/50 w-fit px-3 py-1.5 rounded-xl border border-emerald-100/50 tracking-widest">{sub}</div>
             </div>
         </div>
     );
@@ -1577,7 +1577,7 @@ function JobSummaryCard({ title, count, color }: { title: string, count: number,
     return (
         <div className={cn("p-8 bg-white rounded-[2rem] border border-slate-200 shadow-sm flex flex-col gap-4 bg-gradient-to-br transition-all hover:shadow-2xl hover:-translate-y-1.5 duration-500 group relative overflow-hidden", colorMap[color])}>
             <div className="absolute top-0 right-0 w-20 h-20 bg-current opacity-[0.03] rounded-full blur-2xl -z-0" />
-            
+
             <span className="text-[11px] font-black uppercase tracking-[0.25em] opacity-60 font-display relative z-10">{title}</span>
             <div className="flex items-center justify-between relative z-10">
                 <span className="text-4xl font-black font-display tracking-tight">{count}</span>
@@ -1629,7 +1629,7 @@ function ReportStatCard({ label, value, icon: Icon, color, isRevenue, isVisible,
                     <Icon className="h-6 w-6" />
                 </div>
                 {isRevenue && (
-                    <button 
+                    <button
                         onClick={onToggle}
                         className="p-2.5 hover:bg-slate-100 rounded-xl text-slate-400 transition-colors border border-transparent hover:border-slate-200"
                     >
@@ -1651,9 +1651,9 @@ function ReportStatCard({ label, value, icon: Icon, color, isRevenue, isVisible,
 
 function EditableJobStatus({ job }: { job: JobSheet }) {
     const [loading, setLoading] = useState(false);
-    
+
     const statuses = ['RECEIVED', 'IN_PROGRESS', 'READY', 'DELIVERED', 'CANCELLED'];
-    
+
     const handleStatusChange = async (newStatus: string) => {
         if (newStatus === job.status) return;
         setLoading(true);

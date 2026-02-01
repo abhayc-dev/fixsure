@@ -178,17 +178,17 @@ export default function WarrantyCardView({ warranty, shop, onBack }: { warranty:
                                     <ShieldCheck className="h-10 w-10 text-white" />
                                 </div>
                                 <div>
-                                    <h1 className="text-3xl font-black uppercase text-slate-900 tracking-tight leading-none mb-1">
+                                    <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-1">
                                         {shop.shopName || "Repair Center"}
                                     </h1>
-                                    <div className="text-sm font-semibold text-slate-500 uppercase tracking-widest flex items-center gap-4">
+                                    <div className="text-sm font-semibold text-slate-500 tracking-widest flex items-center gap-4">
                                         {shop.phone && <span className="flex items-center gap-1"><Smartphone className="h-3.5 w-3.5" /> {shop.phone}</span>}
                                         {shop.address && <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> {shop.address}</span>}
                                     </div>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <div className="text-xs font-bold text-slate-400 uppercase tracking-[0.3em] mb-1">Document Type</div>
+                                <div className="text-xs font-bold text-slate-400 tracking-[0.3em] mb-1">Document Type</div>
                                 <h2 className="text-2xl font-serif font-bold text-slate-800">Warranty Certificate</h2>
                             </div>
                         </div>
@@ -199,7 +199,7 @@ export default function WarrantyCardView({ warranty, shop, onBack }: { warranty:
                             {/* Left: Verification & Status */}
                             <div className="col-span-3 border-r border-slate-200 pr-8 flex flex-col justify-between h-full">
                                 <div>
-                                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Verification</div>
+                                    <div className="text-xs font-bold text-slate-400 tracking-widest mb-4">Verification</div>
                                     <div className="bg-white p-2 border border-slate-200 rounded-lg w-fit mx-auto shadow-sm">
                                         <QRCodeSVG value={verificationUrl} size={100} fgColor="#0f172a" />
                                     </div>
@@ -209,9 +209,9 @@ export default function WarrantyCardView({ warranty, shop, onBack }: { warranty:
                                 </div>
 
                                 <div className="mt-8 text-center">
-                                    <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Status</div>
+                                    <div className="text-xs font-bold text-slate-400 tracking-widest mb-2">Status</div>
                                     <span className={cn(
-                                        "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border",
+                                        "px-4 py-1.5 rounded-full text-xs font-bold tracking-wider border",
                                         isActive ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-red-50 text-red-700 border-red-200"
                                     )}>
                                         {warranty.status}
@@ -224,7 +224,7 @@ export default function WarrantyCardView({ warranty, shop, onBack }: { warranty:
                                 <div className="grid grid-cols-2 gap-x-12 gap-y-10">
 
                                     <div className="col-span-2">
-                                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Customer</label>
+                                        <label className="block text-xs font-bold text-slate-400 tracking-widest mb-1">Customer</label>
                                         <div className="flex items-baseline justify-between border-b border-slate-300 pb-2">
                                             <span className="text-xl font-bold text-slate-900">{warranty.customerName}</span>
                                             <span className="text-sm font-medium text-slate-600">{warranty.customerPhone}</span>
@@ -232,34 +232,34 @@ export default function WarrantyCardView({ warranty, shop, onBack }: { warranty:
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Device Model</label>
+                                        <label className="block text-xs font-bold text-slate-400 tracking-widest mb-1">Device Model</label>
                                         <div className="text-lg font-bold text-slate-800 border-b border-slate-200 pb-2">
                                             {warranty.deviceModel}
                                         </div>
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Service Type</label>
+                                        <label className="block text-xs font-bold text-slate-400 tracking-widest mb-1">Service Type</label>
                                         <div className="text-lg font-bold text-slate-800 border-b border-slate-200 pb-2">
                                             {warranty.repairType} Repair
                                         </div>
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Certificate ID</label>
+                                        <label className="block text-xs font-bold text-slate-400 tracking-widest mb-1">Certificate ID</label>
                                         <div className="font-mono text-lg font-bold text-slate-800 bg-slate-50 px-3 py-1 rounded inline-block">
                                             {warranty.shortCode}
                                         </div>
                                     </div>
 
                                     <div>
-                                        <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Validity Period</label>
+                                        <label className="block text-xs font-bold text-slate-400 tracking-widest mb-1">Validity Period</label>
                                         <div className="flex items-center gap-2 text-sm font-bold text-slate-800">
                                             <span className="text-slate-500 font-normal">{new Date(warranty.issuedAt).toLocaleDateString()}</span>
                                             <span className="text-slate-300">to</span>
                                             <span className="text-emerald-700">{new Date(warranty.expiresAt).toLocaleDateString()}</span>
                                         </div>
-                                        <div className="text-[10px] text-slate-400 font-medium uppercase mt-1">
+                                        <div className="text-[10px] text-slate-400 font-medium mt-1">
                                             ({warranty.durationDays} Days Warranty)
                                         </div>
                                     </div>
@@ -281,13 +281,13 @@ export default function WarrantyCardView({ warranty, shop, onBack }: { warranty:
                         {/* Footer */}
                         <div className="relative z-10 border-t-2 border-slate-900 pt-6 flex justify-between items-end">
                             <div>
-                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Authorized Signature</div>
+                                <div className="text-[10px] font-bold text-slate-400 tracking-widest mb-2">Authorized Signature</div>
                                 <div className="font-serif text-2xl text-slate-800 font-bold select-none italic">
                                     {shop.shopName || "FixSure"}
                                 </div>
                             </div>
                             <div className="text-right">
-                                <div className="text-[10px] text-slate-400 font-medium uppercase tracking-widest">Powered by FixSure</div>
+                                <div className="text-[10px] text-slate-400 font-medium tracking-widest">Powered by FixSure</div>
                                 <div className="text-[9px] text-slate-300 mt-1">{new Date().getFullYear()} © Digital Warranty Record</div>
                             </div>
                         </div>
