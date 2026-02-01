@@ -39,17 +39,17 @@ export default function LoginPage() {
 
   const validateForm = () => {
     const errors: Record<string, string> = {};
-    
+
     if (!email) errors.email = "Email is required";
     else if (!validateEmail(email)) errors.email = "Invalid email address";
-    
+
     if (!password) errors.password = "Password is required";
     else if (password.length < 6) errors.password = "Password must be at least 6 characters";
 
     if (mode === "signup") {
       if (!phone) errors.phone = "Mobile number is required";
       else if (phone.length !== 10) errors.phone = "Enter a valid 10-digit number";
-      
+
       if (!shopName) errors.shopName = "Shop name is required";
     }
 
@@ -59,10 +59,10 @@ export default function LoginPage() {
 
   const validateGoogleSignup = () => {
     const errors: Record<string, string> = {};
-    
+
     if (!phone) errors.phone = "Mobile number is required";
     else if (phone.length !== 10) errors.phone = "Enter a valid 10-digit number";
-    
+
     if (!shopName) errors.shopName = "Shop name is required";
 
     setFieldErrors(errors);
@@ -72,7 +72,7 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-    
+
     setLoading(true);
     setError(null);
     try {
@@ -93,16 +93,16 @@ export default function LoginPage() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-    
+
     setLoading(true);
     setError(null);
     try {
       const res = await signup({ email, password, phone, shopName, category });
       if (res.success) {
         if (res.shopName === "New Shop Info Required") {
-            router.push("/dashboard/settings");
+          router.push("/dashboard/settings");
         } else {
-            router.push("/dashboard");
+          router.push("/dashboard");
         }
         return; // Keep loader active
       } else {
@@ -124,7 +124,7 @@ export default function LoginPage() {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-      
+
       const res = await googleLogin({
         email: user.email!,
         name: user.displayName || "User",
@@ -173,7 +173,7 @@ export default function LoginPage() {
       {/* Dynamic Background Blobs */}
       <div className="absolute top-0 -left-20 w-[600px] h-[600px] bg-orange-200/30 rounded-full blur-[120px] -z-0"></div>
       <div className="absolute bottom-0 -right-20 w-[500px] h-[500px] bg-blue-100/40 rounded-full blur-[100px] -z-0"></div>
-      
+
       {/* Subtle Grid Background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:24px_24px] -z-0" />
 
@@ -186,13 +186,13 @@ export default function LoginPage() {
               </div>
               <span className="text-slate-900">FixSure</span>
             </Link>
-            
+
             <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 mb-1">
               {mode === "login" ? "Welcome Back" : "Partner Signup"}
             </h1>
             <p className="text-slate-500 text-[14px] leading-snug px-4 font-medium mb-2">
-              {mode === "login" 
-                ? "Access your dashboard to manage warranties" 
+              {mode === "login"
+                ? "Access your dashboard to manage warranties"
                 : "Start issuing digital warranties in 60 seconds"}
             </p>
           </div>
@@ -206,51 +206,51 @@ export default function LoginPage() {
           <div className="space-y-4">
             <form onSubmit={mode === "login" ? handleLogin : handleSignup} className="space-y-3">
               {mode === "signup" && (
-                  <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Shop Name</label>
-                      <div className="relative group">
-                        <Store className={`absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors ${fieldErrors.shopName ? 'text-red-400' : 'text-slate-400 group-focus-within:text-primary'}`} />
-                        <input
-                            type="text"
-                            placeholder="A-1 Mobile Repair Hub"
-                            className={`w-full h-11 pl-11 pr-4 rounded-xl border bg-slate-50/50 text-slate-900 placeholder:text-slate-400 focus:ring-4 outline-none transition-all font-semibold text-sm ${fieldErrors.shopName ? 'border-red-300 focus:ring-red-100' : 'border-slate-200 focus:ring-primary/10 focus:border-primary'}`}
-                            value={shopName}
-                            onChange={(e) => {
-                              setShopName(e.target.value);
-                              clearFieldError('shopName');
-                            }}
-                        />
-                      </div>
-                      {fieldErrors.shopName && <p className="text-[10px] text-red-500 font-bold ml-1">{fieldErrors.shopName}</p>}
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-400 tracking-widest ml-1">Shop Name</label>
+                  <div className="relative group">
+                    <Store className={`absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors ${fieldErrors.shopName ? 'text-red-400' : 'text-slate-400 group-focus-within:text-primary'}`} />
+                    <input
+                      type="text"
+                      placeholder="A-1 Mobile Repair Hub"
+                      className={`w-full h-11 pl-11 pr-4 rounded-xl border bg-slate-50/50 text-slate-900 placeholder:text-slate-400 focus:ring-4 outline-none transition-all font-semibold text-sm ${fieldErrors.shopName ? 'border-red-300 focus:ring-red-100' : 'border-slate-200 focus:ring-primary/10 focus:border-primary'}`}
+                      value={shopName}
+                      onChange={(e) => {
+                        setShopName(e.target.value);
+                        clearFieldError('shopName');
+                      }}
+                    />
                   </div>
+                  {fieldErrors.shopName && <p className="text-[10px] text-red-500 font-bold ml-1">{fieldErrors.shopName}</p>}
+                </div>
               )}
 
               {mode === "signup" && (
-                  <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Business Category</label>
-                      <div className="relative group">
-                        <LayoutGrid className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-primary transition-colors" />
-                        <select
-                            className="w-full h-11 pl-11 pr-4 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-semibold text-sm appearance-none cursor-pointer"
-                            value={category}
-                            onChange={(e) => setCategory(e.target.value)}
-                        >
-                            <option value="MOBILE">Mobile Repairing</option>
-                            <option value="MOTOR">Motor Winding / Repair</option>
-                            <option value="TV">TV & Electronics</option>
-                            <option value="GENERAL">General Support / Other</option>
-                        </select>
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                            <svg className="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                      </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-400 tracking-widest ml-1">Business Category</label>
+                  <div className="relative group">
+                    <LayoutGrid className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-primary transition-colors" />
+                    <select
+                      className="w-full h-11 pl-11 pr-4 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 focus:ring-4 focus:ring-primary/10 focus:border-primary outline-none transition-all font-semibold text-sm appearance-none cursor-pointer"
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                    >
+                      <option value="MOBILE">Mobile Repairing</option>
+                      <option value="MOTOR">Motor Winding / Repair</option>
+                      <option value="TV">TV & Electronics</option>
+                      <option value="GENERAL">General Support / Other</option>
+                    </select>
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                      <svg className="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
                   </div>
+                </div>
               )}
 
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
+                <label className="text-[10px] font-bold text-slate-400 tracking-widest ml-1">Email Address</label>
                 <div className="relative group">
                   <Mail className={`absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors ${fieldErrors.email ? 'text-red-400' : 'text-slate-400 group-focus-within:text-primary'}`} />
                   <input
@@ -268,31 +268,31 @@ export default function LoginPage() {
               </div>
 
               {mode === "signup" && (
-                  <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Mobile Number</label>
-                      <div className="relative group">
-                      <Phone className={`absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors ${fieldErrors.phone ? 'text-red-400' : 'text-slate-400 group-focus-within:text-primary'}`} />
-                      <input
-                          type="tel"
-                          placeholder="9876543210"
-                          className={`w-full h-11 pl-11 pr-4 rounded-xl border bg-slate-50/50 text-slate-900 placeholder:text-slate-400 focus:ring-4 outline-none transition-all font-semibold text-sm ${fieldErrors.phone ? 'border-red-300 focus:ring-red-100' : 'border-slate-200 focus:ring-primary/10 focus:border-primary'}`}
-                          value={phone}
-                          onChange={(e) => {
-                            setPhone(e.target.value.replace(/\D/g, ''));
-                            clearFieldError('phone');
-                          }}
-                          maxLength={10}
-                      />
-                      </div>
-                      {fieldErrors.phone && <p className="text-[10px] text-red-500 font-bold ml-1">{fieldErrors.phone}</p>}
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-400 tracking-widest ml-1">Mobile Number</label>
+                  <div className="relative group">
+                    <Phone className={`absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors ${fieldErrors.phone ? 'text-red-400' : 'text-slate-400 group-focus-within:text-primary'}`} />
+                    <input
+                      type="tel"
+                      placeholder="9876543210"
+                      className={`w-full h-11 pl-11 pr-4 rounded-xl border bg-slate-50/50 text-slate-900 placeholder:text-slate-400 focus:ring-4 outline-none transition-all font-semibold text-sm ${fieldErrors.phone ? 'border-red-300 focus:ring-red-100' : 'border-slate-200 focus:ring-primary/10 focus:border-primary'}`}
+                      value={phone}
+                      onChange={(e) => {
+                        setPhone(e.target.value.replace(/\D/g, ''));
+                        clearFieldError('phone');
+                      }}
+                      maxLength={10}
+                    />
                   </div>
+                  {fieldErrors.phone && <p className="text-[10px] text-red-500 font-bold ml-1">{fieldErrors.phone}</p>}
+                </div>
               )}
 
               <div className="space-y-1">
                 <div className="flex justify-between items-center px-1">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Password</label>
+                  <label className="text-[10px] font-bold text-slate-400 tracking-widest">Password</label>
                   {mode === "login" && (
-                      <button type="button" className="text-[10px] font-bold text-primary hover:text-primary/80 transition-colors uppercase tracking-wider">Forgot?</button>
+                    <button type="button" className="text-[10px] font-bold text-primary hover:text-primary/80 transition-colors tracking-wider">Forgot?</button>
                   )}
                 </div>
                 <div className="relative group">
@@ -329,7 +329,7 @@ export default function LoginPage() {
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-slate-200"></div>
               </div>
-              <div className="relative flex justify-center text-[9px] font-bold uppercase tracking-widest">
+              <div className="relative flex justify-center text-[9px] font-bold tracking-widest">
                 <span className="bg-white px-3 text-slate-400">Or connect with</span>
               </div>
             </div>
@@ -376,8 +376,8 @@ export default function LoginPage() {
             </p>
           </div>
         </div>
-        
-        <p className="mt-3 text-center text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-[-12px]">
+
+        <p className="mt-3 text-center text-slate-400 text-[10px] font-bold tracking-widest mb-[-12px]">
           Secure & Verified. © 2026 FixSure Digital.
         </p>
       </div>

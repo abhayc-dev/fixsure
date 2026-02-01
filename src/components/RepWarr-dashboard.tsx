@@ -256,7 +256,7 @@ export default function DashboardClient({
                     {/* Nav Items */}
                     <nav className="px-4 space-y-1.5">
                         <div className="px-4 mb-3">
-                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.25em] ml-1 opacity-70">Core Actions</p>
+                            <p className="text-[10px] font-black text-slate-500 tracking-[0.25em] ml-1 opacity-70">Core Actions</p>
                         </div>
                         <div className="space-y-3 mb-10">
                             <button
@@ -271,7 +271,7 @@ export default function DashboardClient({
                                 )}
                             >
                                 <Plus className="h-5 w-5 group-hover:rotate-90 transition-transform" />
-                                <span className="font-display uppercase tracking-wider">Add Warranty</span>
+                                <span className="font-display tracking-wider">Add Warranty</span>
                             </button>
 
                             <button
@@ -286,12 +286,12 @@ export default function DashboardClient({
                                 )}
                             >
                                 <Wrench className="h-5 w-5 group-hover:rotate-12 transition-transform text-primary" />
-                                <span className="font-display uppercase tracking-wider text-slate-200">Repair Entry</span>
+                                <span className="font-display tracking-wider text-slate-200">Repair Entry</span>
                             </button>
                         </div>
 
                         <div className="px-4 mb-3">
-                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.25em] ml-1 opacity-70">Management</p>
+                            <p className="text-[10px] font-black text-slate-500 tracking-[0.25em] ml-1 opacity-70">Management</p>
                         </div>
 
                         {[
@@ -333,14 +333,14 @@ export default function DashboardClient({
                                 <div className="font-bold truncate text-sm text-white leading-tight">
                                     {shop.ownerName || "Shop Owner"}
                                 </div>
-                                <div className="text-[10px] text-slate-400 truncate uppercase tracking-wider mt-0.5">
+                                <div className="text-[10px] text-slate-400 truncate tracking-wider mt-0.5">
                                     {shop.shopName}
                                 </div>
                             </div>
                         </div>
 
                         <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between">
-                            <div className={cn("text-[9px] flex items-center gap-1.5 font-bold uppercase tracking-widest", isPlanActive ? "text-emerald-400" : "text-rose-400")}>
+                            <div className={cn("text-[9px] flex items-center gap-1.5 font-bold tracking-widest", isPlanActive ? "text-emerald-400" : "text-rose-400")}>
                                 <div className={cn("w-1.5 h-1.5 rounded-full", isPlanActive ? "bg-emerald-400 animate-pulse" : "bg-rose-400")} />
                                 {stats.subscription.replace('_', ' ')}
                             </div>
@@ -807,7 +807,7 @@ export default function DashboardClient({
                                                             <div className="h-20 w-20 bg-slate-50 rounded-[40%] flex items-center justify-center rotate-12 border border-slate-100">
                                                                 <Wrench className="h-8 w-8 text-slate-300" />
                                                             </div>
-                                                            <span className="text-[11px] font-black uppercase tracking-widest text-slate-300">No active job matrices found</span>
+                                                            <span className="text-[11px] font-black tracking-widest text-slate-300">No active job matrices found</span>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -899,7 +899,7 @@ export default function DashboardClient({
                                             <span className="text-[9px] font-black text-slate-400 tracking-widest">Active Processing</span>
                                         </div>
                                     </div>
-                                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">{filteredJobSheets.length} Records Loaded</span>
+                                    <span className="text-[9px] font-black text-slate-300 tracking-[0.2em]">{filteredJobSheets.length} Records Loaded</span>
                                 </div>
                             </div>
                         </div>
@@ -1420,7 +1420,7 @@ function JobSheetModal({ onClose }: { onClose: () => void }) {
 
                     {/* Customer Details */}
                     <div className="space-y-4">
-                        <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                        <h3 className="text-sm font-bold text-muted-foreground tracking-wider flex items-center gap-2">
                             <span className="w-8 h-[1px] bg-border"></span> Customer Details
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1455,7 +1455,7 @@ function JobSheetModal({ onClose }: { onClose: () => void }) {
 
                     {/* Device Details */}
                     <div className="space-y-4">
-                        <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                        <h3 className="text-sm font-bold text-muted-foreground tracking-wider flex items-center gap-2">
                             <span className="w-8 h-[1px] bg-border"></span> Device Info
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1508,7 +1508,7 @@ function JobSheetModal({ onClose }: { onClose: () => void }) {
 
                     {/* Dates & Cost */}
                     <div className="space-y-4">
-                        <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                        <h3 className="text-sm font-bold text-muted-foreground tracking-wider flex items-center gap-2">
                             <span className="w-8 h-[1px] bg-border"></span> Service Details
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1544,13 +1544,13 @@ function JobSheetModal({ onClose }: { onClose: () => void }) {
                     </div>
 
                     <div className="pt-4 flex gap-3 sticky bottom-0 bg-card pb-2 border-t border-border mt-4">
-                        <button type="button" onClick={onClose} className="flex-1 h-12 rounded-xl border border-border font-medium hover:bg-secondary transition-colors text-muted-foreground text-sm uppercase tracking-wide">
+                        <button type="button" onClick={onClose} className="flex-1 h-12 rounded-xl border border-border font-medium hover:bg-secondary transition-colors text-muted-foreground text-sm tracking-wide">
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="flex-[2] h-12 rounded-xl bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 text-sm uppercase tracking-wide"
+                            className="flex-[2] h-12 rounded-xl bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2 text-sm tracking-wide"
                         >
                             {loading ? <Loader2 className="animate-spin h-5 w-5" /> : (
                                 <>
@@ -1578,7 +1578,7 @@ function JobSummaryCard({ title, count, color }: { title: string, count: number,
         <div className={cn("p-8 bg-white rounded-[2rem] border border-slate-200 shadow-sm flex flex-col gap-4 bg-gradient-to-br transition-all hover:shadow-2xl hover:-translate-y-1.5 duration-500 group relative overflow-hidden", colorMap[color])}>
             <div className="absolute top-0 right-0 w-20 h-20 bg-current opacity-[0.03] rounded-full blur-2xl -z-0" />
 
-            <span className="text-[11px] font-black uppercase tracking-[0.25em] opacity-60 font-display relative z-10">{title}</span>
+            <span className="text-[11px] font-black tracking-[0.25em] opacity-60 font-display relative z-10">{title}</span>
             <div className="flex items-center justify-between relative z-10">
                 <span className="text-4xl font-black font-display tracking-tight">{count}</span>
                 <div className={cn("p-4 rounded-2xl bg-white/60 border border-current/10 shadow-sm backdrop-blur-sm group-hover:scale-110 transition-transform duration-500")}>
@@ -1605,7 +1605,7 @@ function JobStatusBadge({ status }: { status: string }) {
 
     return (
         <span className={cn(
-            "px-3 py-1.5 rounded-2xl text-[10px] font-black uppercase tracking-widest inline-flex items-center gap-2 border shadow-sm",
+            "px-3 py-1.5 rounded-2xl text-[10px] font-black tracking-widest inline-flex items-center gap-2 border shadow-sm",
             c.bg, c.text, c.border
         )}>
             <div className={cn("w-1.5 h-1.5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.1)]", c.dot)} />
@@ -1638,7 +1638,7 @@ function ReportStatCard({ label, value, icon: Icon, color, isRevenue, isVisible,
                 )}
             </div>
             <div>
-                <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 font-display opacity-80">{label}</p>
+                <p className="text-[11px] font-black text-slate-400 tracking-[0.2em] mb-2 font-display opacity-80">{label}</p>
                 <h3 className="text-3xl font-black text-slate-900 font-display tracking-tight">
                     {isRevenue && !isVisible ? '••••••' : (isRevenue ? `₹${value.toLocaleString()}` : value.toLocaleString())}
                 </h3>
@@ -1688,13 +1688,13 @@ function EditableJobStatus({ job }: { job: JobSheet }) {
                 onChange={(e) => handleStatusChange(e.target.value)}
                 disabled={loading}
                 className={cn(
-                    "appearance-none pl-7 pr-4 py-1.5 rounded-2xl text-[10px] font-black uppercase tracking-widest inline-flex items-center gap-2 border shadow-sm cursor-pointer outline-none transition-all hover:ring-2 hover:ring-primary/10",
+                    "appearance-none pl-7 pr-4 py-1.5 rounded-2xl text-[10px] font-black tracking-widest inline-flex items-center gap-2 border shadow-sm cursor-pointer outline-none transition-all hover:ring-2 hover:ring-primary/10",
                     c.bg, c.text, c.border,
                     loading && "opacity-50"
                 )}
             >
                 {statuses.map(s => (
-                    <option key={s} value={s} className="bg-white text-slate-900 font-bold uppercase py-2">
+                    <option key={s} value={s} className="bg-white text-slate-900 font-bold py-2">
                         {s.replace('_', ' ')}
                     </option>
                 ))}

@@ -50,8 +50,8 @@ export default async function WarrantyDetailPage({ params }: { params: { id: str
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             {/* Device Info */}
                             <div className="space-y-4">
-                                <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b border-border pb-2 mb-2">Device Details</h2>
-                                
+                                <h2 className="text-sm font-semibold tracking-wider text-muted-foreground border-b border-border pb-2 mb-2">Device Details</h2>
+
                                 <div className="flex items-start gap-3">
                                     <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
                                         <Smartphone className="w-4 h-4" />
@@ -83,10 +83,10 @@ export default async function WarrantyDetailPage({ params }: { params: { id: str
                                 </div>
                             </div>
 
-                             {/* Status Info */}
-                             <div className="space-y-4">
-                                <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b border-border pb-2 mb-2">Warranty Status</h2>
-                                
+                            {/* Status Info */}
+                            <div className="space-y-4">
+                                <h2 className="text-sm font-semibold tracking-wider text-muted-foreground border-b border-border pb-2 mb-2">Warranty Status</h2>
+
                                 <div className="flex items-start gap-3">
                                     <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0">
                                         <Calendar className="w-4 h-4" />
@@ -105,7 +105,7 @@ export default async function WarrantyDetailPage({ params }: { params: { id: str
                         {/* Private Note Section Display Only */}
                         {warranty.privateNote && (
                             <div className="mt-8 pt-6 border-t border-border">
-                                <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
+                                <h2 className="text-sm font-semibold tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
                                     <FileText className="w-4 h-4" /> Internal Repair Note
                                 </h2>
                                 <div className="p-4 bg-muted/30 rounded-lg text-sm text-slate-600 italic">
@@ -115,7 +115,7 @@ export default async function WarrantyDetailPage({ params }: { params: { id: str
                         )}
 
                         {/* Public Link */}
-                         <div className="mt-8 pt-6 border-t border-border flex justify-center">
+                        <div className="mt-8 pt-6 border-t border-border flex justify-center">
                             <Link href={`/verify/${warranty.shortCode}`} target="_blank" className="flex items-center gap-2 text-primary hover:underline text-sm font-medium">
                                 <FileText className="w-4 h-4" /> View Public Certificate
                             </Link>

@@ -750,9 +750,9 @@ export default function JobCustomerView({ job, shop, onBack }: { job: JobSheet, 
                                 </div>
                                 <div className="p-10 space-y-6">
                                     <div className="grid grid-cols-12 gap-6 px-4 mb-2">
-                                        <span className="col-span-6 text-[9px] font-black text-slate-500 uppercase tracking-widest">Part Name / Description</span>
-                                        <span className="col-span-2 text-[9px] font-black text-slate-500 uppercase tracking-widest text-center">Qty</span>
-                                        <span className="col-span-3 text-[9px] font-black text-slate-500 uppercase tracking-widest text-right">Price (₹)</span>
+                                        <span className="col-span-6 text-[9px] font-black text-slate-500 tracking-widest">Part Name / Description</span>
+                                        <span className="col-span-2 text-[9px] font-black text-slate-500 tracking-widest text-center">Qty</span>
+                                        <span className="col-span-3 text-[9px] font-black text-slate-500 tracking-widest text-right">Price (₹)</span>
                                         <span className="col-span-1"></span>
                                     </div>
 

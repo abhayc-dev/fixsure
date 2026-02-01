@@ -126,17 +126,17 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
 
                 {/* 4. Device Details / Motor Specs */}
                 <div className="mb-0 border border-slate-900 overflow-hidden rounded-sm">
-                    <div className="bg-slate-900 text-white p-2 font-bold text-xs uppercase text-center tracking-widest">
+                    <div className="bg-slate-900 text-white p-2 font-bold text-xs text-center tracking-widest">
                         Device Specification
                     </div>
                     <div className="p-0">
                         <div className="grid grid-cols-2 divide-x divide-y divide-slate-200 border-b border-slate-200">
                             <div className="p-3 bg-slate-50">
-                                <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Equipment / Motor Type</label>
+                                <label className="text-[10px] font-bold text-slate-500 block mb-1">Equipment / Motor Type</label>
                                 <div className="text-sm font-bold">{job.deviceType || '-'}</div>
                             </div>
                             <div className="p-3 bg-white">
-                                <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Model / Serial No.</label>
+                                <label className="text-[10px] font-bold text-slate-500 block mb-1">Model / Serial No.</label>
                                 <div className="text-sm font-bold">{job.deviceModel || '-'}</div>
                             </div>
                         </div>
@@ -144,11 +144,11 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
                         {job.technicalDetails?.motor && (
                             <div className="grid grid-cols-2 divide-x divide-slate-200 border-b border-slate-200">
                                 <div className="p-3 bg-white">
-                                    <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Motor Power</label>
+                                    <label className="text-[10px] font-bold text-slate-500 block mb-1">Motor Power</label>
                                     <div className="text-sm font-bold">{job.technicalDetails.motor.power} {job.technicalDetails.motor.power_unit}</div>
                                 </div>
                                 <div className="p-3 bg-slate-50">
-                                    <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Phase</label>
+                                    <label className="text-[10px] font-bold text-slate-500 block mb-1">Phase</label>
                                     <div className="text-sm font-bold">{job.technicalDetails.motor.phase} phase</div>
                                 </div>
                             </div>
@@ -163,14 +163,14 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
                         <div className="grid grid-cols-2 gap-6">
                             {job.technicalDetails.motor.remarks && (
                                 <div>
-                                    <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Owner Remarks:</label>
+                                    <label className="text-[10px] font-bold text-slate-500 block mb-1">Owner Remarks:</label>
                                     <div className="text-sm font-medium text-slate-700 italic">"{job.technicalDetails.motor.remarks}"</div>
                                 </div>
                             )}
                             {job.technicalDetails.motor.warrantyInfo && (
                                 <div className="text-right">
-                                    <label className="text-[10px] font-bold text-slate-500 uppercase block mb-1">Service Warranty:</label>
-                                    <div className="text-sm font-black text-emerald-700 uppercase tracking-tight">{job.technicalDetails.motor.warrantyInfo}</div>
+                                    <label className="text-[10px] font-bold text-slate-500 block mb-1">Service Warranty:</label>
+                                    <div className="text-sm font-black text-emerald-700 tracking-tight">{job.technicalDetails.motor.warrantyInfo}</div>
                                 </div>
                             )}
                         </div>
@@ -187,20 +187,20 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
                     )}
 
                     <div className="w-1/2 flex justify-between text-sm py-1 border-b border-dashed border-slate-200">
-                        <span className="font-bold text-slate-500 uppercase text-[10px]">Total Repair Cost</span>
+                        <span className="font-bold text-slate-500 text-[10px]">Total Repair Cost</span>
                         <span className="font-bold">Rs. {total}</span>
                     </div>
                     <div className="w-1/2 flex justify-between text-sm py-1 border-b border-dashed border-slate-200">
-                        <span className="font-bold text-emerald-600 uppercase text-[10px]">Advance Received</span>
+                        <span className="font-bold text-emerald-600 text-[10px]">Advance Received</span>
                         <span className="font-bold text-emerald-600">Rs. {advance}</span>
                     </div>
                     <div className="w-1/2 flex justify-between text-sm py-1 border-b border-dashed border-slate-200">
-                        <span className="font-bold text-blue-600 uppercase text-[10px]">Paid on Delivery</span>
+                        <span className="font-bold text-blue-600 text-[10px]">Paid on Delivery</span>
                         <span className="font-bold text-blue-600">Rs. {job.status === 'DELIVERED' ? balance : 0}</span>
                     </div>
 
                     <div className="w-1/2 flex justify-between text-sm py-1 border-t-2 border-slate-900 mt-2">
-                        <span className="font-black text-slate-800 uppercase text-[10px]">Total Amount Received</span>
+                        <span className="font-black text-slate-800 text-[10px]">Total Amount Received</span>
                         <span className="font-black text-slate-900">Rs. {job.status === 'DELIVERED' ? total : advance}</span>
                     </div>
 
@@ -208,7 +208,7 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
                         "w-1/2 flex justify-between text-xl mt-2 p-3 rounded-lg transition-all",
                         (job.status === 'DELIVERED' || balance === 0) ? "bg-emerald-600 text-white" : "bg-slate-900 text-white"
                     )}>
-                        <span className="font-bold uppercase text-xs flex items-center">
+                        <span className="font-bold text-xs flex items-center">
                             {(job.status === 'DELIVERED' || balance === 0) ? "Final Dues Cleared" : "Outstanding Balance"}
                         </span>
                         <span className="font-black">Rs. {(job.status === 'DELIVERED' || balance === 0) ? 0 : balance}</span>
@@ -223,7 +223,7 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
                     </div>
                     <div className="text-center">
                         <div className="w-40 border-b border-slate-900 mb-2"></div>
-                        <div className="text-[10px] font-bold uppercase tracking-widest">Authorized Signature</div>
+                        <div className="text-[10px] font-bold tracking-widest">Authorized Signature</div>
                     </div>
                 </div>
 
