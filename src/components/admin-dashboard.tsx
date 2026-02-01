@@ -338,162 +338,163 @@ export default function AdminDashboard({ stats, initialShops, initialJobs = [] }
                                     </div>
                                 ) : (
                                     shops.filter(s => s.isFlagged).map(shop => (
-                                <div key={shop.id} className="bg-white border border-red-100 shadow-lg shadow-red-500/5 rounded-2xl p-6 flex flex-col gap-4 relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                                        <AlertTriangle className="w-32 h-32 text-red-500"/>
-                                    </div>
-                                    
-                                    <div className="flex justify-between items-start z-10">
-                                        <div>
-                                            <h3 className="text-xl font-bold text-slate-900">{shop.shopName}</h3>
-                                            <p className="text-slate-500 text-sm font-mono">{shop.phone}</p>
-                                        </div>
-                                            Flagged
-                                        </div>
-                                    </div>
+                                        <div key={shop.id} className="bg-white border border-red-100 shadow-lg shadow-red-500/5 rounded-2xl p-6 flex flex-col gap-4 relative overflow-hidden group">
+                                            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                                                <AlertTriangle className="w-32 h-32 text-red-500" />
+                                            </div>
 
-                                    <div className="grid grid-cols-2 gap-4 py-4 border-y border-red-50 z-10">
-                                        <div className="bg-red-50/50 p-3 rounded-lg">
-                                            <div className="text-xs text-red-400 font-bold tracking-wider mb-1">Total Warranties</div>
-                                            <div className="text-2xl font-bold text-red-600">{shop.warrantyCount}</div>
+                                            <div className="flex justify-between items-start z-10">
+                                                <div>
+                                                    <h3 className="text-xl font-bold text-slate-900">{shop.shopName}</h3>
+                                                    <p className="text-slate-500 text-sm font-mono">{shop.phone}</p>
+                                                </div>
+                                                <div className="px-3 py-1 rounded-full bg-red-50 text-red-600 text-xs font-bold border border-red-100 tracking-wider">
+                                                    Flagged
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-4 py-4 border-y border-red-50 z-10">
+                                                <div className="bg-red-50/50 p-3 rounded-lg">
+                                                    <div className="text-xs text-red-400 font-bold tracking-wider mb-1">Total Warranties</div>
+                                                    <div className="text-2xl font-bold text-red-600">{shop.warrantyCount}</div>
+                                                </div>
+                                                <div className="bg-slate-50 p-3 rounded-lg">
+                                                    <div className="text-xs text-slate-400 font-bold tracking-wider mb-1">Status</div>
+                                                    <div className="text-sm font-bold text-slate-700">{shop.subscriptionStatus}</div>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex gap-3 z-10">
+                                                <button
+                                                    onClick={() => handleToggleStatus(shop.id, true)}
+                                                    className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-lg shadow-red-600/20 text-sm"
+                                                >
+                                                    <Lock className="w-4 h-4" /> Block Shop
+                                                </button>
+                                                <button className="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold py-2.5 rounded-xl transition-colors text-sm">
+                                                    Dismiss Alert
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div className="bg-slate-50 p-3 rounded-lg">
-                                            <div className="text-xs text-slate-400 font-bold tracking-wider mb-1">Status</div>
-                                            <div className="text-sm font-bold text-slate-700">{shop.subscriptionStatus}</div>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex gap-3 z-10">
-                                        <button 
-                                            onClick={() => handleToggleStatus(shop.id, true)} 
-                                            className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-lg shadow-red-600/20 text-sm"
-                                        >
-                                            <Lock className="w-4 h-4"/> Block Shop
-                                        </button>
-                                        <button className="flex-1 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold py-2.5 rounded-xl transition-colors text-sm">
-                                            Dismiss Alert
-                                        </button>
-                                    </div>
-                                </div>
-                            ))
-                        )}
-                        </div>
-                </div>
-            )}
-
-            {/* Repairs Tab */}
-            {activeTab === 'repairs' && (
-                <div className="space-y-6 animate-in fade-in duration-500 slide-in-from-bottom-4">
-                    <div>
-                        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Repair Jobs</h1>
-                        <p className="text-slate-500 mt-1">Live feed of repair jobs from all shops.</p>
-                    </div>
-
-                    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col h-[calc(100vh-12rem)]">
-                        {/* Reuse Search (Optional: could filter jobs too but keeping simple for now) */}
-                        <div className="p-4 border-b border-slate-100 flex items-center justify-between gap-4 bg-slate-50/50">
-                            <div className="relative flex-1 max-w-md">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
-                                    placeholder="Search jobs..."
-                                    className="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-slate-400 shadow-sm"
-                                    disabled
-                                />
+                                    ))
+                                )}
                             </div>
                         </div>
+                    )}
 
-                        <div className="overflow-auto flex-1">
-                            <table className="w-full text-sm text-left border-collapse">
-                                <thead className="bg-slate-50/90 backdrop-blur-sm text-slate-500 font-semibold border-b border-slate-200 sticky top-0 z-10">
-                                    <tr>
-                                        <th className="px-6 py-4 whitespace-nowrap">Job ID</th>
-                                        <th className="px-6 py-4 whitespace-nowrap">Shop / Owner</th>
-                                        <th className="px-6 py-4 whitespace-nowrap">Customer</th>
-                                        <th className="px-6 py-4 whitespace-nowrap">Device Info</th>
-                                        <th className="px-6 py-4 whitespace-nowrap">Status</th>
-                                        <th className="px-6 py-4 whitespace-nowrap text-right">Received</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-100 bg-white">
-                                    {jobs.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={6} className="py-12 text-center text-slate-400">
-                                                No repair jobs found.
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        jobs.map((job) => (
-                                            <tr key={job.id} className="hover:bg-slate-50/80 transition-colors group">
-                                                <td className="px-6 py-4 font-mono font-bold text-primary text-xs">
-                                                    {job.jobId}
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <div className="font-bold text-slate-900">{job.shop?.shopName}</div>
-                                                    <div className="text-xs text-slate-500 font-medium">{job.shop?.ownerName}</div>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <div className="font-bold text-slate-900">{job.customerName}</div>
-                                                    <div className="text-xs text-slate-500 font-medium">{job.customerPhone}</div>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <div className="font-medium text-slate-700">{job.deviceModel}</div>
-                                                    <div className="text-xs text-slate-500 max-w-[200px] truncate" title={job.problemDesc}>{job.problemDesc}</div>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <span className={cn(
-                                                        "px-2.5 py-1 rounded-full text-[10px] font-extrabold tracking-wide border",
-                                                        job.status === 'RECEIVED' ? "bg-blue-50 text-blue-600 border-blue-100" :
-                                                            job.status === 'READY' ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
-                                                                job.status === 'DELIVERED' ? "bg-slate-100 text-slate-500 border-slate-200" :
-                                                                    "bg-orange-50 text-orange-600 border-orange-100"
-                                                    )}>
-                                                        {job.status}
-                                                    </span>
-                                                </td>
-                                                <td className="px-6 py-4 text-right text-slate-500 text-xs font-medium">
-                                                    <div className="flex items-center justify-end gap-1.5">
-                                                        <Calendar className="w-3.5 h-3.5 opacity-50" />
-                                                        {new Date(job.receivedAt).toLocaleDateString()}
-                                                    </div>
-                                                </td>
+                    {/* Repairs Tab */}
+                    {activeTab === 'repairs' && (
+                        <div className="space-y-6 animate-in fade-in duration-500 slide-in-from-bottom-4">
+                            <div>
+                                <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Repair Jobs</h1>
+                                <p className="text-slate-500 mt-1">Live feed of repair jobs from all shops.</p>
+                            </div>
+
+                            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col h-[calc(100vh-12rem)]">
+                                {/* Reuse Search (Optional: could filter jobs too but keeping simple for now) */}
+                                <div className="p-4 border-b border-slate-100 flex items-center justify-between gap-4 bg-slate-50/50">
+                                    <div className="relative flex-1 max-w-md">
+                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                        <input
+                                            placeholder="Search jobs..."
+                                            className="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-slate-400 shadow-sm"
+                                            disabled
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="overflow-auto flex-1">
+                                    <table className="w-full text-sm text-left border-collapse">
+                                        <thead className="bg-slate-50/90 backdrop-blur-sm text-slate-500 font-semibold border-b border-slate-200 sticky top-0 z-10">
+                                            <tr>
+                                                <th className="px-6 py-4 whitespace-nowrap">Job ID</th>
+                                                <th className="px-6 py-4 whitespace-nowrap">Shop / Owner</th>
+                                                <th className="px-6 py-4 whitespace-nowrap">Customer</th>
+                                                <th className="px-6 py-4 whitespace-nowrap">Device Info</th>
+                                                <th className="px-6 py-4 whitespace-nowrap">Status</th>
+                                                <th className="px-6 py-4 whitespace-nowrap text-right">Received</th>
                                             </tr>
-                                        ))
-                                    )}
-                                </tbody>
-                            </table>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-100 bg-white">
+                                            {jobs.length === 0 ? (
+                                                <tr>
+                                                    <td colSpan={6} className="py-12 text-center text-slate-400">
+                                                        No repair jobs found.
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                jobs.map((job) => (
+                                                    <tr key={job.id} className="hover:bg-slate-50/80 transition-colors group">
+                                                        <td className="px-6 py-4 font-mono font-bold text-primary text-xs">
+                                                            {job.jobId}
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <div className="font-bold text-slate-900">{job.shop?.shopName}</div>
+                                                            <div className="text-xs text-slate-500 font-medium">{job.shop?.ownerName}</div>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <div className="font-bold text-slate-900">{job.customerName}</div>
+                                                            <div className="text-xs text-slate-500 font-medium">{job.customerPhone}</div>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <div className="font-medium text-slate-700">{job.deviceModel}</div>
+                                                            <div className="text-xs text-slate-500 max-w-[200px] truncate" title={job.problemDesc}>{job.problemDesc}</div>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <span className={cn(
+                                                                "px-2.5 py-1 rounded-full text-[10px] font-extrabold tracking-wide border",
+                                                                job.status === 'RECEIVED' ? "bg-blue-50 text-blue-600 border-blue-100" :
+                                                                    job.status === 'READY' ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
+                                                                        job.status === 'DELIVERED' ? "bg-slate-100 text-slate-500 border-slate-200" :
+                                                                            "bg-orange-50 text-orange-600 border-orange-100"
+                                                            )}>
+                                                                {job.status}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-right text-slate-500 text-xs font-medium">
+                                                            <div className="flex items-center justify-end gap-1.5">
+                                                                <Calendar className="w-3.5 h-3.5 opacity-50" />
+                                                                {new Date(job.receivedAt).toLocaleDateString()}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            )}
+                    )}
 
-            {/* Revenue Tab - Placeholder */}
-            {activeTab === 'revenue' && (
-                <div className="flex items-center justify-center h-[60vh] text-slate-400 animate-in fade-in duration-500">
-                    <div className="text-center max-w-sm px-6">
-                        <div className="bg-slate-50 p-8 rounded-full inline-block mb-6 shadow-inner">
-                            <DollarSign className="w-16 h-16 text-slate-300" />
+                    {/* Revenue Tab - Placeholder */}
+                    {activeTab === 'revenue' && (
+                        <div className="flex items-center justify-center h-[60vh] text-slate-400 animate-in fade-in duration-500">
+                            <div className="text-center max-w-sm px-6">
+                                <div className="bg-slate-50 p-8 rounded-full inline-block mb-6 shadow-inner">
+                                    <DollarSign className="w-16 h-16 text-slate-300" />
+                                </div>
+                                <h2 className="text-2xl font-bold text-slate-800 mb-3">Detailed Insights Coming Soon</h2>
+                                <p className="text-slate-500 leading-relaxed">We're building comprehensive financial reports to help you track growth, churn, and MRR. Stay tuned for version 2.0.</p>
+                                <button className="mt-8 px-6 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-sm hover:scale-105 transition-transform" disabled>
+                                    Notify Me
+                                </button>
+                            </div>
                         </div>
-                        <h2 className="text-2xl font-bold text-slate-800 mb-3">Detailed Insights Coming Soon</h2>
-                        <p className="text-slate-500 leading-relaxed">We're building comprehensive financial reports to help you track growth, churn, and MRR. Stay tuned for version 2.0.</p>
-                        <button className="mt-8 px-6 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-sm hover:scale-105 transition-transform" disabled>
-                            Notify Me
-                        </button>
-                    </div>
+                    )}
+
+                </main>
+
+                {/* Mobile Bottom Nav */}
+                <div className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-2 grid grid-cols-4 gap-1 z-50 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                    <MobileNavButton active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} icon={<BarChart className="w-5 h-5" />} label="Home" />
+                    <MobileNavButton active={activeTab === 'shops'} onClick={() => setActiveTab('shops')} icon={<Store className="w-5 h-5" />} label="Shops" />
+                    <MobileNavButton active={activeTab === 'abuse'} onClick={() => setActiveTab('abuse')} icon={<ShieldAlert className="w-5 h-5" />} label="Abuse" />
+                    <MobileNavButton active={activeTab === 'repairs'} onClick={() => setActiveTab('repairs')} icon={<Wrench className="w-5 h-5" />} label="Repairs" />
                 </div>
-            )}
-
-        </main>
-
-        {/* Mobile Bottom Nav */ }
-    <div className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-2 grid grid-cols-4 gap-1 z-50 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-        <MobileNavButton active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} icon={<BarChart className="w-5 h-5" />} label="Home" />
-        <MobileNavButton active={activeTab === 'shops'} onClick={() => setActiveTab('shops')} icon={<Store className="w-5 h-5" />} label="Shops" />
-        <MobileNavButton active={activeTab === 'abuse'} onClick={() => setActiveTab('abuse')} icon={<ShieldAlert className="w-5 h-5" />} label="Abuse" />
-        <MobileNavButton active={activeTab === 'repairs'} onClick={() => setActiveTab('repairs')} icon={<Wrench className="w-5 h-5" />} label="Repairs" />
-    </div>
-    </div >
-    </div >
-  );
+            </div >
+        </div >
+    );
 }
 
 function MobileNavButton({ active, onClick, icon, label }: any) {
