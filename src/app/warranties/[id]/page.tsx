@@ -3,7 +3,7 @@ import { getWarrantyById } from "@/lib/actions";
 import { ArrowLeft, MessageSquare, Phone, Smartphone, Wrench, Calendar, FileText, MapPin, IndianRupee } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import PrivateNoteEditor from "@/components/private-note-editor";
+
 
 export default async function WarrantyDetailPage({ params }: { params: { id: string } }) {
     const resolvedParams = await params;
@@ -102,8 +102,17 @@ export default async function WarrantyDetailPage({ params }: { params: { id: str
                             </div>
                         </div>
 
-                        {/* Private Note Section */}
-                        <PrivateNoteEditor warrantyId={warranty.id} initialNote={warranty.privateNote} />
+                        {/* Private Note Section Display Only */}
+                        {warranty.privateNote && (
+                            <div className="mt-8 pt-6 border-t border-border">
+                                <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
+                                    <FileText className="w-4 h-4" /> Internal Repair Note
+                                </h2>
+                                <div className="p-4 bg-muted/30 rounded-lg text-sm text-slate-600 italic">
+                                    {warranty.privateNote}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Public Link */}
                          <div className="mt-8 pt-6 border-t border-border flex justify-center">
