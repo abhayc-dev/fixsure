@@ -1,22 +1,15 @@
 import { PrismaClient } from "@prisma/client";
-import { Pool } from "pg";
-// Re-triggering build to pick up new Prisma types
-import { PrismaPg } from "@prisma/adapter-pg";
-
-const connectionString = process.env.DATABASE_URL!;
 
 const globalForPrisma = global as unknown as { 
   prisma: PrismaClient | undefined,
 };
 
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
+// Force prisma+postgres protocol into environment before client instantiation
+if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith("postgres://")) {
+  process.env.DATABASE_URL = process.env.DATABASE_URL.replace("postgres://", "prisma+postgres://");
+}
 
-export const db =
-  globalForPrisma.prisma ||
-  new PrismaClient({
-    adapter,
-  });
+export const db = globalForPrisma.prisma || new PrismaClient();
 
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = db;

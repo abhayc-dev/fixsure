@@ -694,70 +694,95 @@ export async function deleteJobSheet(jobId: string) {
 }
 
 export async function updateJobSheetDetails(formData: FormData) {
-    // No shop needed as it is proxied to the backend by the ID.
-    const id = formData.get("id") as string;
+    try {
+        const id = formData.get("id") as string;
+        if (!id) throw new Error("Job ID focus required");
 
-    const customerName = formData.get("customerName") as string;
-    const customerPhone = formData.get("customerPhone") as string;
-    const customerAddress = formData.get("customerAddress") as string;
-    
-    const category = (formData.get("category") as string) || "GENERAL";
-    const deviceType = formData.get("deviceType") as string;
-    const deviceModel = formData.get("deviceModel") as string;
-    const problemDesc = formData.get("problemDesc") as string;
-    const accessories = formData.get("accessories") as string;
-    
-    const estimatedCost = parseFloat(formData.get("estimatedCost") as string) || 0;
-    const advanceAmount = parseFloat(formData.get("advanceAmount") as string) || 0;
-    const expectedAt = formData.get("expectedAt") ? new Date(formData.get("expectedAt") as string) : null;
+        const customerName = formData.get("customerName") as string;
+        const customerPhone = formData.get("customerPhone") as string;
+        const customerAddress = formData.get("customerAddress") as string;
+        
+        const category = (formData.get("category") as string) || "GENERAL";
+        const deviceType = formData.get("deviceType") as string;
+        const deviceModel = formData.get("deviceModel") as string;
+        const problemDesc = formData.get("problemDesc") as string;
+        const accessories = formData.get("accessories") as string;
+        
+        const status = formData.get("status") as string;
+        
+        const estimatedCost = parseFloat(formData.get("estimatedCost") as string) || 0;
+        let advanceAmount = parseFloat(formData.get("advanceAmount") as string) || 0;
 
-    let technicalDetails = null;
-    if (category === 'MOTOR') {
-        const coilDetailsStr = formData.get("motor.coilDetails") as string;
-        let coilDetails = null;
-        try {
-            coilDetails = coilDetailsStr ? JSON.parse(coilDetailsStr) : null;
-        } catch (e) {
-            console.error("Failed to parse coilDetails", e);
+        // If delivered, mark as fully paid
+        if (status === "DELIVERED") {
+            advanceAmount = estimatedCost;
         }
 
-        technicalDetails = {
-            motor: {
-                power: formData.get("motor.power") as string,
-                power_unit: formData.get("motor.power_unit") as string,
-                phase: formData.get("motor.phase") as string,
-                starter_length: formData.get("motor.starter_length") as string,
-                starter_diameter: formData.get("motor.starter_diameter") as string,
-                speed: formData.get("motor.speed") as string,
-                capacitor: formData.get("motor.capacitor") as string,
-                current: formData.get("motor.current") as string,
-                coilDetails: coilDetails
+        const expectedAtStr = formData.get("expectedAt") as string;
+        const expectedAt = expectedAtStr ? new Date(expectedAtStr) : null;
+
+        let technicalDetails = null;
+        if (category === 'MOTOR') {
+            const coilDetailsStr = formData.get("motor.coilDetails") as string;
+            const partsReplacedStr = formData.get("motor.partsReplaced") as string;
+            
+            let coilDetails = null;
+            let partsReplaced = [];
+            
+            try {
+                coilDetails = coilDetailsStr ? JSON.parse(coilDetailsStr) : null;
+            } catch (e) {
+                console.error("Failed to parse coilDetails", e);
             }
-        };
+
+            try {
+                partsReplaced = partsReplacedStr ? JSON.parse(partsReplacedStr) : [];
+            } catch (e) {
+                console.error("Failed to parse partsReplaced", e);
+            }
+
+            technicalDetails = {
+                motor: {
+                    power: formData.get("motor.power") as string,
+                    power_unit: formData.get("motor.power_unit") as string,
+                    phase: formData.get("motor.phase") as string,
+                    starter_length: formData.get("motor.starter_length") as string,
+                    starter_diameter: formData.get("motor.starter_diameter") as string,
+                    speed: formData.get("motor.speed") as string,
+                    capacitor: formData.get("motor.capacitor") as string,
+                    current: formData.get("motor.current") as string,
+                    coilDetails: coilDetails,
+                    partsReplaced: partsReplaced,
+                    remarks: formData.get("motor.remarks") as string,
+                    warrantyInfo: formData.get("motor.warrantyInfo") as string
+                }
+            };
+        }
+
+        // --- DIRECT DB UPDATE FOR RELIABILITY ---
+        await db.jobSheet.update({
+            where: { id },
+            data: {
+                customerName,
+                customerPhone,
+                customerAddress,
+                category,
+                deviceType,
+                status: status as any,
+                deviceModel,
+                problemDesc,
+                accessories,
+                technicalDetails: technicalDetails as any,
+                estimatedCost,
+                advanceAmount,
+                expectedAt
+            }
+        });
+
+        revalidatePath("/dashboard");
+        return { success: true };
+    } catch (error: any) {
+        console.error("Update error:", error);
+        throw new Error(error.message || "Failed to update job");
     }
-
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            customerName,
-            customerPhone,
-            customerAddress,
-            category,
-            deviceType,
-            deviceModel,
-            problemDesc,
-            estimatedCost,
-            advanceAmount,
-            expectedAt,
-            technicalDetails
-        })
-    });
-
-    if (!response.ok) {
-        throw new Error("Failed to update job on backend");
-    }
-
-    revalidatePath("/dashboard");
-    return { success: true };
 }

@@ -34,6 +34,7 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
     const [isEditing, setIsEditing] = useState(false);
     const [isTechEditing, setIsTechEditing] = useState(false);
     const [isCoilEditing, setIsCoilEditing] = useState(false);
+    const [isPartsEditing, setIsPartsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -47,6 +48,10 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
         runningTotalWeight: motor?.coilDetails?.runningTotalWeight || '',
         startingTotalWeight: motor?.coilDetails?.startingTotalWeight || ''
     });
+
+    const [partsReplaced, setPartsReplaced] = useState(motor?.partsReplaced || []);
+    const [remarks, setRemarks] = useState(motor?.remarks || '');
+    const [warrantyInfo, setWarrantyInfo] = useState(motor?.warrantyInfo || '');
 
     const updateCoilTotalWeight = (type: 'running' | 'starting', value: string) => {
         setCoilDetails((prev: any) => ({
@@ -77,6 +82,22 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
             ...prev,
             [type]: prev[type].filter((_: any, i: number) => i !== index)
         }));
+    };
+
+    const addPartRow = () => {
+        setPartsReplaced((prev: any) => [...prev, { name: '', qty: '', price: '' }]);
+    };
+
+    const updatePartRow = (index: number, field: string, value: string) => {
+        setPartsReplaced((prev: any) => {
+            const next = [...prev];
+            next[index] = { ...next[index], [field]: value };
+            return next;
+        });
+    };
+
+    const removePartRow = (index: number) => {
+        setPartsReplaced((prev: any) => prev.filter((_: any, i: number) => i !== index));
     };
 
     const handleNotify = () => {
@@ -113,9 +134,9 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
             const formData = new FormData(e.currentTarget);
             await updateJobSheetDetails(formData);
             router.refresh();
-            setIsEditing(false);
-            setIsTechEditing(false);
             setIsCoilEditing(false);
+            setIsPartsEditing(false);
+            setIsEditing(false);
         } catch (error) {
             console.error(error);
             alert("Failed to update job details.");
@@ -130,7 +151,7 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
         <div className="w-full max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-700 pb-20">
             
             {/* --- TOP BAR & NAVIGATION (STICKY) --- */}
-            <div className="sticky top-0 z-50 bg-slate-60/80 backdrop-blur-md py-4 -mx-4 px-4 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-300 mt-[-20px] rounded-t-2xl">
+            <div className="sticky top-0 z-50 bg-slate-200/40 backdrop-blur-md py-4 -mx-12 px-4 flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all duration-300 mt-[-20px] rounded-t-2xl">
                 <button 
                     onClick={onBack}
                     className="flex items-center gap-3 text-slate-500 hover:text-slate-900 font-bold transition-all group w-fit"
@@ -170,7 +191,7 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                              <button 
                                 type="button" 
                                 onClick={() => setIsEditing(false)} 
-                                className="px-6 py-2.5 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-100 transition-all"
+                                className="px-6 py-2.5 rounded-xl text-sm font-bold text-slate-500 bg-red-500 hover:bg-red-600 transition-all text-white cursor-pointer"
                             >
                                 Cancel
                             </button>
@@ -203,6 +224,9 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                 <input type="hidden" name="category" value={job.category} />
                 <input type="hidden" name="accessories" value={job.accessories || ''} />
                 <input type="hidden" name="motor.coilDetails" value={JSON.stringify(coilDetails)} />
+                <input type="hidden" name="motor.partsReplaced" value={JSON.stringify(partsReplaced)} />
+                <input type="hidden" name="motor.remarks" value={remarks} />
+                <input type="hidden" name="motor.warrantyInfo" value={warrantyInfo} />
                 
                 {/* Hidden fields to preserve data when not in full edit mode */}
                 {!isEditing && (
@@ -216,6 +240,7 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                         <input type="hidden" name="estimatedCost" value={job.estimatedCost || 0} />
                         <input type="hidden" name="advanceAmount" value={job.advanceAmount || 0} />
                         <input type="hidden" name="expectedAt" value={job.expectedAt ? new Date(job.expectedAt).toISOString() : ''} />
+                        <input type="hidden" name="status" value={job.status} />
                     </>
                 )}
                 
@@ -254,13 +279,26 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                             
                             <div className="pt-6 border-t border-white/10 space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Current Status</span>
-                                    <div className={cn(
-                                        "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest",
-                                        job.status === 'READY' ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : "bg-indigo-500/20 text-indigo-400 border border-indigo-500/30"
-                                    )}>
-                                        {job.status}
-                                    </div>
+                                    {isEditing ? (
+                                        <select 
+                                            name="status" 
+                                            defaultValue={job.status} 
+                                            className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-lg px-3 py-1 text-[9px] font-black uppercase tracking-widest outline-none"
+                                        >
+                                            {['PENDING', 'READY', 'DELIVERED', 'CANCELLED'].map(s => (
+                                                <option key={s} value={s} className="bg-slate-900 text-white">{s}</option>
+                                            ))}
+                                        </select>
+                                    ) : (
+                                        <div className={cn(
+                                            "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest",
+                                            job.status === 'READY' ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" : 
+                                            job.status === 'DELIVERED' ? "bg-emerald-500 text-white" :
+                                            "bg-indigo-500/20 text-indigo-400 border border-indigo-500/30"
+                                        )}>
+                                            {job.status}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Entry Date</span>
@@ -268,15 +306,15 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                 </div>
                             </div>
 
-                            {!isEditing ? (
+                            {!(isEditing || isTechEditing || isCoilEditing || isPartsEditing) ? (
                                 <button type="button" onClick={handleNotify} className="w-full bg-indigo-500 hover:bg-indigo-600 py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 group shadow-xl shadow-indigo-900/40">
                                     <MessageCircle className="h-4 w-4 text-white group-hover:rotate-12 transition-transform" />
                                     <span className="text-[11px] font-black uppercase tracking-widest">Share on WhatsApp</span>
                                 </button>
                             ) : (
-                                <button type="submit" disabled={loading} className="w-full bg-emerald-500 hover:bg-emerald-600 py-4 rounded-2xl flex items-center justify-center gap-3 transition-all active:scale-95 group shadow-xl shadow-emerald-900/40">
-                                    <Save className="h-4 w-4 text-white" />
-                                    <span className="text-[11px] font-black uppercase tracking-widest">{loading ? 'Saving...' : 'Commit Changes'}</span>
+                                <button type="submit" disabled={loading} className="w-full bg-emerald-500 hover:bg-emerald-600 py-4 rounded-xl flex items-center justify-center gap-[-5] transition-all active:scale-95 group shadow-xl shadow-emerald-900/40">
+                                    <Save className="h-4 text-white" />
+                                    <span className="text-[9px] font-black  uppercase tracking-widest">{loading ? 'Saving...' : 'Commit Changes'}</span>
                                 </button>
                             )}
                         </div>
@@ -295,7 +333,7 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                 className="w-full bg-slate-50 p-4 rounded-2xl text-xs font-bold text-slate-700 outline-none border border-slate-100 min-h-[100px] focus:bg-white focus:ring-4 focus:ring-indigo-50 transition-all"
                             />
                         ) : (
-                            <p className="text-xs font-bold text-slate-600 leading-relaxed italic">"{job.problemDesc}"</p>
+                            <p className="text-xs font-black text-slate-800 uppercase leading-relaxed italic">"{job.problemDesc}"</p>
                         )}
                     </div>
 
@@ -309,17 +347,17 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                             <div className="flex flex-col">
                                 <span className="text-[9px] font-bold text-slate-400 uppercase leading-none mb-1.5">Machine Type</span>
                                 {isEditing ? (
-                                    <select name="deviceType" defaultValue={job.deviceType || ''} className="bg-slate-50 p-2 rounded-lg text-xs font-bold outline-none border border-slate-200">
+                                    <select name="deviceType" defaultValue={job.deviceType || ''} className="bg-slate-50 p-2 rounded-lg text-xs font-bold outline-none border border-slate-200 text-slate-600">
                                         {['MONO_BLOCK', 'SUBMERSIBLE', 'SEWELL', 'ELECTRIC_MOTOR', 'GENERATOR', 'STABILIZER', 'OTHER'].map(opt => <option key={opt} value={opt}>{opt.replace('_', ' ')}</option>)}
                                     </select>
                                 ) : (
-                                    <span className="text-xs font-black text-slate-800 uppercase leading-tight">{job.deviceType || 'GENERAL'}</span>
+                                    <span className="text-xs font-black text-slate-800 uppercase leading-tight italic">{job.deviceType || 'GENERAL'}</span>
                                 )}
                             </div>
                             <div className="flex flex-col">
                                 <span className="text-[9px] font-bold text-slate-400 uppercase leading-none mb-1.5">Serial / Model</span>
                                 {isEditing ? (
-                                    <input name="deviceModel" defaultValue={job.deviceModel} className="bg-slate-50 p-2 rounded-lg text-xs font-bold outline-none border border-slate-200" />
+                                    <input name="deviceModel" defaultValue={job.deviceModel} className="bg-slate-50 p-2 rounded-lg text-xs font-bold outline-none border border-slate-200 text-slate-600" />
                                 ) : (
                                     <span className="text-xs font-black text-slate-800 uppercase leading-tight italic">{job.deviceModel}</span>
                                 )}
@@ -386,37 +424,57 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                      <div className="lg:w-1/3 p-10 bg-slate-50/50 border-r border-slate-100 flex flex-col justify-between relative overflow-hidden">
                                          <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-500 to-indigo-50/0" />
                                          <div className="space-y-4 relative z-10">
-                                             <h2 className="text-2xl font-[1000] text-slate-900 uppercase tracking-tighter leading-none">Diagnostic<br/>Engineering</h2>
-                                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Validated Mechanical Specs</p>
+                                             <h2 className="text-xl font-[1000] text-slate-900 uppercase tracking-tighter leading-none">Motor<br/>Details</h2>
+                                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Motor Specification Details</p>
                                          </div>
-                                         {!isEditing && (
-                                            <button type="button" onClick={() => setIsTechEditing(!isTechEditing)} className={cn(
-                                                "mt-10 self-start px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-sm border",
-                                                isTechEditing ? "bg-amber-500 text-white border-amber-600" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
-                                            )}>
-                                                {isTechEditing ? 'Apply Changes' : 'Override Data'}
+                                         {isTechEditing ? (
+                                            <button 
+                                                type="submit" 
+                                                disabled={loading}
+                                                className={cn(
+                                                    "mt-10 self-start px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-sm border",
+                                                    "bg-amber-500 text-white border-amber-600",
+                                                    loading && "opacity-50 cursor-not-allowed"
+                                                )}
+                                            >
+                                                {loading ? 'Saving...' : 'Apply Changes'}
+                                            </button>
+                                         ) : (
+                                            <button 
+                                                type="button" 
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setIsTechEditing(true);
+                                                }} 
+                                                className={cn(
+                                                    "mt-10 self-start px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-sm border",
+                                                    "bg-white border-slate-200 text-slate-600 hover:bg-slate-50",
+                                                    loading && "opacity-50 cursor-not-allowed"
+                                                )}
+                                            >
+                                                Override Data
                                             </button>
                                          )}
                                      </div>
-                                     <div className="lg:w-2/3 p-10 grid grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-12">
+                                     <div className="lg:w-2/3 p-10 grid grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-12]">
                                         {[
                                             { label: 'Power Rating', name: 'motor.power', value: motor?.power, unit: motor?.power_unit || 'HP', isPower: true },
                                             { label: 'Starter Length', name: 'motor.starter_length', value: motor?.starter_length, unit: 'INCH' },
                                             { label: 'Starter Diameter', name: 'motor.starter_diameter', value: motor?.starter_diameter, unit: 'INCH' },
                                             { label: 'Speed Index', name: 'motor.speed', value: motor?.speed, unit: 'RPM' },
                                             { label: 'Capacitance', name: 'motor.capacitor', value: motor?.capacitor, unit: 'MFD' },
-                                            { label: 'System Phase', name: 'motor.phase', value: motor?.phase || 'Single', options: ['Single', 'Double', 'Triple'] },
+                                            { label: 'System Phase', name: 'motor.phase', value: motor?.phase || 'Single (Φ)', options: ['Single (Φ)', 'Double (Φ, Φ)', 'Triple (Φ, Φ, Φ)'] },
                                             { label: 'Current Load', name: 'motor.current', value: motor?.current, unit: 'AMP' }
                                         ].map((field, idx) => (
-                                            <div key={idx} className="space-y-3 relative group/item">
-                                                <div className="absolute -left-4 top-1 w-[2px] h-0 bg-indigo-500 transition-all group-hover/item:h-4" />
-                                                <label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">{field.label}</label>
-                                                <div className="flex items-baseline gap-2">
+                                            <div key={idx} className="space-y-3 relative group/item ">
+                                                <div className="absolute -left-4 top-1 w-[2px] h-0 bg-indigo-500 transition-all group-hover/item:h-4 " />
+                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ">{field.label}</label>
+                                                <div className="flex items-baseline gap-2 ">
                                                     {isEditing || isTechEditing ? (
                                                         field.isPower ? (
-                                                            <div className="flex gap-1 border-b-2 border-slate-100 focus-within:border-indigo-400 transition-all">
-                                                                <input name="motor.power" defaultValue={motor?.power || ''} className="w-full bg-transparent outline-none text-sm font-black text-indigo-600 py-1" />
-                                                                <select name="motor.power_unit" defaultValue={motor?.power_unit || 'HP'} className="bg-transparent text-[10px] font-black text-slate-400 outline-none">
+                                                            <div className="flex gap-1 border-b-2 border-slate-100 focus-within:border-indigo-400 transition-all ">
+                                                                <input name="motor.power" defaultValue={motor?.power || ''} className="w-full bg-transparent outline-none text-xl font-black text-indigo-400 py-1 " />
+                                                                <select name="motor.power_unit" defaultValue={motor?.power_unit || 'HP'} className="bg-transparent text-[10px] font-black text-slate-400 outline-none ">
                                                                     <option value="HP">HP</option>
                                                                     <option value="kW">kW</option>
                                                                 </select>
@@ -429,12 +487,12 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                                             <input name={field.name} defaultValue={field.value || ''} className="w-full bg-slate-50 border-b-2 border-slate-100 focus:border-indigo-400 outline-none text-sm font-black text-indigo-600 py-1" />
                                                         )
                                                     ) : (
-                                                        <span className="text-2xl font-mono font-[900] text-slate-800 tracking-tighter leading-none">
+                                                        <span className="text-l font-semibold text-slate-700 tracking-tighter leading-none">
                                                             {field.value || '---'}
                                                         </span>
-                                                    )}
-                                                    {field.unit && !field.isPower && <span className="text-[9px] font-black text-slate-300 italic">{field.unit}</span>}
-                                                    {field.isPower && !isEditing && !isTechEditing && <span className="text-[9px] font-black text-slate-300 italic">{field.unit}</span>}
+                                                    )} 
+                                                    {field.unit && !field.isPower && <span className="text-[9px] font-black text-slate-400 italic">{field.unit}</span>}
+                                                    {field.isPower && !isEditing && !isTechEditing && <span className="text-[9px] font-black text-slate-400 italic">{field.unit}</span>}
                                                 </div>
                                             </div>
                                         ))}
@@ -444,20 +502,41 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
 
                              {/* Coil Matrix Bento Box */}
                              <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden flex flex-col">
-                                 <div className="px-10 py-8 border-b border-slate-50 flex items-center justify-between bg-slate-50/10">
+                                 <div className="px-10 py-8 border-b border-slate-200 flex items-center justify-between bg-slate-50/10">
                                      <div className="flex items-center gap-4">
                                          <div className="h-10 w-1 bg-indigo-400 rounded-full" />
                                          <div>
-                                            <h3 className="text-lg font-[1000] text-slate-800 uppercase tracking-tighter leading-none">Winding Matrix</h3>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">Coil Specification Protocol</p>
+                                            <h3 className="text-lg font-[1000] text-slate-800 uppercase tracking-tighter leading-none">Coil Details</h3>
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">Coil Specification</p>
                                          </div>
                                      </div>
-                                     {!isEditing && (
-                                         <button type="button" onClick={() => setIsCoilEditing(!isCoilEditing)} className={cn(
-                                             "px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border shadow-sm",
-                                             isCoilEditing ? "bg-emerald-500 text-white border-emerald-600" : "bg-white text-indigo-500 border-slate-100 hover:bg-slate-50"
-                                         )}>
-                                             {isCoilEditing ? <><Save className="h-4 w-4" /> Save Configuration</> : <><Edit2 className="h-4 w-4" /> Configure Matrix</>}
+                                     {isCoilEditing ? (
+                                         <button 
+                                            type="submit" 
+                                            disabled={loading}
+                                            className={cn(
+                                                "px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border shadow-sm",
+                                                "bg-emerald-500 text-white border-emerald-600",
+                                                loading && "opacity-50 cursor-not-allowed"
+                                            )}
+                                         >
+                                             {loading ? 'Saving...' : <><Save className="h-4 w-4" /> Save Configuration</>}
+                                         </button>
+                                     ) : (
+                                         <button 
+                                            type="button" 
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setIsCoilEditing(true);
+                                            }} 
+                                            disabled={loading}
+                                            className={cn(
+                                                "px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border shadow-sm",
+                                                "bg-white text-indigo-500 border-slate-100 hover:bg-slate-50",
+                                                loading && "opacity-50 cursor-not-allowed"
+                                            )}
+                                         >
+                                             <Edit2 className="h-4 w-4" /> Configure Matrix
                                          </button>
                                      )}
                                  </div>
@@ -481,13 +560,13 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                                  {/* Header labels */}
                                                  <div className="grid grid-cols-3 gap-6 px-4">
                                                      {['Turns (T)', 'Wire (SWG)', 'Weight (KG)'].map(h => (
-                                                         <span key={h} className="text-[9px] font-black text-slate-300 uppercase tracking-widest text-center">{h}</span>
+                                                         <span key={h} className="text-[9px] font-black text-slate-300 uppercase tracking-widest text-center text-slate-500">{h}</span>
                                                      ))}
                                                  </div>
 
                                                  {(type === 'running' ? coilDetails.running : coilDetails.starting).map((row: any, i: number) => (
                                                      <div key={i} className="flex items-center gap-3">
-                                                         <div className="grid grid-cols-3 gap-4 flex-1">
+                                                         <div className="grid grid-cols-3 gap-4 flex-1 text-slate-600">
                                                              <input value={row.swg} onChange={(e) => updateCoilRow(type as any, i, 'swg', e.target.value)} disabled={!isEditing && !isCoilEditing} placeholder="---" className="w-full bg-slate-50 border border-slate-100 rounded-xl h-12 text-center font-mono font-bold text-sm outline-none focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all" />
                                                              <input value={row.weight} onChange={(e) => updateCoilRow(type as any, i, 'weight', e.target.value)} disabled={!isEditing && !isCoilEditing} placeholder="---" className="w-full bg-slate-50 border border-slate-100 rounded-xl h-12 text-center font-mono font-bold text-sm outline-none focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all" />
                                                              <input value={row.turns} onChange={(e) => updateCoilRow(type as any, i, 'turns', e.target.value)} disabled={!isEditing && !isCoilEditing} placeholder="---" className="w-full bg-slate-50 border border-slate-100 rounded-xl h-12 text-center font-mono font-bold text-sm outline-none focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all" />
@@ -502,9 +581,9 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                              </div>
 
                                              <div className="mt-8 pt-8 border-t border-slate-50 flex items-center justify-between">
-                                                 <div className="flex flex-col">
+                                                 <div className="flex flex-row gap-6">
                                                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Aggregate Weight</span>
-                                                     <span className="text-xs font-bold text-slate-300">Sum of matrix rows</span>
+                                                     <span className="text-xs font-bold text-slate-300">---</span>
                                                  </div>
                                                  <div className="flex items-center gap-3">
                                                      <input 
@@ -512,13 +591,159 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                                           onChange={(e) => updateCoilTotalWeight(type as any, e.target.value)}
                                                           disabled={!isEditing && !isCoilEditing}
                                                           placeholder="0.00"
-                                                          className="w-24 h-12 bg-slate-900 text-white rounded-2xl text-center font-mono font-black text-lg outline-none shadow-xl shadow-slate-200/50 disabled:opacity-50"
+                                                          className="w-24 h-12 bg-gray-100 text-black/80 rounded-xl text-center font-mono font-black text-lg outline-none  disabled:opacity-80"
                                                      />
                                                      <span className="text-[10px] font-black text-slate-400 uppercase">KG</span>
                                                  </div>
                                              </div>
                                          </div>
                                      ))}
+                                 </div>
+                             </div>
+
+                             {/* Parts Replacement Section */}
+                             <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden flex flex-col mt-10">
+                                 <div className="px-10 py-8 border-b border-slate-200 flex items-center justify-between bg-slate-50/10">
+                                     <div className="flex items-center gap-4">
+                                         <div className="h-10 w-1 bg-rose-400 rounded-full" />
+                                         <div>
+                                            <h3 className="text-lg font-[1000] text-slate-800 uppercase tracking-tighter leading-none">Parts Replaced</h3>
+                                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">Component Lifecycle Management</p>
+                                         </div>
+                                     </div>
+                                     {isPartsEditing ? (
+                                         <button 
+                                            type="submit" 
+                                            disabled={loading}
+                                            className={cn(
+                                                "px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border shadow-sm",
+                                                "bg-rose-500 text-white border-rose-600",
+                                                loading && "opacity-50 cursor-not-allowed"
+                                            )}
+                                         >
+                                             {loading ? 'Saving...' : <><Save className="h-4 w-4" /> Finalize Inventory</>}
+                                         </button>
+                                     ) : (
+                                         <button 
+                                            type="button" 
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setIsPartsEditing(true);
+                                            }} 
+                                            disabled={loading}
+                                            className={cn(
+                                                "px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 border shadow-sm",
+                                                "bg-white text-rose-500 border-slate-100 hover:bg-slate-50",
+                                                loading && "opacity-50 cursor-not-allowed"
+                                            )}
+                                         >
+                                             <Edit2 className="h-4 w-4" /> Edit Parts
+                                         </button>
+                                     )}
+                                 </div>
+                                 <div className="p-10 space-y-6">
+                                     <div className="grid grid-cols-12 gap-6 px-4 mb-2">
+                                         <span className="col-span-6 text-[9px] font-black text-slate-500 uppercase tracking-widest">Part Name / Description</span>
+                                         <span className="col-span-2 text-[9px] font-black text-slate-500 uppercase tracking-widest text-center">Qty</span>
+                                         <span className="col-span-3 text-[9px] font-black text-slate-500 uppercase tracking-widest text-right">Price (₹)</span>
+                                         <span className="col-span-1"></span>
+                                     </div>
+
+                                     {partsReplaced.length === 0 && !isPartsEditing && (
+                                         <div className="text-center py-10 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
+                                             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">No parts replaced yet</p>
+                                         </div>
+                                     )}
+
+                                     <div className="space-y-4">
+                                         {partsReplaced.map((part: any, i: number) => (
+                                             <div key={i} className="grid grid-cols-12 gap-4 items-center group/item transition-all">
+                                                 <div className="col-span-6">
+                                                     <input 
+                                                        value={part.name} 
+                                                        onChange={(e) => updatePartRow(i, 'name', e.target.value)} 
+                                                        disabled={!isEditing && !isPartsEditing}
+                                                        placeholder="Enter part name..."
+                                                        className="w-full bg-slate-50 border border-slate-100 rounded-xl h-12 px-4 font-bold text-sm text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all" 
+                                                     />
+                                                 </div>
+                                                 <div className="col-span-2">
+                                                     <input 
+                                                        value={part.qty} 
+                                                        onChange={(e) => updatePartRow(i, 'qty', e.target.value)} 
+                                                        disabled={!isEditing && !isPartsEditing}
+                                                        placeholder="1"
+                                                        className="w-full bg-slate-50 border border-slate-100 rounded-xl h-12 text-center font-bold text-sm text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all" 
+                                                     />
+                                                 </div>
+                                                 <div className="col-span-3">
+                                                     <input 
+                                                        value={part.price} 
+                                                        onChange={(e) => updatePartRow(i, 'price', e.target.value)} 
+                                                        disabled={!isEditing && !isPartsEditing}
+                                                        placeholder="0"
+                                                        className="w-full bg-slate-50 border border-slate-100 rounded-xl h-12 text-right px-4 font-mono font-black text-sm text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all" 
+                                                     />
+                                                 </div>
+                                                 <div className="col-span-1 flex justify-end">
+                                                     {(isEditing || isPartsEditing) && (
+                                                         <button type="button" onClick={() => removePartRow(i)} className="p-2 text-slate-300 hover:text-rose-500 transition-colors">
+                                                             <X className="h-4 w-4" />
+                                                         </button>
+                                                     )}
+                                                 </div>
+                                             </div>
+                                         ))}
+                                     </div>
+                                     {(isEditing || isPartsEditing) && (
+                                         <button 
+                                            type="button" 
+                                            onClick={addPartRow}
+                                            className="w-full py-4 bg-slate-50 border border-dashed border-slate-200 rounded-2xl flex items-center justify-center gap-2 text-slate-400 hover:bg-slate-100 transition-all group"
+                                         >
+                                             <Plus className="h-4 w-4 group-hover:rotate-90 transition-transform" />
+                                             <span className="text-[10px] font-black uppercase tracking-widest">Add New Component</span>
+                                         </button>
+                                     )}
+
+                                     {/* Remarks & Warranty Grid */}
+                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10 pt-10 border-t border-slate-100">
+                                         <div className="space-y-4">
+                                             <div className="flex items-center gap-3">
+                                                 <div className="p-2 bg-amber-50 rounded-xl text-amber-500"><MessageCircle className="h-4 w-4" /></div>
+                                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Owner Remarks</span>
+                                             </div>
+                                             {isPartsEditing || isEditing ? (
+                                                 <textarea 
+                                                    value={remarks}
+                                                    onChange={(e) => setRemarks(e.target.value)}
+                                                    placeholder="Add special notes or instructions..."
+                                                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-amber-50/50 transition-all min-h-[100px]"
+                                                 />
+                                             ) : (
+                                                 <p className="text-sm font-bold text-slate-600 italic px-2">{remarks || 'No special remarks added.'}</p>
+                                             )}
+                                         </div>
+
+                                         <div className="space-y-4">
+                                             <div className="flex items-center gap-3">
+                                                 <div className="p-2 bg-emerald-50 rounded-xl text-emerald-500"><Receipt className="h-4 w-4" /></div>
+                                                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Service Warranty</span>
+                                             </div>
+                                             {isPartsEditing || isEditing ? (
+                                                 <input 
+                                                    value={warrantyInfo}
+                                                    onChange={(e) => setWarrantyInfo(e.target.value)}
+                                                    placeholder="e.g., 3 Months Parts Warranty"
+                                                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl h-12 px-4 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-emerald-50/50 transition-all"
+                                                 />
+                                             ) : (
+                                                 <div className="px-4 py-3 bg-emerald-50 border border-emerald-100 rounded-2xl inline-block">
+                                                     <span className="text-sm font-black text-emerald-700 uppercase">{warrantyInfo || 'No warranty issued'}</span>
+                                                 </div>
+                                             )}
+                                         </div>
+                                     </div>
                                  </div>
                              </div>
                         </div>
@@ -536,9 +761,18 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                          </div>
                                          <h4 className="text-[10px] font-black text-indigo-300/50 uppercase tracking-[0.4em]">Financial Settlement</h4>
                                      </div>
-                                     <div className="space-y-2">
+                                     <div className="space-y-2 relative">
                                          <p className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Net Balance Payable</p>
-                                         <h2 className="text-7xl font-[1000] tracking-tighter leading-none bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent">₹{balance.toLocaleString()}</h2>
+                                         <div className="flex items-center gap-4 relative">
+                                            <h2 className="text-7xl font-[1000] tracking-tighter leading-none bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent">
+                                                ₹{(job.status === 'DELIVERED' ? 0 : balance).toLocaleString()}
+                                            </h2>
+                                            {(job.status === 'DELIVERED' || balance === 0) && (
+                                                <div className="transform rotate-[-12deg] border-[3px] border-emerald-500 px-3 py-0.5 rounded-lg bg-emerald-500/10 backdrop-blur-sm animate-in zoom-in duration-500">
+                                                    <span className="text-xl font-black text-emerald-500 uppercase tracking-tighter">PAID</span>
+                                                </div>
+                                            )}
+                                         </div>
                                      </div>
                                  </div>
 
@@ -582,7 +816,7 @@ export default function JobCustomerView({ job, onBack }: { job: JobSheet, onBack
                                  {isEditing ? (
                                      <input type="date" name="expectedAt" defaultValue={job.expectedAt ? new Date(job.expectedAt).toISOString().split('T')[0] : ''} className="bg-slate-50 p-3 rounded-2xl text-base font-black w-full outline-none focus:ring-4 focus:ring-indigo-50 mt-1" />
                                  ) : (
-                                     <p className="text-3xl font-[1000] text-slate-900 tracking-tighter uppercase">{job.expectedAt ? new Date(job.expectedAt).toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' }) : "-- --- ----"}</p>
+                                     <p className="text-3xl font-[600] text-slate-900 tracking-tighter uppercase">{job.expectedAt ? new Date(job.expectedAt).toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' }) : "-- --- ----"}</p>
                                  )}
                              </div>
                          </div>
