@@ -1,5 +1,5 @@
 import { getStats, getWarranties, getJobSheets, getShopDetails } from "@/lib/actions";
-import DashboardClient from "@/components/dashboard-client";
+import DashboardClient from "@/components/RepWarr-dashboard";
 
 export const dynamic = 'force-dynamic'; // Ensure we always fetch fresh data
 

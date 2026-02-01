@@ -1,6 +1,5 @@
 import { ArrowLeft, Clock, MapPin, Smartphone, User, DollarSign, Calendar, Eye, FileText, CheckCircle, ShieldCheck, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import PrivateNoteEditor from "./private-note-editor";
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -156,9 +155,6 @@ export default function WarrantyDetailsView({ warranty, onBack, onOpenCard }: { 
                             </div>
                         </div>
                     </div>
-
-                    {/* Private Note Editor - Directly Embedded */}
-                    <PrivateNoteEditor warrantyId={warranty.id} initialNote={warranty.privateNote || ""} />
 
                 </div>
 
