@@ -299,7 +299,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
 
                 <div className="flex items-center gap-3">
                     {!(isEditing || isTechEditing || isCoilEditing || isPartsEditing) ? (
-                        <div className="flex items-center gap-3 bg-white/50 p-1.5 rounded-[20px] border border-slate-100 shadow-sm ">
+                        <div className="flex items-center gap-3 bg-white/50 p-1.5 rounded-[20px] border border-slate-100 shadow-sm overflow-x-auto no-scrollbar w-full md:w-auto">
                             <button
                                 onClick={() => setIsDeleting(true)}
                                 className="p-2.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all duration-200 cursor-pointer"
@@ -359,7 +359,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
             </div>
             {/* --- DELETE CONFIRMATION --- */}
             {isDeleting && (
-                <div className="bg-slate-900 text-white rounded-[32px] p-6 flex flex-col md:flex-row items-center justify-between gap-6 animate-in zoom-in-95 duration-500 shadow-2xl overflow-hidden relative">
+                <div className="bg-slate-900 text-white rounded-[32px] p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-6 animate-in zoom-in-95 duration-500 shadow-2xl overflow-hidden relative">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/10 rounded-full -mr-32 -mt-32 blur-3xl" />
                     <div className="flex items-center gap-5 relative z-10 text-center md:text-left">
                         <div className="p-4 bg-rose-500/20 text-rose-400 rounded-2xl border border-rose-500/30">
@@ -377,7 +377,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                 </div>
             )}
 
-            <form id="job-edit-form" onSubmit={handleUpdate} className="flex flex-col lg:flex-row gap-6 items-start">
+            <form id="job-edit-form" onSubmit={handleUpdate} className="flex flex-col-reverse lg:flex-row gap-6 items-start">
                 <input type="hidden" name="id" value={job.id} />
                 <input type="hidden" name="status" value={job.status} />
                 <input type="hidden" name="category" value={job.category} />
@@ -420,7 +420,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                 {/* --- LEFT SIDEBAR (THE RAIL) --- */}
                 <div className="lg:w-80 w-full space-y-6 sticky top-30">
                     {/* Compact SLA Timeline */}
-                    <div className="bg-white rounded-[32px] p-6 border border-slate-100 shadow-sm space-y-6">
+                    <div className="bg-white rounded-[32px] p-4 md:p-6 border border-slate-100 shadow-sm space-y-6">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-slate-100 rounded-xl text-slate-500"><Calendar className="h-5 w-5" /></div>
                             <span className="text-xs font-bold text-slate-500 tracking-widest uppercase">Job Life-Cycle</span>
@@ -489,7 +489,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                     </div>
 
                     {/* Quick Specs Chip */}
-                    <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5">
+                    <div className="bg-white rounded-3xl p-4 md:p-6 border border-slate-200 shadow-sm space-y-5">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-slate-100 rounded-xl text-slate-500"><Wrench className="h-5 w-5" /></div>
                             <span className="text-xs font-bold text-slate-500 tracking-widest">Asset Metadata</span>
@@ -518,7 +518,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
 
 
                     {/* Problem Description Card */}
-                    <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5">
+                    <div className="bg-white rounded-3xl p-4 md:p-6 border border-slate-200 shadow-sm space-y-5">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-slate-100 rounded-xl text-slate-500"><FileText className="h-5 w-5" /></div>
                             <span className="text-xs font-bold text-slate-500 tracking-widest">Reported Issue</span>

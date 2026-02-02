@@ -583,14 +583,14 @@ export default function DashboardClient({
                                 {/* Enhanced Control Bar */}
                                 <div className="p-8 bg-slate-50/40 backdrop-blur-sm flex flex-col md:flex-row gap-6 items-center border-b border-slate-200/50">
                                     <div className="relative flex-1 group w-full">
-                                        <div className="absolute left-5 top-1/2 -translate-y-1/2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm group-focus-within:border-primary group-focus-within:shadow-lg group-focus-within:shadow-primary/5 transition-all">
-                                            <Search className="text-slate-400 h-4 w-4" />
+                                        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
+                                            <Search className="h-5 w-5" />
                                         </div>
                                         <input
                                             placeholder="Search by name, phone, or ID code..."
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}
-                                            className="w-full h-14 pl-16 pr-6 rounded-[1.25rem] bg-white border border-slate-200/60 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-sm font-bold text-slate-700 placeholder:text-slate-400"
+                                            className="w-full h-14 pl-14 pr-6 rounded-[1.25rem] bg-white border border-slate-200/60 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-sm font-normal text-slate-700 placeholder:text-slate-400"
                                         />
                                     </div>
                                     <div className="flex gap-3 w-full md:w-auto">
@@ -763,14 +763,14 @@ export default function DashboardClient({
                                 {/* Control Bar */}
                                 <div className="p-8 bg-slate-50/40 backdrop-blur-sm flex flex-col lg:flex-row gap-6 items-center border-b border-slate-200/50">
                                     <div className="relative flex-1 group w-full">
-                                        <div className="absolute left-5 top-1/2 -translate-y-1/2 bg-white p-1.5 rounded-xl border border-slate-200 shadow-sm group-focus-within:border-primary group-focus-within:shadow-lg group-focus-within:shadow-primary/5 transition-all">
-                                            <Search className="text-slate-400 h-4 w-4" />
+                                        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
+                                            <Search className="h-5 w-5" />
                                         </div>
                                         <input
                                             placeholder="Find job by name, device, or repair ID..."
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}
-                                            className="w-full h-14 pl-16 pr-6 rounded-[1.25rem] bg-white border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-base font-bold text-slate-700 placeholder:text-slate-400"
+                                            className="w-full h-14 pl-14 pr-6 rounded-[1.25rem] bg-white border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-base font-normal text-slate-700 placeholder:text-slate-400"
                                         />
                                     </div>
                                     <div className="flex gap-3 w-full lg:w-auto overflow-x-auto pb-2 lg:pb-0 no-scrollbar">
