@@ -390,11 +390,11 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                             <div className="p-2 bg-slate-50 rounded-xl text-slate-400"><Calendar className="h-4 w-4" /></div>
                             <span className="text-[10px] font-black text-slate-400 tracking-widest uppercase">Job Life-Cycle</span>
                         </div>
-                        
+
                         <div className="relative pl-6 space-y-10">
                             {/* Track Line */}
                             <div className="absolute left-[11px] top-2 bottom-2 w-0.5 bg-slate-100" />
-                            
+
                             {/* Intake Node */}
                             <div className="relative">
                                 <div className="absolute -left-[20px] top-1.5 h-3.5 w-3.5 rounded-full border-4 border-white bg-indigo-500 shadow-sm" />
@@ -432,11 +432,11 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                 <div className="flex flex-col text-slate-400">
                                     <span className="text-[9px] font-bold text-indigo-500 leading-none mb-1">TARGET RETURN</span>
                                     {isEditing ? (
-                                        <input 
-                                            type="date" 
-                                            name="expectedAt" 
-                                            defaultValue={job.expectedAt ? new Date(job.expectedAt).toISOString().split('T')[0] : ''} 
-                                            className="bg-slate-50 p-2 rounded-lg text-xs font-bold w-full outline-none border border-slate-100 mt-1 focus:bg-white focus:ring-2 focus:ring-indigo-100 transition-all font-mono" 
+                                        <input
+                                            type="date"
+                                            name="expectedAt"
+                                            defaultValue={job.expectedAt ? new Date(job.expectedAt).toISOString().split('T')[0] : ''}
+                                            className="bg-slate-50 p-2 rounded-lg text-xs font-bold w-full outline-none border border-slate-100 mt-1 focus:bg-white focus:ring-2 focus:ring-indigo-100 transition-all font-mono"
                                         />
                                     ) : (
                                         <span className="text-[13px] font-mono font-black text-slate-800">
@@ -481,7 +481,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                         </div>
                     </div>
 
-                    
+
                     {/* Problem Description Card */}
                     <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm space-y-4">
                         <div className="flex items-center gap-3">
@@ -499,7 +499,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                         )}
                     </div>
 
-                   
+
                 </div>
 
                 {/* --- MAIN CANVAS (THE BODY) --- */}
@@ -532,7 +532,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                 <Smartphone className="h-3.5 w-3.5 text-indigo-400" />
                                                 <span className="text-[15px] font-mono tracking-tight">{job.customerPhone}</span>
                                             </div>
-                                            
+
                                             <div className="relative group/status h-7 min-w-[120px]">
                                                 {statusUpdating && (
                                                     <div className="absolute -left-5 top-1/2 -translate-y-1/2">
@@ -619,27 +619,27 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                             </button>
                                         </div>
                                     ) : (
-                                            <button
-                                                type="button"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    setIsTechEditing(true);
-                                                }}
-                                                disabled={loading}
-                                                className={cn(
-                                                    "px-6 py-3 rounded-2xl text-[10px] font-bold tracking-widest transition-all flex items-center gap-2 border shadow-sm cursor-pointer",
-                                                    "bg-white text-indigo-500 border-slate-100 hover:bg-slate-50",
-                                                    loading && "opacity-50 cursor-not-allowed"
-                                                )}
-                                            >
-                                                <Edit2 className="h-4 w-4" /> Edit Data
-                                            </button>
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setIsTechEditing(true);
+                                            }}
+                                            disabled={loading}
+                                            className={cn(
+                                                "px-6 py-3 rounded-2xl text-[10px] font-bold tracking-widest transition-all flex items-center gap-2 border shadow-sm cursor-pointer",
+                                                "bg-white text-indigo-500 border-slate-100 hover:bg-slate-50",
+                                                loading && "opacity-50 cursor-not-allowed"
+                                            )}
+                                        >
+                                            <Edit2 className="h-4 w-4" /> Edit Data
+                                        </button>
                                     )}
                                 </div>
                                 <div className="p-5 space-y-5">
                                     {/* Electrical Specs */}
                                     <div className="space-y-6">
-                                       
+
                                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-6">
                                             {[
                                                 { label: 'Power Rating', name: 'motor.power', value: motor?.power, unit: motor?.power_unit || 'HP', isPower: true },
@@ -677,15 +677,15 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                         {field.unit && !field.isPower && <span className="text-[9px] font-bold text-slate-400 italic">{field.unit}</span>}
                                                         {field.isPower && !isEditing && !isTechEditing && <span className="text-[9px] font-bold text-slate-400 italic">{field.unit}</span>}
                                                     </div>
-                                                    
+
                                                 </div>
                                             ))}
-                                            
+
                                         </div>
-                                      
+
                                     </div>
 
-                                 
+
                                 </div>
                             </div>
 
@@ -742,7 +742,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                         <div key={type} className={cn("space-y-4", type === 'starting' ? "lg:pl-5" : "lg:pr-5")}>
                                             <div className="flex items-center justify-center">
                                                 <div className="flex items-center gap-4">
-                                                    <div className={cn("px-3 py-1 rounded-lg text-[12px] font-black", type === 'running' ? "bg-indigo-50 text-indigo-600" : "bg-emerald-50 text-emerald-600")}>
+                                                    <div className={cn("px-3 py-1 rounded-lg text-[12px] font-black capitalize", type === 'running' ? "bg-indigo-50 text-indigo-600" : "bg-emerald-50 text-emerald-600")}>
                                                         {type} Stage
                                                     </div>
                                                 </div>
@@ -759,12 +759,12 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                                     {i === 0 && (
                                                                         <span className="text-[10px] font-bold text-slate-400 tracking-wider block">Turns (T)</span>
                                                                     )}
-                                                                    <input 
-                                                                        value={row.turns} 
-                                                                        onChange={(e) => updateCoilRow(type as any, i, 'turns', e.target.value)} 
-                                                                        disabled={!isEditing && !isCoilEditing} 
-                                                                        placeholder="0"  
-                                                                        className="w-20 h-10 bg-gray-50 text-slate-900 rounded-xl text-center font-black text-[15px] outline-none border border-slate-100 focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all shadow-sm font-bold tracking-wider block" 
+                                                                    <input
+                                                                        value={row.turns}
+                                                                        onChange={(e) => updateCoilRow(type as any, i, 'turns', e.target.value)}
+                                                                        disabled={!isEditing && !isCoilEditing}
+                                                                        placeholder="0"
+                                                                        className="w-20 h-10 bg-gray-50 text-slate-900 rounded-xl text-center font-black text-[15px] outline-none border border-slate-100 focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all shadow-sm font-bold tracking-wider block"
                                                                     />
                                                                 </div>
 
@@ -778,12 +778,12 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                                     {i === 0 && (
                                                                         <span className="text-[10px] font-bold text-slate-400 tracking-wider block">Wire (SWG)</span>
                                                                     )}
-                                                                    <input 
-                                                                        value={row.swg} 
-                                                                        onChange={(e) => updateCoilRow(type as any, i, 'swg', e.target.value)} 
-                                                                        disabled={!isEditing && !isCoilEditing} 
-                                                                        placeholder="0" 
-                                                                        className="w-20 h-10 bg-gray-50 text-slate-900 rounded-xl text-center font-black text-[15px] outline-none border border-slate-100 focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all shadow-sm font-bold tracking-wider block" 
+                                                                    <input
+                                                                        value={row.swg}
+                                                                        onChange={(e) => updateCoilRow(type as any, i, 'swg', e.target.value)}
+                                                                        disabled={!isEditing && !isCoilEditing}
+                                                                        placeholder="0"
+                                                                        className="w-20 h-10 bg-gray-50 text-slate-900 rounded-xl text-center font-black text-[15px] outline-none border border-slate-100 focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all shadow-sm font-bold tracking-wider block"
                                                                     />
                                                                 </div>
 
@@ -797,12 +797,12 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                                     {i === 0 && (
                                                                         <span className="text-[10px] font-bold text-slate-400 tracking-wider block">Weight (KG)</span>
                                                                     )}
-                                                                    <input 
-                                                                        value={row.weight} 
-                                                                        onChange={(e) => updateCoilRow(type as any, i, 'weight', e.target.value)} 
-                                                                        disabled={!isEditing && !isCoilEditing} 
-                                                                        placeholder="0" 
-                                                                        className="w-20 h-10 bg-gray-50 text-slate-900 rounded-xl text-center font-black text-[15px] outline-none border border-slate-100 focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all shadow-sm font-bold tracking-wider block" 
+                                                                    <input
+                                                                        value={row.weight}
+                                                                        onChange={(e) => updateCoilRow(type as any, i, 'weight', e.target.value)}
+                                                                        disabled={!isEditing && !isCoilEditing}
+                                                                        placeholder="0"
+                                                                        className="w-20 h-10 bg-gray-50 text-slate-900 rounded-xl text-center font-black text-[15px] outline-none border border-slate-100 focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all shadow-sm font-bold tracking-wider block"
                                                                     />
                                                                 </div>
                                                             </div>
@@ -818,14 +818,14 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                         </div>
                                                     ))}
                                                 </div>
-                                                
-                                                     {(isEditing || isCoilEditing) && (
+
+                                                {(isEditing || isCoilEditing) && (
                                                     <button type="button" onClick={() => addCoilRow(type as any)} className="w-full py-3 bg-slate-50 border border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-slate-400 hover:bg-slate-100 transition-all group cursor-pointer">
                                                         <Plus className="h-4 w-4 group-hover:rotate-90 transition-transform" />
-                                                         <span className="text-[10px] font-black tracking-widest">Add New</span>
+                                                        <span className="text-[10px] font-black tracking-widest">Add New</span>
                                                     </button>
                                                 )}
-                                               
+
                                             </div>
 
                                             <div className="mt-2 pt-2 border-t border-slate-50 space-y-4 flex flex-row justify-start gap-8 mb-[-6px]">
@@ -846,7 +846,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                 <div className="flex flex-col gap-2">
                                                     <div>
                                                         <span className="text-[10px] font-bold text-slate-400 tracking-wider block">Total Weight</span>
-                                                    
+
                                                     </div>
                                                     <div className="flex items-center gap-3">
                                                         <input
@@ -866,11 +866,11 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                 <div className="flex flex-col gap-2.5">
                                                     <div className="flex items-center justify-between">
                                                         <div className="flex items-center gap-1.5 font-black text-slate-700 text-sm">
-                                                        <span>Connection Type</span>
-                                                    </div>
+                                                            <span>Connection Type</span>
+                                                        </div>
                                                         {type === 'starting' && (isEditing || isCoilEditing) && (
-                                                            <button 
-                                                                type="button" 
+                                                            <button
+                                                                type="button"
                                                                 onClick={copyConnectionToStarting}
                                                                 className="flex items-center gap-1.5 px-2 py-1 bg-indigo-50 text-indigo-500 rounded-md text-[9px] font-black hover:bg-indigo-100 transition-all border border-indigo-100/50"
                                                             >
@@ -884,14 +884,14 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                             <div key={idx} className={cn(
                                                                 "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black shadow-sm border animate-in zoom-in duration-200",
                                                                 idx % 3 === 0 ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
-                                                                idx % 3 === 1 ? "bg-orange-50 text-orange-600 border-orange-100" :
-                                                                "bg-indigo-50 text-indigo-600 border-indigo-100"
+                                                                    idx % 3 === 1 ? "bg-orange-50 text-orange-600 border-orange-100" :
+                                                                        "bg-indigo-50 text-indigo-600 border-indigo-100"
                                                             )}>
                                                                 {conn}
                                                                 {(isEditing || isCoilEditing) && (
-                                                                    <button 
-                                                                        type="button" 
-                                                                        onClick={() => updateCoilConnection(type as any, 'remove', conn)} 
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() => updateCoilConnection(type as any, 'remove', conn)}
                                                                         className="hover:scale-110 transition-transform cursor-pointer"
                                                                     >
                                                                         <XCircle className="h-3.5 w-3.5 opacity-60 hover:opacity-100" />
@@ -900,7 +900,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                             </div>
                                                         ))}
                                                         {(isEditing || isCoilEditing) && (
-                                                            <input 
+                                                            <input
                                                                 placeholder="Add connection..."
                                                                 className="flex-1 bg-transparent outline-none text-[10px] font-bold text-slate-600 min-w-[100px] ml-1 placeholder:text-slate-300"
                                                                 onKeyDown={(e) => {
@@ -1087,7 +1087,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                         <div className="lg:col-span-12 bg-slate-900 text-white rounded-3xl p-5 relative overflow-hidden shadow-2xl">
                             <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] -ml-64 -mt-64" />
-                            
+
                             <div className="relative z-10">
                                 <div className="flex items-center gap-4 mb-6">
                                     <div className="p-4 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md">
@@ -1121,8 +1121,8 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                 <span className="text-slate-500">Service Fee: ₹{total.toLocaleString()}</span>
                                             </div>
                                             <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
-                                                <div 
-                                                    className="h-full bg-emerald-500 transition-all duration-1000 ease-out" 
+                                                <div
+                                                    className="h-full bg-emerald-500 transition-all duration-1000 ease-out"
                                                     style={{ width: `${Math.min((advance / total) * 100, 100)}%` }}
                                                 />
                                             </div>
@@ -1150,8 +1150,8 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                 <div className="flex items-center gap-4">
                                                     <p className="text-2xl font-black tracking-tighter text-emerald-400">₹{advance.toLocaleString()}</p>
                                                     {balance > 0 && (
-                                                        <button 
-                                                            type="button" 
+                                                        <button
+                                                            type="button"
                                                             onClick={() => setIsEditing(true)}
                                                             className="p-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-all cursor-pointer"
                                                         >
