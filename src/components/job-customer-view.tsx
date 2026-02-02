@@ -423,7 +423,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                     <div className="bg-white rounded-[32px] p-4 md:p-6 border border-slate-100 shadow-sm space-y-6">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-slate-100 rounded-xl text-slate-500"><Calendar className="h-5 w-5" /></div>
-                            <span className="text-xs font-bold text-slate-500 tracking-widest uppercase">Job Life-Cycle</span>
+                            <span className="text-xs font-bold text-slate-500 tracking-widest uppercase">System Ref: #{job.jobId}</span>
                         </div>
 
                         <div className="relative pl-6 space-y-10">
@@ -829,7 +829,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                     <div className="flex flex-wrap gap-2 min-h-[44px] p-2 bg-slate-50/50 rounded-2xl border border-slate-100 items-center">
                                                         {(coilDetails[`${type}Connection`] || []).map((conn: string, idx: number) => (
                                                             <div key={idx} className={cn(
-                                                                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px]  shadow-sm border animate-in zoom-in duration-200",
+                                                                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[16px]  shadow-sm border animate-in zoom-in duration-200",
                                                                 idx % 3 === 0 ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
                                                                     idx % 3 === 1 ? "bg-orange-50 text-orange-600 border-orange-100" :
                                                                         "bg-indigo-50 text-indigo-600 border-indigo-100"
@@ -849,7 +849,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                         {(isEditing || isCoilEditing) && (
                                                             <input
                                                                 placeholder="Add connection..."
-                                                                className="flex-1 bg-transparent outline-none text-[10px] font-bold text-slate-600 min-w-[100px] ml-1 placeholder:text-slate-300 focus:border-b-2 focus:border-blue-500 transition-all"
+                                                                className="flex-1 bg-transparent outline-none text-[16px] font-bold text-slate-600 min-w-[100px] ml-1 placeholder:text-slate-300 focus:border-b-2 focus:border-blue-500 transition-all"
                                                                 onKeyDown={(e) => {
                                                                     if (e.key === 'Enter') {
                                                                         e.preventDefault();
