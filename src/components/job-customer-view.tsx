@@ -516,12 +516,6 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                     {/* Customer Identity Section (Wide Asymmetric) */}
                     <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm flex flex-col md:flex-row gap-6 items-center justify-between group transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/5">
                         <div className="flex items-center gap-8">
-                            <div className="relative">
-                                <div className="h-20 w-20 bg-indigo-50 rounded-2xl flex items-center justify-center border-2 border-white shadow-lg group-hover:bg-indigo-100 transition-colors">
-                                    <User className="h-8 w-8 text-indigo-500" />
-                                </div>
-                                <div className="absolute -bottom-1 -right-1 h-6 w-6 bg-emerald-500 rounded-full border-4 border-white shadow-sm" />
-                            </div>
                             <div className="space-y-3">
                                 {isEditing ? (
                                     <div className="flex flex-col gap-2">
@@ -605,44 +599,6 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                             <p className="text-[10px] font-bold text-slate-400 tracking-[0.2em] mt-1">Motor Specification Details</p>
                                         </div>
                                     </div>
-                                    {isTechEditing ? (
-                                        <div className="flex items-center gap-3">
-                                            <button
-                                                type="button"
-                                                onClick={() => setIsTechEditing(false)}
-                                                className="px-6 py-3 rounded-2xl text-[10px]  tracking-widest transition-all border border-slate-200 text-slate-500 hover:bg-slate-50 cursor-pointer"
-                                            >
-                                                Cancel
-                                            </button>
-                                            <button
-                                                type="submit"
-                                                disabled={loading}
-                                                className={cn(
-                                                    "px-6 py-3 rounded-2xl text-[10px]  tracking-widest transition-all flex items-center gap-2 border shadow-sm cursor-pointer",
-                                                    "bg-indigo-500 text-white border-indigo-600",
-                                                    loading && "opacity-50 cursor-not-allowed"
-                                                )}
-                                            >
-                                                {loading ? 'Saving...' : <><Save className="h-4 w-4" /> Save Metadata</>}
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                setIsTechEditing(true);
-                                            }}
-                                            disabled={loading}
-                                            className={cn(
-                                                "px-6 py-3 rounded-2xl text-[10px] font-bold tracking-widest transition-all flex items-center gap-2 border shadow-sm cursor-pointer",
-                                                "bg-white text-indigo-500 border-slate-100 hover:bg-slate-50",
-                                                loading && "opacity-50 cursor-not-allowed"
-                                            )}
-                                        >
-                                            <Edit2 className="h-4 w-4" /> Edit Data
-                                        </button>
-                                    )}
                                 </div>
                                 <div className="p-5 space-y-5">
                                     {/* Electrical Specs */}
@@ -706,44 +662,6 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                             <p className="text-[10px] font-bold text-slate-400 tracking-[0.2em] mt-1">Coil Specification</p>
                                         </div>
                                     </div>
-                                    {isCoilEditing ? (
-                                        <div className="flex items-center gap-3">
-                                            <button
-                                                type="button"
-                                                onClick={() => setIsCoilEditing(false)}
-                                                className="px-6 py-3 rounded-2xl text-[10px]  tracking-widest transition-all border border-slate-200 text-slate-500 hover:bg-slate-50 cursor-pointer"
-                                            >
-                                                Cancel
-                                            </button>
-                                            <button
-                                                type="submit"
-                                                disabled={loading}
-                                                className={cn(
-                                                    "px-6 py-3 rounded-2xl text-[10px]  tracking-widest transition-all flex items-center gap-2 border shadow-sm cursor-pointer",
-                                                    "bg-emerald-500 text-white border-emerald-600",
-                                                    loading && "opacity-50 cursor-not-allowed"
-                                                )}
-                                            >
-                                                {loading ? 'Saving...' : <><Save className="h-4 w-4" /> Save Configuration</>}
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                setIsCoilEditing(true);
-                                            }}
-                                            disabled={loading}
-                                            className={cn(
-                                                "px-6 py-3 rounded-2xl text-[10px]  tracking-widest transition-all flex items-center gap-2 border shadow-sm cursor-pointer",
-                                                "bg-white text-indigo-500 border-slate-100 hover:bg-slate-50",
-                                                loading && "opacity-50 cursor-not-allowed"
-                                            )}
-                                        >
-                                            <Edit2 className="h-4 w-4" /> Edit Coil Data
-                                        </button>
-                                    )}
                                 </div>
                                 <div className="p-4 grid grid-cols-1 lg:grid-cols-2 lg:divide-x lg:divide-slate-100 gap-6 lg:gap-0">
                                     {['running', 'starting'].map((type) => (
@@ -944,44 +862,6 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                             <p className="text-[10px] font-bold text-slate-400 tracking-[0.2em] mt-1">Component Lifecycle Management</p>
                                         </div>
                                     </div>
-                                    {isPartsEditing ? (
-                                        <div className="flex items-center gap-3">
-                                            <button
-                                                type="button"
-                                                onClick={() => setIsPartsEditing(false)}
-                                                className="px-6 py-3 rounded-2xl text-[10px]  tracking-widest transition-all border border-slate-200 text-slate-500 hover:bg-slate-50 cursor-pointer"
-                                            >
-                                                Cancel
-                                            </button>
-                                            <button
-                                                type="submit"
-                                                disabled={loading}
-                                                className={cn(
-                                                    "px-6 py-3 rounded-2xl text-[10px]  tracking-widest transition-all flex items-center gap-2 border shadow-sm cursor-pointer",
-                                                    "bg-rose-500 text-white border-rose-600",
-                                                    loading && "opacity-50 cursor-not-allowed"
-                                                )}
-                                            >
-                                                {loading ? 'Saving...' : <><Save className="h-4 w-4" /> Finalize Inventory</>}
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <button
-                                            type="button"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                setIsPartsEditing(true);
-                                            }}
-                                            disabled={loading}
-                                            className={cn(
-                                                "px-6 py-3 rounded-2xl text-[10px]  tracking-widest transition-all flex items-center gap-2 border shadow-sm cursor-pointer",
-                                                "bg-white text-rose-500 border-slate-100 hover:bg-slate-50",
-                                                loading && "opacity-50 cursor-not-allowed"
-                                            )}
-                                        >
-                                            <Edit2 className="h-4 w-4" /> Edit Parts
-                                        </button>
-                                    )}
                                 </div>
                                 <div className="p-5 space-y-5">
                                     <div className="grid grid-cols-12 gap-6 px-4 mb-2">
