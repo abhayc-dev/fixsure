@@ -52,7 +52,7 @@ app.post('/api/auth/login', async (req, res) => {
 // Signup
 app.post('/api/auth/signup', async (req, res) => {
     const { email, password, phone, shopName, category } = req.body;
-    
+
     if (!email || !password || !phone || !shopName) {
         return res.status(400).json({ error: 'All fields are required' });
     }
@@ -115,6 +115,11 @@ app.get('/api/jobs', async (req, res) => {
     try {
         const jobs = await prisma.jobSheet.findMany({
             where: { shopId: String(shopId) },
+            include: {
+                payments: {
+                    orderBy: { date: 'asc' }
+                }
+            },
             orderBy: { receivedAt: 'desc' }
         });
         res.json(jobs);
@@ -134,7 +139,8 @@ app.get('/api/admin/jobs', async (req, res) => {
                         ownerName: true,
                         phone: true
                     }
-                }
+                },
+                payments: true
             },
             orderBy: { receivedAt: 'desc' }
         });
@@ -147,15 +153,16 @@ app.get('/api/admin/jobs', async (req, res) => {
 // Create a new job
 app.post('/api/jobs', async (req, res) => {
     try {
-        const { 
-            shopId, customerName, customerPhone, customerAddress, 
-            category, deviceType, deviceModel, problemDesc, 
-            accessories, technicalDetails, estimatedCost, 
-            advanceAmount, receivedAt, expectedAt 
+        const {
+            shopId, customerName, customerPhone, customerAddress,
+            category, deviceType, deviceModel, problemDesc,
+            accessories, technicalDetails, estimatedCost,
+            advanceAmount, receivedAt, expectedAt
         } = req.body;
 
         const jobId = `JO-${Math.floor(Math.random() * 90000) + 10000}`;
-        
+        const initialAdvance = parseFloat(advanceAmount) || 0;
+
         const newJob = await prisma.jobSheet.create({
             data: {
                 jobId,
@@ -170,13 +177,21 @@ app.post('/api/jobs', async (req, res) => {
                 accessories,
                 technicalDetails: technicalDetails || null,
                 estimatedCost: parseFloat(estimatedCost) || 0,
-                advanceAmount: parseFloat(advanceAmount) || 0,
+                advanceAmount: initialAdvance,
                 receivedAt: receivedAt ? new Date(receivedAt) : new Date(),
                 expectedAt: expectedAt ? new Date(expectedAt) : null,
-                status: 'RECEIVED'
+                status: 'RECEIVED',
+                // If there's an initial advance, create a payment record too
+                payments: initialAdvance > 0 ? {
+                    create: {
+                        amount: initialAdvance,
+                        date: new Date(),
+                        note: 'Initial Advance'
+                    }
+                } : undefined
             }
         });
-        
+
         res.status(201).json(newJob);
     } catch (error: any) {
         console.error("POST /api/jobs error:", error);
@@ -188,11 +203,11 @@ app.post('/api/jobs', async (req, res) => {
 app.put('/api/jobs/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const { 
-            customerName, customerPhone, customerAddress, 
-            category, deviceType, deviceModel, problemDesc, 
-            accessories, technicalDetails, estimatedCost, 
-            advanceAmount
+        const {
+            customerName, customerPhone, customerAddress,
+            category, deviceType, deviceModel, problemDesc,
+            accessories, technicalDetails, estimatedCost
+            // "advanceAmount" is now read-only derived from payments, but we might still accept it for legacy reasons if needed outside payments
         } = req.body;
 
         const updatedJob = await prisma.jobSheet.update({
@@ -208,7 +223,6 @@ app.put('/api/jobs/:id', async (req, res) => {
                 accessories,
                 technicalDetails: technicalDetails || null,
                 estimatedCost: estimatedCost !== undefined ? parseFloat(estimatedCost) : undefined,
-                advanceAmount: advanceAmount !== undefined ? parseFloat(advanceAmount) : undefined,
                 expectedAt: req.body.expectedAt ? new Date(req.body.expectedAt) : undefined,
             }
         });
@@ -231,6 +245,49 @@ app.patch('/api/jobs/:id/status', async (req, res) => {
         res.json(updatedJob);
     } catch (error) {
         res.status(500).json({ error: 'Failed to update status' });
+    }
+});
+
+/**
+ * PAYMENT ENDPOINTS
+ */
+
+// Add a Payment (Installment)
+app.post('/api/jobs/:id/payments', async (req, res) => {
+    const { id } = req.params;
+    const { amount, date, note } = req.body;
+
+    if (!amount) return res.status(400).json({ error: 'Amount is required' });
+
+    try {
+        // 1. Create Payment Record
+        const payment = await prisma.payment.create({
+            data: {
+                jobId: id,
+                amount: parseFloat(amount),
+                date: date ? new Date(date) : new Date(),
+                note: note || ''
+            }
+        });
+
+        // 2. Update JobSheet's total advanceAmount (denormalization for easy access)
+        const job = await prisma.jobSheet.findUnique({
+            where: { id },
+            include: { payments: true }
+        });
+
+        if (job) {
+            const totalPaid = job.payments.reduce((sum, p) => sum + p.amount, 0);
+            await prisma.jobSheet.update({
+                where: { id },
+                data: { advanceAmount: totalPaid }
+            });
+        }
+
+        res.status(201).json(payment);
+    } catch (error) {
+        console.error("POST /api/jobs/:id/payments error:", error);
+        res.status(500).json({ error: 'Failed to add payment' });
     }
 });
 

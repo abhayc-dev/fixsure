@@ -129,6 +129,8 @@ model JobSheet {
   technicalDetails Json?   // Flexible storage for specific fields
 
   updatedAt       DateTime @updatedAt
+  
+  payments        Payment[]
 }
 
 enum JobStatus {
@@ -137,4 +139,17 @@ enum JobStatus {
   READY
   DELIVERED
   CANCELLED
+}
+
+// 4. Payment History (Installments)
+model Payment {
+  id          String   @id @default(uuid())
+  amount      Float
+  date        DateTime @default(now())
+  note        String?
+  
+  jobId       String
+  job         JobSheet @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
 }

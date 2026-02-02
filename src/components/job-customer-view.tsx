@@ -2,7 +2,7 @@ import { ArrowLeft, Calendar, Smartphone, User, Receipt, MapPin, Wrench, Message
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { deleteJobSheet, updateJobSheetDetails, updateJobStatus } from "@/lib/actions";
+import { deleteJobSheet, updateJobSheetDetails, updateJobStatus, addPayment } from "@/lib/actions";
 import { JobDetailSkeleton } from "@/components/skeletons/job-detail-skeleton";
 
 type JobSheet = {
@@ -22,6 +22,14 @@ type JobSheet = {
     estimatedCost: number | null;
     advanceAmount?: number | null;
     technicalDetails?: any | null;
+    payments?: Payment[];
+};
+
+type Payment = {
+    id: string;
+    amount: number;
+    date: Date;
+    note?: string;
 };
 
 export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job: JobSheet, shop: any, onBack: () => void, onInvoice: () => void }) {
@@ -39,9 +47,28 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
     const [loading, setLoading] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [statusUpdating, setStatusUpdating] = useState(false);
+    const [isAddingPayment, setIsAddingPayment] = useState(false);
+    const [paymentAmount, setPaymentAmount] = useState('');
+    const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
+    const [paymentLoading, setPaymentLoading] = useState(false);
 
+    const handleAddPayment = async () => {
+        if (!paymentAmount) return;
+        setPaymentLoading(true);
+        try {
+            await addPayment(job.id, parseFloat(paymentAmount), new Date(paymentDate));
 
-
+            router.refresh();
+            setIsAddingPayment(false);
+            setPaymentAmount('');
+            setPaymentDate(new Date().toISOString().split('T')[0]);
+        } catch (error) {
+            console.error(error);
+            alert("Failed to add payment");
+        } finally {
+            setPaymentLoading(false);
+        }
+    };
     // Helper for Motor Data
     const td = job.technicalDetails || {};
     const motor = td?.motor || td;
@@ -1027,24 +1054,67 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                             )}
                                         </div>
 
-                                        <div className="space-y-2">
+                                        <div className="space-y-4">
                                             <div className="flex items-center justify-between">
-                                                <span className="text-[10px]  text-emerald-500 tracking-widest block">Total Received</span>
+                                                <span className="text-[10px] text-emerald-500 tracking-widest block font-bold uppercase">Total Received</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setIsAddingPayment(!isAddingPayment)}
+                                                    className="text-[10px] font-bold text-emerald-400 hover:text-emerald-300 underline underline-offset-2 cursor-pointer"
+                                                >
+                                                    {isAddingPayment ? 'Cancel' : '+ Add Payment'}
+                                                </button>
                                             </div>
-                                            {isEditing ? (
-                                                <input name="advanceAmount" type="number" defaultValue={job.advanceAmount || 0} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 font-mono  text-emerald-400 text-lg outline-none focus:bg-white/10 focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50" />
+
+                                            {isAddingPayment ? (
+                                                <div className="bg-white/10 rounded-xl p-3 space-y-3 animate-in fade-in slide-in-from-top-2">
+                                                    <div>
+                                                        <label className="text-[9px] text-emerald-200/50 uppercase font-bold tracking-wider mb-1 block">Amount (₹)</label>
+                                                        <input
+                                                            type="number"
+                                                            value={paymentAmount}
+                                                            onChange={(e) => setPaymentAmount(e.target.value)}
+                                                            placeholder="0"
+                                                            className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 font-mono text-white text-sm outline-none focus:border-emerald-500/50 transition-all"
+                                                            autoFocus
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-[9px] text-emerald-200/50 uppercase font-bold tracking-wider mb-1 block">Date</label>
+                                                        <input
+                                                            type="date"
+                                                            value={paymentDate}
+                                                            onChange={(e) => setPaymentDate(e.target.value)}
+                                                            className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 font-mono text-white text-sm outline-none focus:border-emerald-500/50 transition-all"
+                                                        />
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={handleAddPayment}
+                                                        disabled={paymentLoading || !paymentAmount}
+                                                        className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 rounded-lg text-xs tracking-wide transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    >
+                                                        {paymentLoading ? 'Adding...' : 'Confirm Payment'}
+                                                    </button>
+                                                </div>
                                             ) : (
                                                 <div className="flex items-center gap-4">
-                                                    <p className="text-2xl  tracking-tighter text-emerald-400">₹{advance.toLocaleString()}</p>
-                                                    {balance > 0 && (
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => setIsEditing(true)}
-                                                            className="p-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg transition-all cursor-pointer"
-                                                        >
-                                                            <PlusCircle className="h-5 w-5" />
-                                                        </button>
-                                                    )}
+                                                    <p className="text-2xl tracking-tighter text-emerald-400">₹{advance.toLocaleString()}</p>
+                                                </div>
+                                            )}
+
+                                            {/* Payment History List (Compact) */}
+                                            {job.payments && job.payments.length > 0 && (
+                                                <div className="mt-4 pt-4 border-t border-white/5 space-y-2 max-h-[150px] overflow-y-auto pr-1 custom-scrollbar">
+                                                    <span className="text-[9px] text-slate-500 tracking-widest uppercase font-bold block mb-2">History</span>
+                                                    {job.payments.map((p) => (
+                                                        <div key={p.id} className="flex items-center justify-between text-xs text-slate-400 bg-white/5 px-3 py-2 rounded-lg border border-white/5">
+                                                            <span className="font-mono text-emerald-400">₹{p.amount}</span>
+                                                            <span className="text-[10px] opacity-70">
+                                                                {new Date(p.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                                            </span>
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             )}
                                         </div>
