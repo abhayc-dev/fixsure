@@ -819,3 +819,29 @@ export async function addPayment(jobId: string, amount: number, date: Date, note
   revalidatePath("/dashboard");
   return { success: true, payment };
 }
+
+export async function deletePayment(paymentId: string, jobId: string) {
+  const shop = await getCurrentShop(); // Ensure authorized
+
+  // 1. Delete Payment
+  await db.payment.delete({
+    where: { id: paymentId }
+  });
+
+  // 2. Update JobSheet total
+  const job = await db.jobSheet.findUnique({
+    where: { id: jobId },
+    include: { payments: true }
+  });
+
+  if (job) {
+    const totalPaid = job.payments.reduce((sum, p) => sum + p.amount, 0);
+    await db.jobSheet.update({
+      where: { id: jobId },
+      data: { advanceAmount: totalPaid }
+    });
+  }
+
+  revalidatePath("/dashboard");
+  return { success: true };
+}

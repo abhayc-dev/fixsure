@@ -2,7 +2,7 @@ import { ArrowLeft, Calendar, Smartphone, User, Receipt, MapPin, Wrench, Message
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { deleteJobSheet, updateJobSheetDetails, updateJobStatus, addPayment } from "@/lib/actions";
+import { deletePayment, deleteJobSheet, updateJobSheetDetails, updateJobStatus, addPayment } from "@/lib/actions";
 import { JobDetailSkeleton } from "@/components/skeletons/job-detail-skeleton";
 
 type JobSheet = {
@@ -1108,11 +1108,26 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                 <div className="mt-4 pt-4 border-t border-white/5 space-y-2 max-h-[150px] overflow-y-auto pr-1 custom-scrollbar">
                                                     <span className="text-[9px] text-slate-500 tracking-widest uppercase font-bold block mb-2">History</span>
                                                     {job.payments.map((p) => (
-                                                        <div key={p.id} className="flex items-center justify-between text-xs text-slate-400 bg-white/5 px-3 py-2 rounded-lg border border-white/5">
+                                                        <div key={p.id} className="flex items-center justify-between text-xs text-slate-400 bg-white/5 px-3 py-2 rounded-lg border border-white/5 group/payment">
                                                             <span className="font-mono text-emerald-400">₹{p.amount}</span>
-                                                            <span className="text-[10px] opacity-70">
-                                                                {new Date(p.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
-                                                            </span>
+                                                            <div className="flex items-center gap-3">
+                                                                <span className="text-[10px] opacity-70">
+                                                                    {new Date(p.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                                                </span>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={async () => {
+                                                                        if (confirm("Are you sure you want to delete this payment?")) {
+                                                                            await deletePayment(p.id, job.id);
+                                                                            router.refresh();
+                                                                        }
+                                                                    }}
+                                                                    className="text-slate-600 hover:text-rose-500 transition-colors opacity-0 group-hover/payment:opacity-100 p-1"
+                                                                    title="Delete Payment"
+                                                                >
+                                                                    <Trash2 className="h-3 w-3" />
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     ))}
                                                 </div>
