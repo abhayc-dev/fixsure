@@ -682,9 +682,6 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                             <div className="flex flex-row items-end gap-3">
                                                                 {/* Turns Column */}
                                                                 <div className="flex flex-col gap-1.5">
-                                                                    {i === 0 && (
-                                                                        <span className="text-[10px] font-bold text-slate-500 tracking-wider block uppercase mb-1">Turns (T)</span>
-                                                                    )}
                                                                     <input
                                                                         value={row.turns}
                                                                         onChange={(e) => updateCoilRow(type as any, i, 'turns', e.target.value)}
@@ -701,9 +698,6 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
 
                                                                 {/* Wire Column */}
                                                                 <div className="flex flex-col gap-1.5">
-                                                                    {i === 0 && (
-                                                                        <span className="text-[10px] font-bold text-slate-500 tracking-wider block uppercase mb-1">Wire (SWG)</span>
-                                                                    )}
                                                                     <input
                                                                         value={row.swg}
                                                                         onChange={(e) => updateCoilRow(type as any, i, 'swg', e.target.value)}
@@ -721,7 +715,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                                 {/* Weight Column */}
                                                                 <div className="flex flex-col gap-1.5">
                                                                     {i === 0 && (
-                                                                        <span className="text-[10px] font-bold text-slate-500 tracking-wider block uppercase mb-1">Weight (KG)</span>
+                                                                        <span className="text-[10px] font-bold text-slate-500 tracking-wider block uppercase mb-1">Turn (T)</span>
                                                                     )}
                                                                     <input
                                                                         value={row.weight}
