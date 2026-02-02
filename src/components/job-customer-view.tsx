@@ -444,7 +444,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                             type="date"
                                             name="expectedAt"
                                             defaultValue={job.expectedAt ? new Date(job.expectedAt).toISOString().split('T')[0] : ''}
-                                            className="bg-slate-50 p-2 rounded-lg text-sm font-bold w-full outline-none border border-slate-200 mt-1 focus:bg-white focus:ring-2 focus:ring-indigo-100 transition-all font-mono"
+                                            className="bg-slate-50 p-2 rounded-lg text-sm font-bold w-full outline-none border border-slate-200 mt-1 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-mono"
                                         />
                                     ) : (
                                         <span className="text-sm font-mono font-medium text-slate-900">
@@ -500,7 +500,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                             <textarea
                                 name="problemDesc"
                                 defaultValue={job.problemDesc}
-                                className="w-full bg-slate-50 p-4 rounded-2xl text-sm font-medium text-slate-800 outline-none border border-slate-200 min-h-[120px] focus:bg-white focus:ring-4 focus:ring-indigo-50 transition-all"
+                                className="w-full bg-slate-50 p-4 rounded-2xl text-sm font-medium text-slate-800 outline-none border border-slate-200 min-h-[120px] focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
                             />
                         ) : (
                             <p className="text-sm font-medium text-slate-800 leading-relaxed italic">"{job.problemDesc}"</p>
@@ -519,8 +519,8 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                             <div className="space-y-3">
                                 {isEditing ? (
                                     <div className="flex flex-col gap-2">
-                                        <input name="customerName" defaultValue={job.customerName} className="text-2xl  text-slate-900 tracking-tighter outline-none border-b-2 border-slate-100 focus:border-indigo-400 transition-all font-outfit" />
-                                        <input name="customerPhone" defaultValue={job.customerPhone} className="text-xl font-bold text-slate-400 outline-none border-b-2 border-slate-100 focus:border-indigo-400 font-mono" />
+                                        <input name="customerName" defaultValue={job.customerName} className="text-2xl  text-slate-900 tracking-tighter outline-none border-b-2 border-slate-100 focus:border-blue-500 transition-all font-outfit" />
+                                        <input name="customerPhone" defaultValue={job.customerPhone} className="text-xl font-bold text-slate-400 outline-none border-b-2 border-slate-100 focus:border-blue-500 font-mono" />
                                     </div>
                                 ) : (
                                     <>
@@ -573,7 +573,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                             {isEditing ? (
                                 <div className="space-y-2">
                                     <label className="text-[13px]  text-slate-800 tracking-widest text-right block italic">Customer Address</label>
-                                    <textarea name="customerAddress" defaultValue={job.customerAddress || ''} className="text-right text-sm font-bold text-slate-500 outline-none border-b-2 border-slate-100 focus:border-indigo-400 bg-transparent min-w-[200px]" rows={2} />
+                                    <textarea name="customerAddress" defaultValue={job.customerAddress || ''} className="text-right text-sm font-bold text-slate-500 outline-none border-b-2 border-slate-100 focus:border-blue-500 bg-transparent min-w-[200px]" rows={2} />
                                 </div>
                             ) : (
                                 <>
@@ -620,18 +620,18 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                         {isEditing || isTechEditing ? (
                                                             field.isPower ? (
                                                                 <div className="flex gap-1 border-b-2 border-slate-200 focus-within:border-indigo-500 transition-all w-full">
-                                                                    <input name="motor.power" defaultValue={motor?.power || ''} className="w-full bg-transparent outline-none text-xl font-bold text-indigo-600 py-1.5" />
+                                                                    <input name="motor.power" defaultValue={motor?.power || ''} className="w-full bg-transparent outline-none text-xl font-bold text-indigo-600 py-1.5 focus:border-blue-500 border-b-2 border-transparent transition-all" />
                                                                     <select name="motor.power_unit" defaultValue={motor?.power_unit || 'HP'} className="bg-transparent text-xs font-bold text-slate-500 outline-none">
                                                                         <option value="HP">HP</option>
                                                                         <option value="kW">kW</option>
                                                                     </select>
                                                                 </div>
                                                             ) : field.options ? (
-                                                                <select name={field.name} defaultValue={field.value || ''} className="w-full bg-slate-50 border-b-2 border-slate-200 focus:border-indigo-500 outline-none text-base font-medium text-indigo-700 py-1.5">
+                                                                <select name={field.name} defaultValue={field.value || ''} className="w-full bg-slate-50 border-b-2 border-slate-200 focus:border-blue-500 outline-none text-base font-medium text-indigo-700 py-1.5">
                                                                     {field.options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                                                                 </select>
                                                             ) : (
-                                                                <input name={field.name} defaultValue={field.value || ''} className="w-full bg-slate-50 border-b-2 border-slate-200 focus:border-indigo-500 outline-none text-base font-medium text-indigo-700 py-1.5" />
+                                                                <input name={field.name} defaultValue={field.value || ''} className="w-full bg-slate-50 border-b-2 border-slate-200 focus:border-blue-500 outline-none text-base font-medium text-indigo-700 py-1.5" />
                                                             )
                                                         ) : (
                                                             <span className="text-lg font-bold text-slate-900 tracking-tight leading-none">
@@ -687,7 +687,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                                         onChange={(e) => updateCoilRow(type as any, i, 'turns', e.target.value)}
                                                                         disabled={!isEditing && !isCoilEditing}
                                                                         placeholder="0"
-                                                                        className="w-24 h-12 bg-gray-50 text-slate-900 rounded-xl text-center text-lg font-bold outline-none border border-slate-200 focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all shadow-sm block"
+                                                                        className="w-24 h-12 bg-gray-50 text-slate-900 rounded-xl text-center text-lg font-bold outline-none border border-slate-200 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm block"
                                                                     />
                                                                 </div>
 
@@ -703,7 +703,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                                         onChange={(e) => updateCoilRow(type as any, i, 'swg', e.target.value)}
                                                                         disabled={!isEditing && !isCoilEditing}
                                                                         placeholder="0"
-                                                                        className="w-24 h-12 bg-gray-50 text-slate-900 rounded-xl text-center text-lg font-bold outline-none border border-slate-200 focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all shadow-sm block"
+                                                                        className="w-24 h-12 bg-gray-50 text-slate-900 rounded-xl text-center text-lg font-bold outline-none border border-slate-200 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm block"
                                                                     />
                                                                 </div>
 
@@ -722,7 +722,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                                         onChange={(e) => updateCoilRow(type as any, i, 'weight', e.target.value)}
                                                                         disabled={!isEditing && !isCoilEditing}
                                                                         placeholder="0"
-                                                                        className="w-24 h-12 bg-gray-50 text-slate-900 rounded-xl text-center text-lg font-bold outline-none border border-slate-200 focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all shadow-sm block"
+                                                                        className="w-24 h-12 bg-gray-50 text-slate-900 rounded-xl text-center text-lg font-bold outline-none border border-slate-200 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm block"
                                                                     />
                                                                 </div>
                                                             </div>
@@ -759,7 +759,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                             onChange={(e) => updateCoilGage(type as any, e.target.value)}
                                                             disabled={!isEditing && !isCoilEditing}
                                                             placeholder="0"
-                                                            className="w-24 h-12 bg-gray-50 text-slate-900 rounded-xl text-center text-lg font-bold outline-none border border-slate-200 focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all shadow-sm block"
+                                                            className="w-24 h-12 bg-gray-50 text-slate-900 rounded-xl text-center text-lg font-bold outline-none border border-slate-200 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm block"
                                                         />
                                                     </div>
                                                 </div>
@@ -774,7 +774,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                             onChange={(e) => updateCoilTotalWeight(type as any, e.target.value)}
                                                             disabled={!isEditing && !isCoilEditing}
                                                             placeholder="0.00"
-                                                            className="w-24 h-12 bg-gray-50 text-indigo-700 rounded-xl text-center text-lg font-bold outline-none border border-slate-200 focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all shadow-sm"
+                                                            className="w-24 h-12 bg-gray-50 text-indigo-700 rounded-xl text-center text-lg font-bold outline-none border border-slate-200 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm"
                                                         />
                                                         <span className="text-[10px]  text-slate-400">KG</span>
                                                     </div>
@@ -822,7 +822,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                         {(isEditing || isCoilEditing) && (
                                                             <input
                                                                 placeholder="Add connection..."
-                                                                className="flex-1 bg-transparent outline-none text-[10px] font-bold text-slate-600 min-w-[100px] ml-1 placeholder:text-slate-300"
+                                                                className="flex-1 bg-transparent outline-none text-[10px] font-bold text-slate-600 min-w-[100px] ml-1 placeholder:text-slate-300 focus:border-b-2 focus:border-blue-500 transition-all"
                                                                 onKeyDown={(e) => {
                                                                     if (e.key === 'Enter') {
                                                                         e.preventDefault();
@@ -859,9 +859,9 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                 </div>
                                 <div className="p-5 space-y-5">
                                     <div className="grid grid-cols-12 gap-6 px-4 mb-2">
-                                        <span className="col-span-6 text-[9px]  text-slate-500 tracking-widest">Part Name / Description</span>
-                                        <span className="col-span-2 text-[9px]  text-slate-500 tracking-widest text-center">Qty</span>
-                                        <span className="col-span-3 text-[9px]  text-slate-500 tracking-widest text-right">Price (₹)</span>
+                                        <span className="col-span-6 text-[10px] font-bold text-slate-500 tracking-widest uppercase">Part Name / Description</span>
+                                        <span className="col-span-2 text-[10px] font-bold text-slate-500 tracking-widest text-center uppercase">Qty</span>
+                                        <span className="col-span-3 text-[10px] font-bold text-slate-500 tracking-widest text-right uppercase">Price (₹)</span>
                                         <span className="col-span-1"></span>
                                     </div>
 
@@ -880,7 +880,8 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                         onChange={(e) => updatePartRow(i, 'name', e.target.value)}
                                                         disabled={!isEditing && !isPartsEditing}
                                                         placeholder="Enter part name..."
-                                                        className="w-full bg-slate-50 border border-slate-100 rounded-xl h-12 px-4 font-bold text-sm text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all"
+                                                        placeholder="Enter part name..."
+                                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl h-12 px-4 font-bold text-sm text-slate-900 outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
                                                     />
                                                 </div>
                                                 <div className="col-span-2">
@@ -889,7 +890,8 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                         onChange={(e) => updatePartRow(i, 'qty', e.target.value)}
                                                         disabled={!isEditing && !isPartsEditing}
                                                         placeholder="1"
-                                                        className="w-full bg-slate-50 border border-slate-100 rounded-xl h-12 text-center font-bold text-sm text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all"
+                                                        placeholder="1"
+                                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl h-12 text-center font-bold text-sm text-slate-900 outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
                                                     />
                                                 </div>
                                                 <div className="col-span-3">
@@ -898,7 +900,8 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                         onChange={(e) => updatePartRow(i, 'price', e.target.value)}
                                                         disabled={!isEditing && !isPartsEditing}
                                                         placeholder="0"
-                                                        className="w-full bg-slate-50 border border-slate-100 rounded-xl h-12 text-right px-4 font-mono  text-sm text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-indigo-50/50 transition-all"
+                                                        placeholder="0"
+                                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl h-12 text-right px-4 font-mono font-bold text-sm text-slate-900 outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
                                                     />
                                                 </div>
                                                 <div className="col-span-1 flex justify-end">
@@ -918,7 +921,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                             className="w-full py-4 bg-slate-50 border border-dashed border-slate-200 rounded-2xl flex items-center justify-center gap-2 text-slate-400 hover:bg-slate-100 transition-all group cursor-pointer"
                                         >
                                             <Plus className="h-4 w-4 group-hover:rotate-90 transition-transform" />
-                                            <span className="text-[10px]  tracking-widest">Add New Component</span>
+                                            <span className="text-[11px] font-bold tracking-widest uppercase">Add New Component</span>
                                         </button>
                                     )}
 
@@ -927,14 +930,15 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                         <div className="space-y-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="p-2 bg-amber-50 rounded-xl text-amber-500"><MessageCircle className="h-4 w-4" /></div>
-                                                <span className="text-[10px]  text-slate-400 tracking-widest">Owner Remarks</span>
+                                                <span className="text-[10px] font-bold text-amber-600/70 tracking-widest uppercase">Owner Remarks</span>
                                             </div>
                                             {isPartsEditing || isEditing ? (
                                                 <textarea
                                                     value={remarks}
                                                     onChange={(e) => setRemarks(e.target.value)}
                                                     placeholder="Add special notes or instructions..."
-                                                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-amber-50/50 transition-all min-h-[100px]"
+                                                    placeholder="Add special notes or instructions..."
+                                                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm font-bold text-slate-900 outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all min-h-[100px] placeholder:text-slate-400"
                                                 />
                                             ) : (
                                                 <p className="text-sm font-bold text-slate-600 italic px-2">{remarks || 'No special remarks added.'}</p>
@@ -944,14 +948,15 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                         <div className="space-y-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="p-2 bg-emerald-50 rounded-xl text-emerald-500"><Receipt className="h-4 w-4" /></div>
-                                                <span className="text-[10px]  text-slate-400 tracking-widest">Service Warranty</span>
+                                                <span className="text-[10px] font-bold text-emerald-600/70 tracking-widest uppercase">Service Warranty</span>
                                             </div>
                                             {isPartsEditing || isEditing ? (
                                                 <input
                                                     value={warrantyInfo}
                                                     onChange={(e) => setWarrantyInfo(e.target.value)}
                                                     placeholder="e.g., 3 Months Parts Warranty"
-                                                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl h-12 px-4 text-sm font-bold text-slate-700 outline-none focus:bg-white focus:ring-4 focus:ring-emerald-50/50 transition-all"
+                                                    placeholder="e.g., 3 Months Parts Warranty"
+                                                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl h-12 px-4 text-sm font-bold text-slate-900 outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
                                                 />
                                             ) : (
                                                 <div className="px-4 py-3 bg-emerald-50 border border-emerald-100 rounded-2xl inline-block">
@@ -1016,7 +1021,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                         <div className="space-y-2">
                                             <span className="text-[10px]  text-slate-500 tracking-widest block">Total Job Bill</span>
                                             {isEditing ? (
-                                                <input name="estimatedCost" type="number" defaultValue={job.estimatedCost || 0} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 font-mono  text-white text-lg outline-none focus:bg-white/10 focus:ring-2 focus:ring-indigo-500/20" />
+                                                <input name="estimatedCost" type="number" defaultValue={job.estimatedCost || 0} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 font-mono  text-white text-lg outline-none focus:bg-white/10 focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50" />
                                             ) : (
                                                 <p className="text-2xl  tracking-tighter text-white/90">₹{total.toLocaleString()}</p>
                                             )}
@@ -1027,7 +1032,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                 <span className="text-[10px]  text-emerald-500 tracking-widest block">Total Received</span>
                                             </div>
                                             {isEditing ? (
-                                                <input name="advanceAmount" type="number" defaultValue={job.advanceAmount || 0} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 font-mono  text-emerald-400 text-lg outline-none focus:bg-white/10 focus:ring-2 focus:ring-emerald-500/20" />
+                                                <input name="advanceAmount" type="number" defaultValue={job.advanceAmount || 0} className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 font-mono  text-emerald-400 text-lg outline-none focus:bg-white/10 focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/50" />
                                             ) : (
                                                 <div className="flex items-center gap-4">
                                                     <p className="text-2xl  tracking-tighter text-emerald-400">₹{advance.toLocaleString()}</p>
