@@ -696,7 +696,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                             <div className="flex items-center justify-center mb-6">
                                                 <div className="flex items-center gap-4">
                                                     <div className={cn("px-4 py-1.5 rounded-lg text-xs font-bold tracking-widest uppercase", type === 'running' ? "bg-indigo-50 text-indigo-700" : "bg-emerald-50 text-emerald-700")}>
-                                                        {type} Stage
+                                                        {type} Coil
                                                     </div>
                                                 </div>
                                             </div>
@@ -907,7 +907,6 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                         onChange={(e) => updatePartRow(i, 'name', e.target.value)}
                                                         disabled={!isEditing && !isPartsEditing}
                                                         placeholder="Enter part name..."
-                                                        placeholder="Enter part name..."
                                                         className="w-full bg-slate-50 border border-slate-200 rounded-xl h-12 px-4 font-bold text-sm text-slate-900 outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
                                                     />
                                                 </div>
@@ -917,7 +916,6 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                         onChange={(e) => updatePartRow(i, 'qty', e.target.value)}
                                                         disabled={!isEditing && !isPartsEditing}
                                                         placeholder="1"
-                                                        placeholder="1"
                                                         className="w-full bg-slate-50 border border-slate-200 rounded-xl h-12 text-center font-bold text-sm text-slate-900 outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
                                                     />
                                                 </div>
@@ -926,7 +924,6 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                         value={part.price}
                                                         onChange={(e) => updatePartRow(i, 'price', e.target.value)}
                                                         disabled={!isEditing && !isPartsEditing}
-                                                        placeholder="0"
                                                         placeholder="0"
                                                         className="w-full bg-slate-50 border border-slate-200 rounded-xl h-12 text-right px-4 font-mono font-bold text-sm text-slate-900 outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
                                                     />
@@ -964,7 +961,6 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                     value={remarks}
                                                     onChange={(e) => setRemarks(e.target.value)}
                                                     placeholder="Add special notes or instructions..."
-                                                    placeholder="Add special notes or instructions..."
                                                     className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm font-bold text-slate-900 outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all min-h-[100px] placeholder:text-slate-400"
                                                 />
                                             ) : (
@@ -981,7 +977,6 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                 <input
                                                     value={warrantyInfo}
                                                     onChange={(e) => setWarrantyInfo(e.target.value)}
-                                                    placeholder="e.g., 3 Months Parts Warranty"
                                                     placeholder="e.g., 3 Months Parts Warranty"
                                                     className="w-full bg-slate-50 border border-slate-200 rounded-2xl h-12 px-4 text-sm font-bold text-slate-900 outline-none focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
                                                 />

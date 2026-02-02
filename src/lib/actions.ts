@@ -110,103 +110,101 @@ export async function getWarrantyByCode(code: string) {
 }
 
 export async function getStats() {
-  const shop = await getCurrentShop();
+    const shop = await getCurrentShop();
+    const now = new Date();
+    
+    // 1. Fetch all warranties from the last 12 months in ONE query
+    const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+    const warranties = await db.warranty.findMany({
+        where: { 
+            shopId: shop.id,
+            issuedAt: { gte: twelveMonthsAgo }
+        },
+        select: {
+            repairCost: true,
+            issuedAt: true,
+            status: true
+        }
+    });
 
-  const total = await db.warranty.count({ where: { shopId: shop.id } });
-  const active = await db.warranty.count({
-    where: {
-      shopId: shop.id,
-      status: "ACTIVE"
-    }
-  });
+    // 2. Fundamental Stats (Using pre-fetched data for speed)
+    const total = await db.warranty.count({ where: { shopId: shop.id } }); // Total all time
+    const active = warranties.filter(w => w.status === "ACTIVE").length;
+    
+    const revenueAgg = await db.warranty.aggregate({
+        _sum: { repairCost: true },
+        where: { shopId: shop.id }
+    });
 
-  // 1. Total All-Time Revenue
-  const revenueAgg = await db.warranty.aggregate({
-    _sum: { repairCost: true },
-    where: { shopId: shop.id }
-  });
+    // 3. Memory-based Aggregations (Blazing Fast)
+    const weeklyChart = Array.from({ length: 7 }, (_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - (6 - i));
+        const dayStart = new Date(d.setHours(0,0,0,0));
+        const dayEnd = new Date(d.setHours(23,59,59,999));
+        
+        const dayTotal = warranties
+            .filter(w => w.issuedAt >= dayStart && w.issuedAt <= dayEnd)
+            .reduce((sum, w) => sum + (w.repairCost || 0), 0);
 
-  // 2. Current Month Revenue
-  const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-  const revenueMonthAgg = await db.warranty.aggregate({
-    _sum: { repairCost: true },
-    where: {
-      shopId: shop.id,
-      issuedAt: { gte: startOfMonth }
-    }
-  });
+        return {
+            label: dayStart.toLocaleDateString('en-US', { weekday: 'short' }),
+            value: dayTotal
+        };
+    });
 
-  // 3. Weekly Trend (Last 7 Days) - FETCH IN PARALLEL
-  const weeklyPromises = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - (6 - i));
-    const start = new Date(d.setHours(0, 0, 0, 0));
-    const end = new Date(d.setHours(23, 59, 59, 999));
+    const monthlyResults = Array.from({ length: 12 }, (_, i) => {
+        const d = new Date(now.getFullYear(), now.getMonth() - (11 - i), 1);
+        const month = d.getMonth();
+        const year = d.getFullYear();
 
-    return db.warranty.aggregate({
-      _sum: { repairCost: true },
-      where: {
-        shopId: shop.id,
-        issuedAt: { gte: start, lte: end }
-      }
-    }).then(agg => ({
-      label: start.toLocaleDateString('en-US', { weekday: 'short' }),
-      value: agg._sum.repairCost || 0
-    }));
-  });
+        const monthWarranties = warranties.filter(w => {
+            const wDate = new Date(w.issuedAt);
+            return wDate.getMonth() === month && wDate.getFullYear() === year;
+        });
 
-  // 4. Yearly/Monthly Trend (Last 12 Months) - FETCH IN PARALLEL
-  const monthlyPromises = Array.from({ length: 12 }, (_, i) => {
-    const d = new Date(now.getFullYear(), now.getMonth() - (11 - i), 1);
-    const start = new Date(d.getFullYear(), d.getMonth(), 1);
-    const end = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59);
+        const revenue = monthWarranties.reduce((sum, w) => sum + (w.repairCost || 0), 0);
+        const jobs = monthWarranties.length;
 
-    return db.warranty.aggregate({
-      _sum: { repairCost: true },
-      _count: { id: true },
-      where: {
-        shopId: shop.id,
-        issuedAt: { gte: start, lte: end }
-      }
-    }).then(agg => ({
-      label: start.toLocaleDateString('en-US', { month: 'short' }),
-      revenue: agg._sum.repairCost || 0,
-      jobs: agg._count.id || 0
-    }));
-  });
+        return {
+            label: d.toLocaleDateString('en-US', { month: 'short' }),
+            revenue,
+            jobs
+        };
+    });
 
-  const [weeklyChart, monthlyResults] = await Promise.all([
-    Promise.all(weeklyPromises),
-    Promise.all(monthlyPromises)
-  ]);
+    const monthlyChart = monthlyResults.map(r => ({ label: r.label, value: r.revenue }));
+    const jobChart = monthlyResults.map(r => ({ label: r.label, value: r.jobs }));
+    
+    // Current Month Revenue
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const monthlyRevenue = warranties
+        .filter(w => w.issuedAt >= startOfMonth)
+        .reduce((sum, w) => sum + (w.repairCost || 0), 0);
 
-  const monthlyChart = monthlyResults.map(r => ({ label: r.label, value: r.revenue }));
-  const jobChart = monthlyResults.map(r => ({ label: r.label, value: r.jobs }));
+    // 4. Job Distribution from Backend
+    const jobStatsRes = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/stats/jobs?shopId=${shop.id}`);
+    const jobStats = jobStatsRes.ok ? await jobStatsRes.json() : { received: 0, inProgress: 0, ready: 0, delivered: 0 };
 
-  // 5. Job Distribution from Backend
-  const jobStatsRes = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/stats/jobs?shopId=${shop.id}`);
-  const jobStats = jobStatsRes.ok ? await jobStatsRes.json() : { received: 0, inProgress: 0, ready: 0, delivered: 0 };
-
-  return {
-    total,
-    active,
-    revenue: revenueAgg._sum.repairCost || 0,
-    monthlyRevenue: revenueMonthAgg._sum.repairCost || 0,
-    weeklyChart,
-    monthlyChart,
-    jobChart,
-    jobDistribution: [
-      { label: 'Received', value: jobStats.received, color: '#3b82f6' },
-      { label: 'In Progress', value: jobStats.inProgress, color: '#eab308' },
-      { label: 'Ready', value: jobStats.ready, color: '#22c55e' },
-      { label: 'Delivered', value: jobStats.delivered, color: '#64748b' }
-    ],
-    shopName: shop.shopName,
-    subscription: shop.subscriptionStatus,
-    isVerified: shop.isVerified,
-    hasAccessPin: !!shop.accessPin
-  };
+    return { 
+      total,
+      active,
+      revenue: revenueAgg._sum.repairCost || 0,
+      monthlyRevenue,
+      weeklyChart,
+      monthlyChart,
+      jobChart,
+      jobDistribution: [
+          { label: 'Received', value: jobStats.received, color: '#3b82f6' },
+          { label: 'In Progress', value: jobStats.inProgress, color: '#eab308' },
+          { label: 'Ready', value: jobStats.ready, color: '#22c55e' },
+          { label: 'Delivered', value: jobStats.delivered, color: '#64748b' }
+      ],
+      shopName: shop.shopName,
+      subscription: shop.subscriptionStatus,
+      isVerified: shop.isVerified,
+      hasAccessPin: !!shop.accessPin
+    };
 }
 
 export async function verifyAccessPin(pin: string) {

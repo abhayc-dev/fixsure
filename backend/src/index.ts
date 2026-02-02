@@ -92,12 +92,20 @@ app.get('/api/stats/jobs', async (req, res) => {
     if (!shopId) return res.status(400).json({ error: 'shopId is required' });
 
     try {
-        const received = await prisma.jobSheet.count({ where: { shopId: String(shopId), status: 'RECEIVED' } });
-        const inProgress = await prisma.jobSheet.count({ where: { shopId: String(shopId), status: 'IN_PROGRESS' } });
-        const ready = await prisma.jobSheet.count({ where: { shopId: String(shopId), status: 'READY' } });
-        const delivered = await prisma.jobSheet.count({ where: { shopId: String(shopId), status: 'DELIVERED' } });
+        const stats = await prisma.jobSheet.groupBy({
+            by: ['status'],
+            where: { shopId: String(shopId) },
+            _count: { _all: true }
+        });
 
-        res.json({ received, inProgress, ready, delivered });
+        const result = {
+            received: stats.find(s => s.status === 'RECEIVED')?._count._all || 0,
+            inProgress: stats.find(s => s.status === 'IN_PROGRESS')?._count._all || 0,
+            ready: stats.find(s => s.status === 'READY')?._count._all || 0,
+            delivered: stats.find(s => s.status === 'DELIVERED')?._count._all || 0
+        };
+
+        res.json(result);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch stats' });
     }
