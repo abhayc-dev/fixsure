@@ -740,7 +740,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                 </div>
 
                                                 {(isEditing || isCoilEditing) && (
-                                                    <button type="button" onClick={() => addCoilRow(type as any)} className="w-full py-3 bg-slate-50 border border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-slate-400 hover:bg-slate-100 transition-all group cursor-pointer">
+                                                    <button type="button" onClick={() => addCoilRow(type as any)} className="w-full py-3 bg-slate-50 border border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 transition-all group cursor-pointer">
                                                         <Plus className="h-4 w-4 group-hover:rotate-90 transition-transform" />
                                                         <span className="text-[10px]  tracking-widest">Add New</span>
                                                     </button>
@@ -918,7 +918,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                         <button
                                             type="button"
                                             onClick={addPartRow}
-                                            className="w-full py-4 bg-slate-50 border border-dashed border-slate-200 rounded-2xl flex items-center justify-center gap-2 text-slate-400 hover:bg-slate-100 transition-all group cursor-pointer"
+                                            className="w-full py-4 bg-slate-50 border border-dashed border-slate-200 rounded-2xl flex items-center justify-center gap-2 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 transition-all group cursor-pointer"
                                         >
                                             <Plus className="h-4 w-4 group-hover:rotate-90 transition-transform" />
                                             <span className="text-[11px] font-bold tracking-widest uppercase">Add New Component</span>
