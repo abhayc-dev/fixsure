@@ -13,6 +13,13 @@ export default function CreateJobSheetForm({ onSuccess, shopCategory }: { onSucc
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
+        const estimate = parseFloat(formData.get("estimatedCost") as string) || 0;
+        const paid = parseFloat(formData.get("advanceAmount") as string) || 0;
+
+        if (paid > estimate) {
+            setStatus({ type: 'error', message: "Bhai, received amount total bill se zyada nahi ho sakta!" });
+            return;
+        }
 
         setLoading(true);
         setStatus(null);

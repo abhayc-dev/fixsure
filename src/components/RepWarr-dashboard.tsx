@@ -119,7 +119,7 @@ export default function DashboardClient({
     const [showJobSheetModal, setShowJobSheetModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState('ALL');
-    const [viewMode, setViewMode] = useState<'WARRANTIES' | 'JOBS' | 'REPORTS' | 'SETTINGS' | 'CREATE_WARRANTY' | 'CREATE_JOB' | 'JOB_DETAILS' | 'JOB_CUSTOMER_DETAILS' | 'WARRANTY_DETAILS' | 'WARRANTY_CERTIFICATE'>('WARRANTIES');
+    const [viewMode, setViewMode] = useState<'WARRANTIES' | 'JOBS' | 'REPORTS' | 'SETTINGS' | 'CREATE_WARRANTY' | 'CREATE_JOB' | 'JOB_DETAILS' | 'JOB_CUSTOMER_DETAILS' | 'WARRANTY_DETAILS' | 'WARRANTY_CERTIFICATE'>('JOBS');
 
     const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
     const [selectedWarranty, setSelectedWarranty] = useState<Warranty | null>(null);
@@ -227,7 +227,7 @@ export default function DashboardClient({
                 <JobCustomerView job={selectedJobSheet} shop={shop} onBack={() => {
                     setSelectedJobId(null);
                     setViewMode('JOBS');
-                }} />
+                }} onInvoice={() => setViewMode('JOB_DETAILS')} />
             </div>
         );
     }
@@ -394,7 +394,7 @@ export default function DashboardClient({
                 </header>
 
 
-                <div className="p-10 max-w-7xl w-full mx-auto space-y-10">
+                <div className="p-6 md:p-8 max-w-7xl w-full mx-auto space-y-6 md:space-y-8">
 
                     {/* Blocked / Expired Banners */}
                     {!stats.isVerified && (
@@ -611,13 +611,13 @@ export default function DashboardClient({
                                     <table className="w-full text-sm text-left border-collapse">
                                         <thead>
                                             <tr className="bg-slate-50/60 text-[10px] font-black text-slate-400 tracking-[0.25em] border-b border-slate-100 font-display">
-                                                <th className="px-10 py-6">Identity</th>
+                                                <th className="px-6 py-4">Identity</th>
                                                 <th className="px-8 py-6">Customer Entry</th>
                                                 <th className="px-8 py-6">Machine Spec</th>
                                                 <th className="px-8 py-6 text-right">Valuation</th>
                                                 <th className="px-8 py-6">Term</th>
                                                 <th className="px-8 py-6">Live Status</th>
-                                                <th className="px-10 py-6 text-right">Management</th>
+                                                <th className="px-6 py-4 text-right">Management</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-50">
@@ -634,9 +634,16 @@ export default function DashboardClient({
                                                 </tr>
                                             ) : (
                                                 filteredWarranties.map((w) => (
-                                                    <tr key={w.id} className="hover:bg-slate-50/50 transition-all group">
+                                                    <tr 
+                                                        key={w.id} 
+                                                        onClick={() => {
+                                                            setSelectedWarranty(w);
+                                                            setViewMode('WARRANTY_CERTIFICATE');
+                                                        }}
+                                                        className="hover:bg-slate-100/60 hover:shadow-sm transition-all group cursor-pointer"
+                                                    >
                                                         {/* ID */}
-                                                        <td className="px-8 py-6">
+                                                        <td className="px-6 py-4">
                                                             <div className="flex flex-col">
                                                                 <span className="text-[10px] font-black text-primary/50 leading-none">ID CODE</span>
                                                                 <button
@@ -706,14 +713,19 @@ export default function DashboardClient({
                                                                 <div className="text-sm font-black text-slate-700 flex items-center gap-2">
                                                                     <Clock className="h-3 w-3 text-slate-400" />
                                                                     <span suppressHydrationWarning>
-                                                                        {w.expiresAt ? new Date(w.expiresAt).toLocaleDateString() : '-'}
+                                                                        {w.expiresAt ? (() => {
+                                                                            const date = new Date(w.expiresAt);
+                                                                            const day = date.getDate().toString().padStart(2, '0');
+                                                                            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                                                                            return `${day} ${months[date.getMonth()]} ${date.getFullYear()}`;
+                                                                        })() : '-'}
                                                                     </span>
                                                                 </div>
                                                             </div>
                                                         </td>
 
                                                         {/* Status */}
-                                                        <td className="px-8 py-6">
+                                                        <td className="px-6 py-4">
                                                             <div className="flex flex-col">
                                                                 <span className="text-[9px] font-black text-slate-300 leading-none mb-2 tracking-widest font-display">LIVE STATE</span>
                                                                 <StatusBadge status={w.status} expiresAt={w.expiresAt} />
@@ -721,15 +733,8 @@ export default function DashboardClient({
                                                         </td>
 
                                                         {/* Actions */}
-                                                        <td className="px-10 py-6 text-right">
+                                                        <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
                                                             <div className="flex items-center justify-end gap-3 transition-all duration-500">
-                                                                <button
-                                                                    onClick={() => handleViewWarranty(w)}
-                                                                    className="p-3 text-slate-400 hover:text-white hover:bg-slate-900 rounded-2xl transition-all shadow-sm active:scale-90 border border-transparent hover:border-slate-800"
-                                                                    title="Open Dossier"
-                                                                >
-                                                                    <Eye className="h-4 w-4" />
-                                                                </button>
                                                                 <ActionMenu warranty={w} />
                                                             </div>
                                                         </td>
@@ -790,13 +795,12 @@ export default function DashboardClient({
                                     <table className="w-full text-sm text-left border-collapse">
                                         <thead>
                                             <tr className="bg-slate-50/60 text-[10px] font-black text-slate-400 tracking-[0.25em] border-b border-slate-100 font-display">
-                                                <th className="px-10 py-6">Sequence</th>
-                                                <th className="px-8 py-6">Client Profile</th>
-                                                <th className="px-8 py-6">Machine Class</th>
-                                                <th className="px-8 py-6">Report Log</th>
-                                                <th className="px-8 py-6">Schedule</th>
-                                                <th className="px-8 py-6">Current State</th>
-                                                <th className="px-10 py-6 text-right">Valuation</th>
+                                                <th className="px-6 py-4">Sequence</th>
+                                                <th className="px-6 py-4">Client Profile</th>
+                                                <th className="px-6 py-4">Machine Class</th>
+                                                <th className="px-6 py-4">Schedule</th>
+                                                <th className="px-6 py-4">Current State</th>
+                                                <th className="px-6 py-4 text-right">Valuation</th>
                                             </tr>
                                         </thead>
                                         <tbody className="bg-white">
@@ -813,31 +817,24 @@ export default function DashboardClient({
                                                 </tr>
                                             ) : (
                                                 filteredJobSheets.map((j) => (
-                                                    <tr key={j.id} className="hover:bg-slate-50/50 transition-all duration-300 group">
-                                                        <td className="px-8 py-6">
+                                                    <tr 
+                                                        key={j.id} 
+                                                        onClick={() => {
+                                                            setSelectedJobId(j.id);
+                                                            setViewMode('JOB_CUSTOMER_DETAILS');
+                                                        }}
+                                                        className="hover:bg-slate-100/60 hover:shadow-sm transition-all duration-300 group cursor-pointer"
+                                                    >
+                                                        <td className="px-6 py-4">
                                                             <div className="flex items-center gap-4">
-                                                                <button
-                                                                    onClick={() => handleViewJob(j)}
-                                                                    className="flex flex-col text-left group-hover:scale-105 transition-transform cursor-pointer"
-                                                                >
+                                                                <div className="flex flex-col text-left group-hover:scale-105 transition-transform">
                                                                     <span className="text-primary font-black tracking-widest text-[9px]">RI-STORE</span>
-                                                                    <span className="text-slate-900 font-black font-mono text-sm mt-0.5 hover:text-red-500">{j.jobId.split('-')[1]}</span>
-                                                                </button>
-                                                                <button
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        setSelectedJobId(j.id);
-                                                                        setViewMode('JOB_CUSTOMER_DETAILS');
-                                                                    }}
-                                                                    className="p-2 bg-slate-50 text-slate-400 hover:text-primary hover:bg-white rounded-xl transition-all border border-transparent hover:border-slate-100 shadow-sm active:scale-90 cursor-pointer"
-                                                                    title="View Customer Blueprint"
-                                                                >
-                                                                    <Eye className="h-4 w-4" />
-                                                                </button>
+                                                                    <span className="text-slate-900 font-black font-mono text-sm mt-0.5">{j.jobId.split('-')[1]}</span>
+                                                                </div>
                                                             </div>
                                                         </td>
                                                         <td
-                                                            className="px-6 py-6 cursor-pointer group/cell"
+                                                            className="px-6 py-4 cursor-pointer group/cell"
                                                             onClick={() => {
                                                                 setSelectedJobId(j.id);
                                                                 setViewMode('JOB_CUSTOMER_DETAILS');
@@ -849,7 +846,7 @@ export default function DashboardClient({
                                                             </div>
                                                         </td>
                                                         <td
-                                                            className="px-6 py-6 font-black text-slate-800 text-sm cursor-pointer hover:text-primary transition-colors"
+                                                            className="px-6 py-4 font-black text-slate-800 text-sm cursor-pointer hover:text-primary transition-colors"
                                                             onClick={() => {
                                                                 setSelectedJobId(j.id);
                                                                 setViewMode('JOB_CUSTOMER_DETAILS');
@@ -857,28 +854,28 @@ export default function DashboardClient({
                                                         >
                                                             {j.deviceModel}
                                                         </td>
-                                                        <td className="px-6 py-6 max-w-[200px]">
-                                                            <div className="text-slate-500 text-[10px] font-bold tracking-tight line-clamp-2 leading-relaxed bg-slate-50 px-2.5 py-1.5 rounded-2xl border border-slate-100" title={j.problemDesc}>
-                                                                {j.problemDesc}
-                                                            </div>
-                                                        </td>
-                                                        <td className="px-6 py-6">
+                                                        <td className="px-6 py-4">
                                                             {j.expectedAt ? (
                                                                 <div className="flex flex-col">
                                                                     <span className="text-[9px] font-black text-slate-400 leading-none mb-1">DUE</span>
                                                                     <div className="flex items-center gap-1.5 font-black text-slate-700 text-sm">
                                                                         <Calendar className="h-3 w-3 text-primary/50" />
-                                                                        {new Date(j.expectedAt).toLocaleDateString(undefined, { day: '2-digit', month: 'short' })}
+                                                                        {(() => {
+                                                                            const date = new Date(j.expectedAt);
+                                                                            const day = date.getDate().toString().padStart(2, '0');
+                                                                            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                                                                            return `${day} ${months[date.getMonth()]}`;
+                                                                        })()}
                                                                     </div>
                                                                 </div>
                                                             ) : (
                                                                 <span className="text-slate-200">--/--</span>
                                                             )}
                                                         </td>
-                                                        <td className="px-6 py-6">
+                                                        <td className="px-6 py-4">
                                                             <EditableJobStatus job={j} />
                                                         </td>
-                                                        <td className="px-10 py-6 text-right">
+                                                        <td className="px-6 py-4 text-right">
                                                             <div className="flex flex-col items-end">
                                                                 <span className="text-[9px] font-black text-slate-400 tracking-widest mb-1">QUOTE</span>
                                                                 <div className="font-black text-slate-900 text-base">
@@ -1105,30 +1102,30 @@ function StatCard({
     icon?: any
 }) {
     return (
-        <div className="p-8 bg-white rounded-[2rem] border border-slate-200/60 shadow-sm hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-500 flex flex-col justify-between group h-full relative overflow-hidden">
+        <div className="p-6 bg-white rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group h-full relative overflow-hidden">
             {/* Background Glow */}
-            <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-3xl -z-0 group-hover:bg-primary/10 transition-colors" />
+            <div className="absolute top-0 right-0 w-20 h-20 bg-primary/5 rounded-full blur-3xl -z-0 group-hover:bg-primary/10 transition-colors" />
 
-            <div className="mb-6 flex items-start justify-between relative z-10">
-                <div className="p-4 bg-slate-50 text-slate-400 rounded-2xl group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm border border-slate-100 group-hover:border-primary">
-                    {Icon ? <Icon className="h-6 w-6" /> : <Clock className="h-6 w-6" />}
+            <div className="mb-4 flex items-start justify-between relative z-10">
+                <div className="p-3 bg-slate-50 text-slate-400 rounded-xl group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm border border-slate-100 group-hover:border-primary">
+                    {Icon ? <Icon className="h-5 w-5" /> : <Clock className="h-5 w-5" />}
                 </div>
                 {secure && onToggle && (
                     <button
                         onClick={onToggle}
-                        className="text-slate-300 hover:text-primary transition-colors focus:outline-none p-2 bg-slate-50 hover:bg-white rounded-xl border border-transparent hover:border-slate-100 shadow-sm"
+                        className="text-slate-300 hover:text-primary transition-colors focus:outline-none p-1.5 bg-slate-50 hover:bg-white rounded-lg border border-transparent hover:border-slate-100 shadow-sm"
                     >
-                        {isVisible ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                        {isVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                 )}
             </div>
 
             <div className="relative z-10">
-                <h3 className="text-[11px] font-black text-slate-400 mb-2 tracking-[0.2em] font-display opacity-80">{title}</h3>
-                <div className={cn("text-3xl font-black mb-3 tracking-tight font-display", highlight ? "text-primary" : "text-slate-900")}>
+                <h3 className="text-[10px] font-black text-slate-400 mb-1 tracking-[0.15em] font-display opacity-80 uppercase">{title}</h3>
+                <div className={cn("text-2xl font-black mb-2 tracking-tight font-display", highlight ? "text-primary" : "text-slate-900")}>
                     {secure && !isVisible ? "••••••" : value}
                 </div>
-                <div className="text-[10px] text-emerald-600 font-black bg-emerald-50/50 w-fit px-3 py-1.5 rounded-xl border border-emerald-100/50 tracking-widest">{sub}</div>
+                <div className="text-[9px] text-emerald-600 font-bold bg-emerald-50/50 w-fit px-2.5 py-1 rounded-lg border border-emerald-100/50 tracking-wider font-display">{sub}</div>
             </div>
         </div>
     );
@@ -1575,17 +1572,17 @@ function JobSummaryCard({ title, count, color }: { title: string, count: number,
     };
 
     return (
-        <div className={cn("p-8 bg-white rounded-[2rem] border border-slate-200 shadow-sm flex flex-col gap-4 bg-gradient-to-br transition-all hover:shadow-2xl hover:-translate-y-1.5 duration-500 group relative overflow-hidden", colorMap[color])}>
-            <div className="absolute top-0 right-0 w-20 h-20 bg-current opacity-[0.03] rounded-full blur-2xl -z-0" />
+        <div className={cn("p-6 bg-white rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-3 bg-gradient-to-br transition-all hover:shadow-xl hover:-translate-y-1 duration-300 group relative overflow-hidden", colorMap[color])}>
+            <div className="absolute top-0 right-0 w-16 h-16 bg-current opacity-[0.03] rounded-full blur-2xl -z-0" />
 
-            <span className="text-[11px] font-black tracking-[0.25em] opacity-60 font-display relative z-10">{title}</span>
+            <span className="text-[10px] font-black tracking-[0.2em] opacity-60 font-display relative z-10 uppercase">{title}</span>
             <div className="flex items-center justify-between relative z-10">
-                <span className="text-4xl font-black font-display tracking-tight">{count}</span>
-                <div className={cn("p-4 rounded-2xl bg-white/60 border border-current/10 shadow-sm backdrop-blur-sm group-hover:scale-110 transition-transform duration-500")}>
-                    {color === 'blue' && <Inbox className="h-6 w-6" />}
-                    {color === 'amber' && <Activity className="h-6 w-6" />}
-                    {color === 'emerald' && <CheckCircle className="h-6 w-6" />}
-                    {color === 'slate' && <Truck className="h-6 w-6" />}
+                <span className="text-3xl font-black font-display tracking-tight text-slate-900">{count}</span>
+                <div className={cn("p-3 rounded-xl bg-white/60 border border-current/10 shadow-sm backdrop-blur-sm group-hover:scale-110 transition-transform duration-500")}>
+                    {color === 'blue' && <Inbox className="h-5 w-5" />}
+                    {color === 'amber' && <Activity className="h-5 w-5" />}
+                    {color === 'emerald' && <CheckCircle className="h-5 w-5" />}
+                    {color === 'slate' && <Truck className="h-5 w-5" />}
                 </div>
             </div>
         </div>
@@ -1623,23 +1620,23 @@ function ReportStatCard({ label, value, icon: Icon, color, isRevenue, isVisible,
     };
 
     return (
-        <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200/60 shadow-sm group hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
-            <div className="flex items-center justify-between mb-6">
-                <div className={cn("p-4 rounded-2xl border transition-colors shadow-sm", colorStyles[color])}>
-                    <Icon className="h-6 w-6" />
+        <div className="bg-white p-6 rounded-3xl border border-slate-200/60 shadow-sm group hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+                <div className={cn("p-3 rounded-xl border transition-colors shadow-sm", colorStyles[color])}>
+                    <Icon className="h-5 w-5" />
                 </div>
                 {isRevenue && (
                     <button
                         onClick={onToggle}
-                        className="p-2.5 hover:bg-slate-100 rounded-xl text-slate-400 transition-colors border border-transparent hover:border-slate-200"
+                        className="p-2 hover:bg-slate-100 rounded-lg text-slate-400 transition-colors border border-transparent hover:border-slate-200 outline-none"
                     >
                         {isVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </button>
                 )}
             </div>
             <div>
-                <p className="text-[11px] font-black text-slate-400 tracking-[0.2em] mb-2 font-display opacity-80">{label}</p>
-                <h3 className="text-3xl font-black text-slate-900 font-display tracking-tight">
+                <p className="text-[10px] font-black text-slate-400 tracking-[0.15em] mb-1 font-display opacity-80 uppercase">{label}</p>
+                <h3 className="text-2xl font-black text-slate-900 font-display tracking-tight">
                     {isRevenue && !isVisible ? '••••••' : (isRevenue ? `₹${value.toLocaleString()}` : value.toLocaleString())}
                 </h3>
             </div>
@@ -1677,7 +1674,7 @@ function EditableJobStatus({ job }: { job: JobSheet }) {
     const c = config[job.status] || config['RECEIVED'];
 
     return (
-        <div className="relative group/status">
+        <div className="relative group/status" onClick={(e) => e.stopPropagation()}>
             {loading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-white/50 z-10 rounded-2xl">
                     <Loader2 className="h-3 w-3 animate-spin text-slate-400" />

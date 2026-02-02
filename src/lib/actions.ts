@@ -768,7 +768,7 @@ export async function updateJobSheetDetails(formData: FormData) {
                 customerAddress,
                 category,
                 deviceType,
-                status: status as any,
+                ...(status && { status: status as any }),
                 deviceModel,
                 problemDesc,
                 accessories,
