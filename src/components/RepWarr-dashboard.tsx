@@ -255,40 +255,7 @@ export default function DashboardClient({
 
                     {/* Nav Items */}
                     <nav className="px-4 space-y-1.5">
-                        <div className="px-4 mb-3">
-                            <p className="text-xs font-bold text-slate-500 tracking-widest ml-1 opacity-70 uppercase">Core Actions</p>
-                        </div>
-                        <div className="space-y-3 mb-10">
-                            <button
-                                onClick={() => setViewMode('CREATE_WARRANTY')}
-                                disabled={!isPlanActive || !stats.isVerified}
-                                className={cn(
-                                    "flex items-center gap-3.5 w-full px-5 py-4 rounded-2xl text-[13px]  transition-all group",
-                                    (!isPlanActive || !stats.isVerified)
-                                        ? "opacity-40 cursor-not-allowed bg-slate-800/50 text-slate-500"
-                                        : "bg-primary text-white hover:shadow-2xl hover:shadow-primary/30 hover:-translate-y-1 active:scale-95",
-                                    viewMode === 'CREATE_WARRANTY' && "ring-2 ring-primary ring-offset-4 ring-offset-[#0F172A]"
-                                )}
-                            >
-                                <Plus className="h-5 w-5 group-hover:rotate-90 transition-transform" />
-                                <span className="font-display font-bold tracking-wide text-sm">Add Warranty</span>
-                            </button>
 
-                            <button
-                                onClick={() => setViewMode('CREATE_JOB')}
-                                disabled={!isPlanActive || !stats.isVerified}
-                                className={cn(
-                                    "flex items-center gap-3.5 w-full px-5 py-4 rounded-2xl text-[13px]  transition-all group",
-                                    (!isPlanActive || !stats.isVerified)
-                                        ? "opacity-40 cursor-not-allowed bg-slate-800/50 text-slate-500"
-                                        : "bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:-translate-y-1 active:scale-95",
-                                    viewMode === 'CREATE_JOB' && "bg-white/10 border-primary/50"
-                                )}
-                            >
-                                <Wrench className="h-5 w-5 group-hover:rotate-12 transition-transform text-primary" />
-                                <span className="font-display font-bold tracking-wide text-sm text-slate-200">Repair Entry</span>
-                            </button>
-                        </div>
 
                         <div className="px-4 mb-3">
                             <p className="text-xs font-bold text-slate-500 tracking-widest ml-1 opacity-70 uppercase">Management</p>
@@ -384,13 +351,31 @@ export default function DashboardClient({
 
                     {/* Actions Section */}
                     <div className="flex items-center gap-6 flex-none pr-2">
-                        <div className="flex items-center gap-4 px-5 py-2.5 bg-slate-50/80 rounded-2xl border border-slate-100 hidden xl:flex shadow-inner">
-                            <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                            <span className="text-[10px]  text-slate-500 tracking-widest font-display whitespace-nowrap">System Active</span>
-                        </div>
+                        {viewMode === 'JOBS' && (
+                            <button
+                                onClick={() => setViewMode('CREATE_JOB')}
+                                disabled={!isPlanActive || !stats.isVerified}
+                                className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <Wrench className="h-4 w-4" />
+                                <span>Repair Entry</span>
+                            </button>
+                        )}
 
-
+                        {viewMode === 'WARRANTIES' && (
+                            <button
+                                onClick={() => setViewMode('CREATE_WARRANTY')}
+                                disabled={!isPlanActive || !stats.isVerified}
+                                className="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <Plus className="h-4 w-4" />
+                                <span>Add Warranty</span>
+                            </button>
+                        )}
                     </div>
+
+
+
                 </header>
 
 
@@ -596,12 +581,6 @@ export default function DashboardClient({
                                     <div className="flex gap-3 w-full md:w-auto">
                                         <button className="h-14 px-8 rounded-[1.25rem] bg-white text-slate-600  hover:bg-slate-50 transition-all flex items-center gap-3 text-xs border border-slate-200 active:scale-95 tracking-[0.2em] font-display shadow-sm">
                                             <Filter className="h-4 w-4 text-primary" /> Filter
-                                        </button>
-                                        <button
-                                            onClick={() => setViewMode('CREATE_WARRANTY')}
-                                            className="h-12 px-6 rounded-2xl bg-primary text-white font-bold hover:shadow-lg hover:shadow-primary/30 transition-all flex items-center gap-2 text-xs active:scale-95 tracking-widest flex-1 md:flex-none"
-                                        >
-                                            <Plus className="h-4 w-4" /> New Case
                                         </button>
                                     </div>
                                 </div>
