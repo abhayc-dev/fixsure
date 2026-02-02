@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { deleteJobSheet, updateJobSheetDetails, updateJobStatus } from "@/lib/actions";
+import { JobDetailSkeleton } from "@/components/skeletons/job-detail-skeleton";
 
 type JobSheet = {
     id: string;
@@ -39,6 +40,8 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
     const [isDeleting, setIsDeleting] = useState(false);
     const [statusUpdating, setStatusUpdating] = useState(false);
 
+
+
     // Helper for Motor Data
     const td = job.technicalDetails || {};
     const motor = td?.motor || td;
@@ -57,6 +60,11 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
     const [partsReplaced, setPartsReplaced] = useState(motor?.partsReplaced || []);
     const [remarks, setRemarks] = useState(motor?.remarks || '');
     const [warrantyInfo, setWarrantyInfo] = useState(motor?.warrantyInfo || '');
+
+    // Show Skeleton when saving/deleting
+    if (loading) {
+        return <JobDetailSkeleton />;
+    }
 
     const updateCoilTotalWeight = (type: 'running' | 'starting', value: string) => {
         setCoilDetails((prev: any) => ({
@@ -316,7 +324,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                 disabled={loading}
                                 className="flex items-center gap-2 bg-emerald-500 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-600 shadow-lg shadow-emerald-200 transition-all active:scale-95 duration-200 cursor-pointer"
                             >
-                                <Save className="h-4 w-4" /> {loading ? 'Saving...' : 'Commit Changes'}
+                                <Save className="h-4 w-4" /> {loading ? 'Saving...' : 'Save Changes'}
                             </button>
                         </div>
                     )}
