@@ -249,14 +249,14 @@ export default function DashboardClient({
                             <div className="p-2.5 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-all border border-primary/20 shadow-lg shadow-primary/5">
                                 <ShieldCheck className="h-7 w-7 text-primary" />
                             </div>
-                            <span className="text-2xl  tracking-tight text-white group-hover:text-primary transition-colors font-display">FixSure</span>
+                            <span className="text-2xl font-bold tracking-tight text-white group-hover:text-primary transition-colors font-display">FixSure</span>
                         </Link>
                     </div>
 
                     {/* Nav Items */}
                     <nav className="px-4 space-y-1.5">
                         <div className="px-4 mb-3">
-                            <p className="text-[10px]  text-slate-500 tracking-[0.25em] ml-1 opacity-70">Core Actions</p>
+                            <p className="text-xs font-bold text-slate-500 tracking-widest ml-1 opacity-70 uppercase">Core Actions</p>
                         </div>
                         <div className="space-y-3 mb-10">
                             <button
@@ -271,7 +271,7 @@ export default function DashboardClient({
                                 )}
                             >
                                 <Plus className="h-5 w-5 group-hover:rotate-90 transition-transform" />
-                                <span className="font-display tracking-wider">Add Warranty</span>
+                                <span className="font-display font-bold tracking-wide text-sm">Add Warranty</span>
                             </button>
 
                             <button
@@ -286,12 +286,12 @@ export default function DashboardClient({
                                 )}
                             >
                                 <Wrench className="h-5 w-5 group-hover:rotate-12 transition-transform text-primary" />
-                                <span className="font-display tracking-wider text-slate-200">Repair Entry</span>
+                                <span className="font-display font-bold tracking-wide text-sm text-slate-200">Repair Entry</span>
                             </button>
                         </div>
 
                         <div className="px-4 mb-3">
-                            <p className="text-[10px]  text-slate-500 tracking-[0.25em] ml-1 opacity-70">Management</p>
+                            <p className="text-xs font-bold text-slate-500 tracking-widest ml-1 opacity-70 uppercase">Management</p>
                         </div>
 
                         {[
@@ -308,7 +308,7 @@ export default function DashboardClient({
                                     key={item.id}
                                     onClick={() => setViewMode(item.id as any)}
                                     className={cn(
-                                        "flex items-center gap-3.5 w-full px-5 py-3.5 rounded-2xl text-[13px] font-bold transition-all group",
+                                        "flex items-center gap-3.5 w-full px-5 py-4 rounded-2xl text-sm font-bold transition-all group",
                                         isActive
                                             ? "bg-gradient-to-r from-primary/15 to-transparent text-primary border-l-4 border-primary rounded-l-none"
                                             : "text-slate-400 hover:bg-white/5 hover:text-white"
@@ -340,8 +340,8 @@ export default function DashboardClient({
                         </div>
 
                         <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between">
-                            <div className={cn("text-[9px] flex items-center gap-1.5 font-bold tracking-widest", isPlanActive ? "text-emerald-400" : "text-rose-400")}>
-                                <div className={cn("w-1.5 h-1.5 rounded-full", isPlanActive ? "bg-emerald-400 animate-pulse" : "bg-rose-400")} />
+                            <div className={cn("text-[10px] flex items-center gap-1.5 font-bold tracking-widest uppercase", isPlanActive ? "text-emerald-400" : "text-rose-400")}>
+                                <div className={cn("w-2 h-2 rounded-full", isPlanActive ? "bg-emerald-400 animate-pulse" : "bg-rose-400")} />
                                 {stats.subscription.replace('_', ' ')}
                             </div>
                             <button onClick={() => setShowLogoutConfirm(true)} className="p-1.5 rounded-lg hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 transition-colors" title="Logout">
@@ -373,7 +373,7 @@ export default function DashboardClient({
                                 {viewMode === 'CREATE_WARRANTY' && "New Warranty"}
                                 {viewMode === 'CREATE_JOB' && "New Job Sheet"}
                             </h1>
-                            <p className="text-[10px]  text-slate-400 tracking-[0.3em] mt-2 whitespace-nowrap opacity-60">
+                            <p className="text-xs font-bold text-slate-400 tracking-widest mt-2 whitespace-nowrap opacity-60 uppercase">
                                 FixSure Control Systems v2.0
                             </p>
                         </div>
@@ -610,14 +610,14 @@ export default function DashboardClient({
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-sm text-left border-collapse">
                                         <thead>
-                                            <tr className="bg-slate-50/60 text-[10px]  text-slate-400 tracking-[0.25em] border-b border-slate-100 font-display">
-                                                <th className="px-6 py-4">Identity</th>
-                                                <th className="px-8 py-6">Customer Entry</th>
-                                                <th className="px-8 py-6">Machine Spec</th>
-                                                <th className="px-8 py-6 text-right">Valuation</th>
-                                                <th className="px-8 py-6">Term</th>
-                                                <th className="px-8 py-6">Live Status</th>
-                                                <th className="px-6 py-4 text-right">Management</th>
+                                            <tr className="bg-slate-50/60 text-xs font-bold text-slate-500 tracking-widest border-b border-slate-200 font-display uppercase">
+                                                <th className="px-6 py-5">Identity</th>
+                                                <th className="px-8 py-5">Customer Entry</th>
+                                                <th className="px-8 py-5">Machine Spec</th>
+                                                <th className="px-8 py-5 text-right">Valuation</th>
+                                                <th className="px-8 py-5">Term</th>
+                                                <th className="px-8 py-5">Live Status</th>
+                                                <th className="px-6 py-5 text-right">Management</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-slate-50">
@@ -643,15 +643,15 @@ export default function DashboardClient({
                                                         className="hover:bg-slate-100/60 hover:shadow-sm transition-all group cursor-pointer"
                                                     >
                                                         {/* ID */}
-                                                        <td className="px-6 py-4">
+                                                        <td className="px-6 py-5">
                                                             <div className="flex flex-col">
-                                                                <span className="text-[10px]  text-primary/50 leading-none">ID CODE</span>
+                                                                <span className="text-[10px] font-bold text-primary/70 leading-none mb-1.5 uppercase tracking-wider">ID CODE</span>
                                                                 <button
                                                                     onClick={() => {
                                                                         setSelectedWarranty(w);
                                                                         setViewMode('WARRANTY_CERTIFICATE');
                                                                     }}
-                                                                    className="text-sm  text-slate-900 font-mono mt-1 hover:text-primary transition-colors cursor-pointer"
+                                                                    className="text-base font-bold text-slate-900 font-mono hover:text-primary transition-colors cursor-pointer"
                                                                 >
                                                                     {w.shortCode}
                                                                 </button>
@@ -671,8 +671,8 @@ export default function DashboardClient({
                                                                     {w.customerName.substring(0, 2).toUpperCase()}
                                                                 </div>
                                                                 <div className="flex flex-col">
-                                                                    <div className="text-slate-900 group-hover/customer:text-primary transition-colors">{w.customerName}</div>
-                                                                    <div className="text-[10px] text-slate-400 font-bold tracking-widest">{w.customerPhone}</div>
+                                                                    <div className="text-slate-900 font-bold text-base group-hover/customer:text-primary transition-colors">{w.customerName}</div>
+                                                                    <div className="text-xs text-slate-500 font-bold tracking-wider mt-0.5">{w.customerPhone}</div>
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -685,22 +685,22 @@ export default function DashboardClient({
                                                                 setViewMode('WARRANTY_CERTIFICATE');
                                                             }}
                                                         >
-                                                            <div className="flex flex-col gap-1.5 p-3.5 bg-slate-50/50 rounded-2xl border border-slate-100/50 hover:bg-white transition-all hover:shadow-sm group/device">
-                                                                <div className="text-sm  text-slate-800 flex items-center gap-2 font-display group-hover/device:text-primary transition-colors">
-                                                                    <Smartphone className="h-3.5 w-3.5 text-primary/60" />
+                                                            <div className="flex flex-col gap-2 p-4 bg-slate-50 rounded-2xl border border-slate-200 hover:bg-white transition-all hover:shadow-sm group/device">
+                                                                <div className="text-sm font-bold text-slate-900 flex items-center gap-2 font-display group-hover/device:text-primary transition-colors">
+                                                                    <Smartphone className="h-4 w-4 text-primary/70" />
                                                                     {w.deviceModel}
                                                                 </div>
-                                                                <span className="text-[9px]  tracking-widest px-2 py-0.5 bg-white text-slate-400 rounded-lg w-fit border border-slate-200/50">
+                                                                <span className="text-[10px] font-bold tracking-widest px-2.5 py-1 bg-white text-slate-500 rounded-lg w-fit border border-slate-200">
                                                                     {w.repairType}
                                                                 </span>
                                                             </div>
                                                         </td>
 
                                                         {/* Revenue */}
-                                                        <td className="px-8 py-6 text-right">
+                                                        <td className="px-8 py-5 text-right">
                                                             <div className="flex flex-col items-end">
-                                                                <span className="text-[9px]  text-slate-300 leading-none mb-1.5 tracking-widest font-display">CERT VALUE</span>
-                                                                <div className="font-mono  text-slate-900 text-lg font-display">
+                                                                <span className="text-[10px] font-bold text-slate-400 leading-none mb-2 tracking-widest font-display uppercase">CERT VALUE</span>
+                                                                <div className="font-mono font-bold text-slate-900 text-xl font-display">
                                                                     ₹{(w.repairCost || 0).toLocaleString()}
                                                                 </div>
                                                             </div>
@@ -725,9 +725,9 @@ export default function DashboardClient({
                                                         </td>
 
                                                         {/* Status */}
-                                                        <td className="px-6 py-4">
+                                                        <td className="px-6 py-5">
                                                             <div className="flex flex-col">
-                                                                <span className="text-[9px]  text-slate-300 leading-none mb-2 tracking-widest font-display">LIVE STATE</span>
+                                                                <span className="text-[10px] font-bold text-slate-400 leading-none mb-2 tracking-widest font-display uppercase">LIVE STATE</span>
                                                                 <StatusBadge status={w.status} expiresAt={w.expiresAt} />
                                                             </div>
                                                         </td>
@@ -744,8 +744,8 @@ export default function DashboardClient({
                                         </tbody>
                                     </table>
                                 </div>
-                                <div className="p-6 bg-slate-50/30 border-t border-slate-100 text-center">
-                                    <p className="text-[10px]  text-slate-400 tracking-[0.3em]">Vault is encrypted and secure</p>
+                                <div className="p-6 bg-slate-50 border-t border-slate-200 text-center">
+                                    <p className="text-xs font-bold text-slate-400 tracking-widest uppercase">Vault is encrypted and secure</p>
                                 </div>
                             </div>
                         </div>
@@ -770,7 +770,7 @@ export default function DashboardClient({
                                             placeholder="Find job by name, device, or repair ID..."
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}
-                                            className="w-full h-14 pl-16 pr-6 rounded-[1.25rem] bg-white border border-slate-200/60 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-sm font-bold text-slate-700 placeholder:text-slate-400"
+                                            className="w-full h-14 pl-16 pr-6 rounded-[1.25rem] bg-white border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-base font-bold text-slate-700 placeholder:text-slate-400"
                                         />
                                     </div>
                                     <div className="flex gap-3 w-full lg:w-auto overflow-x-auto pb-2 lg:pb-0 no-scrollbar">
@@ -779,10 +779,10 @@ export default function DashboardClient({
                                                 key={s}
                                                 onClick={() => setStatusFilter(s)}
                                                 className={cn(
-                                                    "h-12 px-6 rounded-2xl  text-[10px] tracking-[0.2em] whitespace-nowrap transition-all border active:scale-95 font-display shadow-sm cursor-pointer",
+                                                    "h-12 px-6 rounded-2xl text-xs font-bold tracking-wider whitespace-nowrap transition-all border active:scale-95 font-display shadow-sm cursor-pointer uppercase",
                                                     statusFilter === s
                                                         ? "bg-primary text-white border-primary shadow-xl shadow-slate-200"
-                                                        : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50"
+                                                        : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-slate-700"
                                                 )}
                                             >
                                                 {s === 'IN_PROGRESS' ? 'WORKING' : s.replace('_', ' ')}
@@ -794,10 +794,10 @@ export default function DashboardClient({
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-sm text-left border-collapse">
                                         <thead>
-                                            <tr className="bg-slate-50/60 text-[10px]  text-slate-400 tracking-[0.25em] border-b border-slate-100 font-display">
-                                                <th className="px-6 py-4">Sequence</th>
-                                                <th className="px-6 py-4">Client Profile</th>
-                                                <th className="px-6 py-4">Machine Class</th>
+                                            <tr className="bg-slate-50/60 text-xs font-bold text-slate-500 tracking-widest border-b border-slate-200 font-display uppercase">
+                                                <th className="px-6 py-5">Sequence</th>
+                                                <th className="px-6 py-5">Client Profile</th>
+                                                <th className="px-6 py-5">Machine Class</th>
                                                 <th className="px-6 py-4">Schedule</th>
                                                 <th className="px-6 py-4">Current State</th>
                                                 <th className="px-6 py-4 text-right">Valuation</th>
@@ -808,10 +808,10 @@ export default function DashboardClient({
                                                 <tr>
                                                     <td colSpan={8} className="py-32 text-center">
                                                         <div className="flex flex-col items-center gap-4">
-                                                            <div className="h-20 w-20 bg-slate-50 rounded-[40%] flex items-center justify-center rotate-12 border border-slate-100">
-                                                                <Wrench className="h-8 w-8 text-slate-300" />
+                                                            <div className="h-24 w-24 bg-slate-50 rounded-[40%] flex items-center justify-center rotate-12 border border-slate-200">
+                                                                <Wrench className="h-10 w-10 text-slate-400" />
                                                             </div>
-                                                            <span className="text-[11px]  tracking-widest text-slate-300">No active job matrices found</span>
+                                                            <span className="text-xs font-bold tracking-widest text-slate-400 uppercase">No active job matrices found</span>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -828,8 +828,8 @@ export default function DashboardClient({
                                                         <td className="px-6 py-4">
                                                             <div className="flex items-center gap-4">
                                                                 <div className="flex flex-col text-left group-hover:scale-105 transition-transform">
-                                                                    <span className="text-primary  tracking-widest text-[9px]">RI-STORE</span>
-                                                                    <span className="text-slate-900  font-mono text-sm mt-0.5">{j.jobId.split('-')[1]}</span>
+                                                                    <span className="text-primary font-bold tracking-widest text-[10px] uppercase">RI-STORE</span>
+                                                                    <span className="text-slate-900 font-bold font-mono text-base mt-0.5">{j.jobId.split('-')[1]}</span>
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -841,12 +841,12 @@ export default function DashboardClient({
                                                             }}
                                                         >
                                                             <div className="flex flex-col gap-0.5">
-                                                                <div className="text-slate-900 text-sm group-hover/cell:text-primary transition-colors">{j.customerName}</div>
-                                                                <div className="text-[10px] text-slate-400 font-bold tracking-wider">{j.customerPhone}</div>
+                                                                <div className="text-slate-900 font-bold text-base group-hover/cell:text-primary transition-colors">{j.customerName}</div>
+                                                                <div className="text-xs text-slate-500 font-bold tracking-wider mt-0.5">{j.customerPhone}</div>
                                                             </div>
                                                         </td>
                                                         <td
-                                                            className="px-6 py-4  text-slate-800 text-sm cursor-pointer hover:text-primary transition-colors"
+                                                            className="px-6 py-4 text-slate-900 font-bold text-sm cursor-pointer hover:text-primary transition-colors"
                                                             onClick={() => {
                                                                 setSelectedJobId(j.id);
                                                                 setViewMode('JOB_CUSTOMER_DETAILS');
@@ -857,9 +857,9 @@ export default function DashboardClient({
                                                         <td className="px-6 py-4">
                                                             {j.expectedAt ? (
                                                                 <div className="flex flex-col">
-                                                                    <span className="text-[9px]  text-slate-400 leading-none mb-1">DUE</span>
-                                                                    <div className="flex items-center gap-1.5  text-slate-700 text-sm">
-                                                                        <Calendar className="h-3 w-3 text-primary/50" />
+                                                                    <span className="text-[10px] font-bold text-slate-500 leading-none mb-1 uppercase tracking-wider">DUE</span>
+                                                                    <div className="flex items-center gap-1.5 text-slate-700 font-bold text-sm">
+                                                                        <Calendar className="h-4 w-4 text-primary/60" />
                                                                         {(() => {
                                                                             const date = new Date(j.expectedAt);
                                                                             const day = date.getDate().toString().padStart(2, '0');
@@ -877,8 +877,8 @@ export default function DashboardClient({
                                                         </td>
                                                         <td className="px-6 py-4 text-right">
                                                             <div className="flex flex-col items-end">
-                                                                <span className="text-[9px]  text-slate-400 tracking-widest mb-1">QUOTE</span>
-                                                                <div className="text-slate-900 text-base">
+                                                                <span className="text-[10px] font-bold text-slate-500 tracking-widest mb-1 uppercase">QUOTE</span>
+                                                                <div className="text-slate-900 font-bold text-lg font-mono">
                                                                     {j.estimatedCost ? `₹${j.estimatedCost.toLocaleString()}` : '---'}
                                                                 </div>
                                                             </div>
@@ -889,20 +889,20 @@ export default function DashboardClient({
                                         </tbody>
                                     </table>
                                 </div>
-                                <div className="p-4 bg-slate-50/20 border-t border-slate-100/50 flex justify-between items-center">
+                                <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-between items-center">
                                     <div className="flex gap-4">
                                         <div className="flex items-center gap-2">
                                             <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                                            <span className="text-[9px]  text-slate-400 tracking-widest">Active Processing</span>
+                                            <span className="text-[10px] font-bold text-slate-500 tracking-widest uppercase">Active Processing</span>
                                         </div>
                                     </div>
-                                    <span className="text-[9px]  text-slate-300 tracking-[0.2em]">{filteredJobSheets.length} Records Loaded</span>
+                                    <span className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">{filteredJobSheets.length} Records Loaded</span>
                                 </div>
                             </div>
                         </div>
                     )}
                 </div>
-            </main>
+            </main >
 
             {/* Modals from before */}
             {showCreateModal && <CreateModal onClose={() => setShowCreateModal(false)} />}
@@ -911,20 +911,22 @@ export default function DashboardClient({
             {/* Pin & Logout Modals... */}
             {showPinModal && <PinModal onClose={() => setShowPinModal(false)} onSuccess={handlePinSuccess} mode={pinMode} />}
 
-            {showLogoutConfirm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-                    <div className="w-full max-w-sm bg-white rounded-2xl shadow-xl p-6">
-                        <h2 className="text-xl font-bold mb-2 text-gray-900">Logout?</h2>
-                        <p className="text-gray-500 mb-6">Are you sure you want to log out?</p>
-                        <div className="flex gap-3">
-                            <button onClick={() => setShowLogoutConfirm(false)} className="flex-1 px-4 py-2 rounded-lg border border-gray-200 font-medium hover:bg-gray-50 text-gray-700">Cancel</button>
-                            <button onClick={() => logout()} className="flex-1 px-4 py-2 rounded-lg bg-red-600 text-white font-bold hover:bg-red-700">Logout</button>
+            {
+                showLogoutConfirm && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+                        <div className="w-full max-w-sm bg-white rounded-2xl shadow-xl p-6">
+                            <h2 className="text-xl font-bold mb-2 text-gray-900">Logout?</h2>
+                            <p className="text-gray-500 mb-6">Are you sure you want to log out?</p>
+                            <div className="flex gap-3">
+                                <button onClick={() => setShowLogoutConfirm(false)} className="flex-1 px-4 py-2 rounded-lg border border-gray-200 font-medium hover:bg-gray-50 text-gray-700">Cancel</button>
+                                <button onClick={() => logout()} className="flex-1 px-4 py-2 rounded-lg bg-red-600 text-white font-bold hover:bg-red-700">Logout</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )
+            }
 
-        </div>
+        </div >
     );
 }
 
@@ -1102,30 +1104,30 @@ function StatCard({
     icon?: any
 }) {
     return (
-        <div className="p-6 bg-white rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group h-full relative overflow-hidden">
+        <div className="p-6 bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group h-full relative overflow-hidden">
             {/* Background Glow */}
-            <div className="absolute top-0 right-0 w-20 h-20 bg-primary/5 rounded-full blur-3xl -z-0 group-hover:bg-primary/10 transition-colors" />
+            <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-3xl -z-0 group-hover:bg-primary/10 transition-colors" />
 
             <div className="mb-4 flex items-start justify-between relative z-10">
-                <div className="p-3 bg-slate-50 text-slate-400 rounded-xl group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm border border-slate-100 group-hover:border-primary">
-                    {Icon ? <Icon className="h-5 w-5" /> : <Clock className="h-5 w-5" />}
+                <div className="p-3.5 bg-slate-50 text-slate-500 rounded-2xl group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm border border-slate-200 group-hover:border-primary">
+                    {Icon ? <Icon className="h-6 w-6" /> : <Clock className="h-6 w-6" />}
                 </div>
                 {secure && onToggle && (
                     <button
                         onClick={onToggle}
-                        className="text-slate-300 hover:text-primary transition-colors focus:outline-none p-1.5 bg-slate-50 hover:bg-white rounded-lg border border-transparent hover:border-slate-100 shadow-sm"
+                        className="text-slate-400 hover:text-primary transition-colors focus:outline-none p-2 bg-slate-50 hover:bg-white rounded-xl border border-transparent hover:border-slate-200 shadow-sm"
                     >
-                        {isVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {isVisible ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
                 )}
             </div>
 
             <div className="relative z-10">
-                <h3 className="text-[10px]  text-slate-400 mb-1 tracking-[0.15em] font-display opacity-80 uppercase">{title}</h3>
-                <div className={cn("text-2xl  mb-2 tracking-tight font-display", highlight ? "text-primary" : "text-slate-900")}>
+                <h3 className="text-xs font-bold text-slate-500 mb-1.5 tracking-widest font-display uppercase">{title}</h3>
+                <div className={cn("text-3xl font-bold mb-2.5 tracking-tight font-display", highlight ? "text-primary" : "text-slate-900")}>
                     {secure && !isVisible ? "••••••" : value}
                 </div>
-                <div className="text-[9px] text-emerald-600 font-bold bg-emerald-50/50 w-fit px-2.5 py-1 rounded-lg border border-emerald-100/50 tracking-wider font-display">{sub}</div>
+                <div className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100 tracking-wider font-display w-fit">{sub}</div>
             </div>
         </div>
     );
@@ -1572,17 +1574,17 @@ function JobSummaryCard({ title, count, color }: { title: string, count: number,
     };
 
     return (
-        <div className={cn("p-6 bg-white rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-3 bg-gradient-to-br transition-all hover:shadow-xl hover:-translate-y-1 duration-300 group relative overflow-hidden", colorMap[color])}>
-            <div className="absolute top-0 right-0 w-16 h-16 bg-current opacity-[0.03] rounded-full blur-2xl -z-0" />
+        <div className={cn("p-6 bg-white rounded-3xl border border-slate-200 shadow-sm flex flex-col gap-4 bg-gradient-to-br transition-all hover:shadow-xl hover:-translate-y-1 duration-300 group relative overflow-hidden", colorMap[color])}>
+            <div className="absolute top-0 right-0 w-24 h-24 bg-current opacity-[0.05] rounded-full blur-3xl -z-0" />
 
-            <span className="text-[10px]  tracking-[0.2em] opacity-60 font-display relative z-10 uppercase">{title}</span>
+            <span className="text-xs font-bold tracking-widest opacity-80 font-display relative z-10 uppercase">{title}</span>
             <div className="flex items-center justify-between relative z-10">
-                <span className="text-3xl  font-display tracking-tight text-slate-900">{count}</span>
-                <div className={cn("p-3 rounded-xl bg-white/60 border border-current/10 shadow-sm backdrop-blur-sm group-hover:scale-110 transition-transform duration-500")}>
-                    {color === 'blue' && <Inbox className="h-5 w-5" />}
-                    {color === 'amber' && <Activity className="h-5 w-5" />}
-                    {color === 'emerald' && <CheckCircle className="h-5 w-5" />}
-                    {color === 'slate' && <Truck className="h-5 w-5" />}
+                <span className="text-4xl font-bold font-display tracking-tight text-slate-900">{count}</span>
+                <div className={cn("p-4 rounded-2xl bg-white/80 border border-current/10 shadow-sm backdrop-blur-sm group-hover:scale-110 transition-transform duration-500")}>
+                    {color === 'blue' && <Inbox className="h-6 w-6" />}
+                    {color === 'amber' && <Activity className="h-6 w-6" />}
+                    {color === 'emerald' && <CheckCircle className="h-6 w-6" />}
+                    {color === 'slate' && <Truck className="h-6 w-6" />}
                 </div>
             </div>
         </div>
