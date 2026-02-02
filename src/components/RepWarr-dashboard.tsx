@@ -262,8 +262,8 @@ export default function DashboardClient({
                         </div>
 
                         {[
-                            { id: 'WARRANTIES', icon: CheckCircle, label: 'Warranties' },
                             { id: 'JOBS', icon: Wrench, label: 'Repair Jobs' },
+                            { id: 'WARRANTIES', icon: CheckCircle, label: 'Warranties' },
                             { id: 'REPORTS', icon: Activity, label: 'Reports' },
                             { id: 'SETTINGS', icon: Settings, label: 'Settings' }
                         ].map((item) => {
