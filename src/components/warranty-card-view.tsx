@@ -178,7 +178,7 @@ export default function WarrantyCardView({ warranty, shop, onBack }: { warranty:
                                     <ShieldCheck className="h-10 w-10 text-white" />
                                 </div>
                                 <div>
-                                    <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-1">
+                                    <h1 className="text-3xl  text-slate-900 tracking-tight leading-none mb-1">
                                         {shop.shopName || "Repair Center"}
                                     </h1>
                                     <div className="text-sm font-semibold text-slate-500 tracking-widest flex items-center gap-4">

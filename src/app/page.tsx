@@ -114,7 +114,7 @@ export default function Home() {
                     <p className="text-[10px] text-slate-500 font-bold tracking-wider">
                       Verified Warranties
                     </p>
-                    <p className="text-3xl font-black text-slate-900">25k+</p>
+                    <p className="text-3xl  text-slate-900">25k+</p>
                   </div>
                 </div>
 

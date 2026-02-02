@@ -67,8 +67,8 @@ export function DashCircularChart({
 
                 {/* Center Text */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <span className="text-4xl font-black text-white font-display mb-1">{total}</span>
-                    <span className="text-[10px] font-black text-slate-500 tracking-[0.2em]">Total Assets</span>
+                    <span className="text-4xl  text-white font-display mb-1">{total}</span>
+                    <span className="text-[10px]  text-slate-500 tracking-[0.2em]">Total Assets</span>
                 </div>
             </div>
         </div>

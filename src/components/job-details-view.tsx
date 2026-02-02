@@ -170,7 +170,7 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
                             {job.technicalDetails.motor.warrantyInfo && (
                                 <div className="text-right">
                                     <label className="text-[10px] font-bold text-slate-500 block mb-1">Service Warranty:</label>
-                                    <div className="text-sm font-black text-emerald-700 tracking-tight">{job.technicalDetails.motor.warrantyInfo}</div>
+                                    <div className="text-sm  text-emerald-700 tracking-tight">{job.technicalDetails.motor.warrantyInfo}</div>
                                 </div>
                             )}
                         </div>
@@ -202,18 +202,18 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
                     )}
 
                     <div className="w-1/2 flex justify-between text-sm py-1 border-t-2 border-slate-900 mt-2">
-                        <span className="font-black text-slate-800 text-[10px]">Total Amount Received</span>
-                        <span className="font-black text-slate-900">Rs. {job.status === 'DELIVERED' ? total : advance}</span>
+                        <span className="text-slate-800 text-[10px]">Total Amount Received</span>
+                        <span className="text-slate-900">Rs. {job.status === 'DELIVERED' ? total : advance}</span>
                     </div>
 
                     <div className={cn(
                         "w-1/2 flex justify-between text-xl mt-2 p-3 rounded-lg transition-all",
                         (job.status === 'DELIVERED' || balance === 0) ? "bg-emerald-600 text-white" : "bg-slate-900 text-white"
                     )}>
-                        <span className="font-bold text-xs flex items-center">
+                        <span className="text-xs flex items-center">
                             {(job.status === 'DELIVERED' || balance === 0) ? "Final Dues Cleared" : "Outstanding Balance"}
                         </span>
-                        <span className="font-black">Rs. {(job.status === 'DELIVERED' || balance === 0) ? 0 : balance}</span>
+                        <span>Rs. {(job.status === 'DELIVERED' || balance === 0) ? 0 : balance}</span>
                     </div>
                 </div>
 
