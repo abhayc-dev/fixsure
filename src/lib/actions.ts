@@ -13,7 +13,7 @@ export const getCurrentShop = cache(async () => {
   const sessionId = cookieStore.get("shop_session")?.value;
 
   if (!sessionId) {
-    redirect("/login");
+    redirect("/login?error=no_session");
   }
 
   const shop = await db.shop.findUnique({
@@ -21,7 +21,7 @@ export const getCurrentShop = cache(async () => {
   });
 
   if (!shop) {
-    redirect("/login");
+    redirect("/login?error=invalid_session");
   }
 
   return shop;

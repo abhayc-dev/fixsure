@@ -1,21 +1,19 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const sessionId = request.cookies.get('shop_session')?.value;
   const { pathname } = request.nextUrl;
 
-  // 1. If user is logged in, prevent them from accessing home or login pages
-  if (sessionId) {
-    if (pathname === '/' || pathname === '/login') {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
+  // 1. If user has session and hits root, send to dashboard
+  if (sessionId && pathname === '/') {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   // 2. If user is NOT logged in, prevent them from accessing protected pages
-  if (!sessionId) {
+  if (!sessionId || request.nextUrl.searchParams.has('error')) {
     if (pathname.startsWith('/dashboard') || pathname.startsWith('/admin')) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      return NextResponse.redirect(new URL('/login?error=unauthorized', request.url));
     }
   }
 
