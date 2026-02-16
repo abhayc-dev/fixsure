@@ -13,6 +13,7 @@ type Shop = {
     address: string | null;
     city: string | null;
     phone: string;
+    companyLogoUrl?: string | null;
 }
 
 export default function ProfileForm({ shop }: { shop: Shop }) {
@@ -24,7 +25,8 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
         ownerName: shop.ownerName || "",
         address: shop.address || "",
         city: shop.city || "",
-        phone: shop.phone || ""
+        phone: shop.phone || "",
+        companyLogoUrl: shop.companyLogoUrl || ""
     });
 
     const hasChanges =
@@ -32,7 +34,8 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
         formData.ownerName !== (shop.ownerName || "") ||
         formData.address !== (shop.address || "") ||
         formData.city !== (shop.city || "") ||
-        formData.phone !== (shop.phone || "");
+        formData.phone !== (shop.phone || "") ||
+        formData.companyLogoUrl !== (shop.companyLogoUrl || "");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData(prev => ({
@@ -61,20 +64,6 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
 
     return (
         <form action={handleSubmit} className="space-y-8 max-w-4xl">
-
-            {/* Header / Info */}
-            <div className="bg-blue-50/50 p-4 rounded-lg flex items-start gap-4 border border-blue-100 mb-6">
-                <div className="p-2 bg-white rounded-full shadow-sm">
-                    <ShieldCheck className="w-5 h-5 text-blue-600" />
-                </div>
-                <div>
-                    <h3 className="text-sm font-bold text-blue-900">Your Shop Profile</h3>
-                    <p className="text-xs text-blue-700 mt-1">
-                        These details are visible on every warranty and job sheet you create. Keep them up to date to build trust with your customers.
-                    </p>
-                </div>
-            </div>
-
             <div className="space-y-6">
                 <div className="space-y-3">
                     <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">
@@ -164,6 +153,36 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
                         />
                     </div>
                 </div>
+
+                <div className="space-y-3">
+                    <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">
+                        <ShieldCheck className="w-4 h-4 text-primary" />
+                        Company Logo URL
+                    </label>
+                    <div className="flex gap-4 items-start">
+                        <div className="flex-1">
+                            <input
+                                name="companyLogoUrl"
+                                value={formData.companyLogoUrl || ''}
+                                onChange={handleChange}
+                                placeholder="https://example.com/logo.png"
+                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 transition-all shadow-sm"
+                            />
+                            <p className="text-xs text-slate-500 pl-1 mt-1">Provide a direct image URL for your company logo.</p>
+                        </div>
+                        {formData.companyLogoUrl && (
+                            <div className="h-12 w-12 rounded-lg border border-slate-200 overflow-hidden bg-white shrink-0">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                    src={formData.companyLogoUrl}
+                                    alt="Logo Preview"
+                                    className="h-full w-full object-contain"
+                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                                />
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
 
             <div className="pt-4 border-t border-slate-100 flex justify-start mb-[-6px]">
@@ -181,6 +200,6 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
                     Save Changes
                 </button>
             </div>
-        </form>
+        </form >
     );
 }

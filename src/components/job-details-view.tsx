@@ -22,7 +22,15 @@ type JobSheet = {
     technicalDetails?: Record<string, any> | null;
 };
 
-export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack: () => void }) {
+type Shop = {
+    shopName: string;
+    address: string | null;
+    city: string | null;
+    phone: string;
+    companyLogoUrl?: string | null;
+};
+
+export default function JobDetailsView({ job, shop, onBack }: { job: JobSheet, shop: Shop, onBack: () => void }) {
 
     // Calculate Balance
     const total = job.estimatedCost || 0;
@@ -94,10 +102,15 @@ export default function JobDetailsView({ job, onBack }: { job: JobSheet, onBack:
             <div ref={ticketRef} className="w-full max-w-[800px] bg-white p-8 border border-slate-200 shadow-sm print:shadow-none print:border-none text-black">
 
                 {/* 1. Header Section */}
-                <div className="text-center mb-8">
-                    <h1 className="text-4xl font-normal text-slate-800 mb-2">Best Service & Repairing</h1>
-                    <div className="text-slate-600 text-sm mb-1">Agra</div>
-                    <div className="text-slate-600 text-sm">Phone: 8876798779</div>
+                <div className="text-center mb-8 relative">
+                    {shop.companyLogoUrl && (
+                        <div className="absolute left-0 top-0 h-16 w-16">
+                            <img src={shop.companyLogoUrl} alt="Logo" className="h-full w-full object-contain" />
+                        </div>
+                    )}
+                    <h1 className="text-4xl font-normal text-slate-800 mb-2">{shop.shopName}</h1>
+                    <div className="text-slate-600 text-sm mb-1">{shop.address}, {shop.city}</div>
+                    <div className="text-slate-600 text-sm">Phone: {shop.phone}</div>
                 </div>
 
                 <div className="border-t border-slate-200 my-6"></div>

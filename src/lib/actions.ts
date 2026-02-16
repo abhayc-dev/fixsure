@@ -110,101 +110,101 @@ export async function getWarrantyByCode(code: string) {
 }
 
 export async function getStats() {
-    const shop = await getCurrentShop();
-    const now = new Date();
-    
-    // 1. Fetch all warranties from the last 12 months in ONE query
-    const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
-    const warranties = await db.warranty.findMany({
-        where: { 
-            shopId: shop.id,
-            issuedAt: { gte: twelveMonthsAgo }
-        },
-        select: {
-            repairCost: true,
-            issuedAt: true,
-            status: true
-        }
-    });
+  const shop = await getCurrentShop();
+  const now = new Date();
 
-    // 2. Fundamental Stats (Using pre-fetched data for speed)
-    const total = await db.warranty.count({ where: { shopId: shop.id } }); // Total all time
-    const active = warranties.filter(w => w.status === "ACTIVE").length;
-    
-    const revenueAgg = await db.warranty.aggregate({
-        _sum: { repairCost: true },
-        where: { shopId: shop.id }
-    });
+  // 1. Fetch all warranties from the last 12 months in ONE query
+  const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+  const warranties = await db.warranty.findMany({
+    where: {
+      shopId: shop.id,
+      issuedAt: { gte: twelveMonthsAgo }
+    },
+    select: {
+      repairCost: true,
+      issuedAt: true,
+      status: true
+    }
+  });
 
-    // 3. Memory-based Aggregations (Blazing Fast)
-    const weeklyChart = Array.from({ length: 7 }, (_, i) => {
-        const d = new Date();
-        d.setDate(d.getDate() - (6 - i));
-        const dayStart = new Date(d.setHours(0,0,0,0));
-        const dayEnd = new Date(d.setHours(23,59,59,999));
-        
-        const dayTotal = warranties
-            .filter(w => w.issuedAt >= dayStart && w.issuedAt <= dayEnd)
-            .reduce((sum, w) => sum + (w.repairCost || 0), 0);
+  // 2. Fundamental Stats (Using pre-fetched data for speed)
+  const total = await db.warranty.count({ where: { shopId: shop.id } }); // Total all time
+  const active = warranties.filter(w => w.status === "ACTIVE").length;
 
-        return {
-            label: dayStart.toLocaleDateString('en-US', { weekday: 'short' }),
-            value: dayTotal
-        };
-    });
+  const revenueAgg = await db.warranty.aggregate({
+    _sum: { repairCost: true },
+    where: { shopId: shop.id }
+  });
 
-    const monthlyResults = Array.from({ length: 12 }, (_, i) => {
-        const d = new Date(now.getFullYear(), now.getMonth() - (11 - i), 1);
-        const month = d.getMonth();
-        const year = d.getFullYear();
+  // 3. Memory-based Aggregations (Blazing Fast)
+  const weeklyChart = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    const dayStart = new Date(d.setHours(0, 0, 0, 0));
+    const dayEnd = new Date(d.setHours(23, 59, 59, 999));
 
-        const monthWarranties = warranties.filter(w => {
-            const wDate = new Date(w.issuedAt);
-            return wDate.getMonth() === month && wDate.getFullYear() === year;
-        });
+    const dayTotal = warranties
+      .filter(w => w.issuedAt >= dayStart && w.issuedAt <= dayEnd)
+      .reduce((sum, w) => sum + (w.repairCost || 0), 0);
 
-        const revenue = monthWarranties.reduce((sum, w) => sum + (w.repairCost || 0), 0);
-        const jobs = monthWarranties.length;
-
-        return {
-            label: d.toLocaleDateString('en-US', { month: 'short' }),
-            revenue,
-            jobs
-        };
-    });
-
-    const monthlyChart = monthlyResults.map(r => ({ label: r.label, value: r.revenue }));
-    const jobChart = monthlyResults.map(r => ({ label: r.label, value: r.jobs }));
-    
-    // Current Month Revenue
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const monthlyRevenue = warranties
-        .filter(w => w.issuedAt >= startOfMonth)
-        .reduce((sum, w) => sum + (w.repairCost || 0), 0);
-
-    // 4. Job Distribution from Backend
-    const jobStatsRes = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/stats/jobs?shopId=${shop.id}`);
-    const jobStats = jobStatsRes.ok ? await jobStatsRes.json() : { received: 0, inProgress: 0, ready: 0, delivered: 0 };
-
-    return { 
-      total,
-      active,
-      revenue: revenueAgg._sum.repairCost || 0,
-      monthlyRevenue,
-      weeklyChart,
-      monthlyChart,
-      jobChart,
-      jobDistribution: [
-          { label: 'Received', value: jobStats.received, color: '#3b82f6' },
-          { label: 'In Progress', value: jobStats.inProgress, color: '#eab308' },
-          { label: 'Ready', value: jobStats.ready, color: '#22c55e' },
-          { label: 'Delivered', value: jobStats.delivered, color: '#64748b' }
-      ],
-      shopName: shop.shopName,
-      subscription: shop.subscriptionStatus,
-      isVerified: shop.isVerified,
-      hasAccessPin: !!shop.accessPin
+    return {
+      label: dayStart.toLocaleDateString('en-US', { weekday: 'short' }),
+      value: dayTotal
     };
+  });
+
+  const monthlyResults = Array.from({ length: 12 }, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - (11 - i), 1);
+    const month = d.getMonth();
+    const year = d.getFullYear();
+
+    const monthWarranties = warranties.filter(w => {
+      const wDate = new Date(w.issuedAt);
+      return wDate.getMonth() === month && wDate.getFullYear() === year;
+    });
+
+    const revenue = monthWarranties.reduce((sum, w) => sum + (w.repairCost || 0), 0);
+    const jobs = monthWarranties.length;
+
+    return {
+      label: d.toLocaleDateString('en-US', { month: 'short' }),
+      revenue,
+      jobs
+    };
+  });
+
+  const monthlyChart = monthlyResults.map(r => ({ label: r.label, value: r.revenue }));
+  const jobChart = monthlyResults.map(r => ({ label: r.label, value: r.jobs }));
+
+  // Current Month Revenue
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthlyRevenue = warranties
+    .filter(w => w.issuedAt >= startOfMonth)
+    .reduce((sum, w) => sum + (w.repairCost || 0), 0);
+
+  // 4. Job Distribution from Backend
+  const jobStatsRes = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/stats/jobs?shopId=${shop.id}`);
+  const jobStats = jobStatsRes.ok ? await jobStatsRes.json() : { received: 0, inProgress: 0, ready: 0, delivered: 0 };
+
+  return {
+    total,
+    active,
+    revenue: revenueAgg._sum.repairCost || 0,
+    monthlyRevenue,
+    weeklyChart,
+    monthlyChart,
+    jobChart,
+    jobDistribution: [
+      { label: 'Received', value: jobStats.received, color: '#3b82f6' },
+      { label: 'In Progress', value: jobStats.inProgress, color: '#eab308' },
+      { label: 'Ready', value: jobStats.ready, color: '#22c55e' },
+      { label: 'Delivered', value: jobStats.delivered, color: '#64748b' }
+    ],
+    shopName: shop.shopName,
+    subscription: shop.subscriptionStatus,
+    isVerified: shop.isVerified,
+    hasAccessPin: !!shop.accessPin
+  };
 }
 
 export async function verifyAccessPin(pin: string) {
@@ -346,6 +346,7 @@ export async function updateShopDetails(formData: FormData) {
   const city = formData.get("city") as string;
   const ownerName = formData.get("ownerName") as string;
   const phone = formData.get("phone") as string;
+  const companyLogoUrl = formData.get("companyLogoUrl") as string;
 
   if (!shopName || shopName.length < 3) {
     throw new Error("Shop Name must be at least 3 characters");
@@ -358,7 +359,8 @@ export async function updateShopDetails(formData: FormData) {
       address,
       city,
       ownerName,
-      phone
+      phone,
+      companyLogoUrl
     }
   });
 

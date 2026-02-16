@@ -102,6 +102,7 @@ type Shop = {
     city: string | null;
     phone: string;
     accessPin: string | null;
+    companyLogoUrl?: string | null;
 }
 
 export default function DashboardClient({
@@ -213,7 +214,7 @@ export default function DashboardClient({
     if (viewMode === 'JOB_DETAILS' && selectedJobSheet) {
         return (
             <div className="min-h-screen bg-white">
-                <JobDetailsView job={selectedJobSheet} onBack={() => {
+                <JobDetailsView job={selectedJobSheet} shop={shop} onBack={() => {
                     setSelectedJobId(null);
                     setViewMode('JOBS');
                 }} />
@@ -246,8 +247,12 @@ export default function DashboardClient({
                     {/* Brand */}
                     <div className="h-24 flex items-center px-8 mb-4">
                         <Link href="/" className="flex items-center gap-3 group transition-all">
-                            <div className="p-2.5 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-all border border-primary/20 shadow-lg shadow-primary/5">
-                                <ShieldCheck className="h-7 w-7 text-primary" />
+                            <div className="p-2.5 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-all border border-primary/20 shadow-lg shadow-primary/5 overflow-hidden relative">
+                                {shop.companyLogoUrl ? (
+                                    <img src={shop.companyLogoUrl} alt="Logo" className="h-7 w-7 object-contain" />
+                                ) : (
+                                    <ShieldCheck className="h-7 w-7 text-primary" />
+                                )}
                             </div>
                             <span className="text-2xl font-bold tracking-tight text-white group-hover:text-primary transition-colors font-display">FixSure</span>
                         </Link>
@@ -412,7 +417,7 @@ export default function DashboardClient({
                     ) : viewMode === 'CREATE_JOB' ? (
                         <CreateJobSheetForm onSuccess={() => setViewMode('JOBS')} shopCategory={shop.category} />
                     ) : viewMode === 'JOB_DETAILS' && selectedJobSheet ? (
-                        <JobDetailsView job={selectedJobSheet} onBack={() => setViewMode('JOBS')} />
+                        <JobDetailsView job={selectedJobSheet} shop={shop} onBack={() => setViewMode('JOBS')} />
                     ) : viewMode === 'SETTINGS' ? (
                         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 animate-fade-in">
                             {/* Left Pane: Shop Profile */}

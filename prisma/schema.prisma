@@ -28,6 +28,7 @@ model Shop {
 
   // Security
   accessPin         String?   // For hiding revenue
+  companyLogoUrl    String?   // External image URL for branding
 
   // Business Status
   isVerified        Boolean  @default(false)

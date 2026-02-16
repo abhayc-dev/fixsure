@@ -25,6 +25,7 @@ type Shop = {
     shopName: string;
     address: string | null;
     phone: string;
+    companyLogoUrl?: string | null;
 }
 
 export default function WarrantyCardView({ warranty, shop, onBack }: { warranty: Warranty, shop: Shop, onBack: () => void }) {
@@ -167,15 +168,19 @@ export default function WarrantyCardView({ warranty, shop, onBack }: { warranty:
                             <div className="flex items-center gap-4">
                                 {/* Shop Logo Placeholder - Force Background for PDF */}
                                 <div
-                                    className="h-20 w-20 rounded-lg flex items-center justify-center shadow-lg"
+                                    className="h-20 w-20 rounded-lg flex items-center justify-center shadow-lg overflow-hidden relative"
                                     style={{
-                                        backgroundColor: '#0f172a',
+                                        backgroundColor: '#0f172a', // Default background
                                         color: 'white',
                                         WebkitPrintColorAdjust: 'exact',
                                         printColorAdjust: 'exact'
                                     }}
                                 >
-                                    <ShieldCheck className="h-10 w-10 text-white" />
+                                    {shop.companyLogoUrl ? (
+                                        <img src={shop.companyLogoUrl} alt="Logo" className="h-full w-full object-contain" />
+                                    ) : (
+                                        <ShieldCheck className="h-10 w-10 text-white" />
+                                    )}
                                 </div>
                                 <div>
                                     <h1 className="text-3xl  text-slate-900 tracking-tight leading-none mb-1">
