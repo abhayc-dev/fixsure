@@ -3,6 +3,7 @@
 import { ShieldCheck, Lock } from "lucide-react";
 import ProfileForm from "../settings/profile-form";
 import SecurityForm from "../settings/security-form";
+import WorkerManagement from "../settings/WorkerManagement";
 
 type Shop = {
     id: string;
@@ -19,8 +20,8 @@ type Shop = {
 
 export default function SettingsView({ shop }: { shop: Shop }) {
     return (
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 animate-fade-in">
-            {/* Left Pane: Shop Profile */}
+        <div className="space-y-8 animate-fade-in">
+            {/* Shop Profile - Full Width */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
                 <div className="flex items-start gap-4 mb-6">
                     <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl">
@@ -36,20 +37,26 @@ export default function SettingsView({ shop }: { shop: Shop }) {
                 </div>
             </div>
 
-            {/* Right Pane: Security */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 h-fit">
-                <div className="flex items-start gap-4 mb-6">
-                    <div className="p-3 bg-orange-50 text-orange-600 rounded-2xl">
-                        <Lock className="h-6 w-6" />
+            {/* Security & Workers - Side by Side on Large Screens */}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                {/* Security */}
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 h-fit">
+                    <div className="flex items-start gap-4 mb-6">
+                        <div className="p-3 bg-orange-50 text-orange-600 rounded-2xl">
+                            <Lock className="h-6 w-6" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-slate-800">Security Access</h2>
+                            <p className="text-sm text-slate-400">Control sensitive data visibility</p>
+                        </div>
                     </div>
-                    <div>
-                        <h2 className="text-xl font-bold text-slate-800">Security Access</h2>
-                        <p className="text-sm text-slate-400">Control sensitive data visibility</p>
+                    <div className="pt-2">
+                        <SecurityForm hasPin={!!shop.accessPin} />
                     </div>
                 </div>
-                <div className="pt-2">
-                    <SecurityForm hasPin={!!shop.accessPin} />
-                </div>
+
+                {/* Workers Management */}
+                <WorkerManagement shopId={shop.id} />
             </div>
         </div>
     );
