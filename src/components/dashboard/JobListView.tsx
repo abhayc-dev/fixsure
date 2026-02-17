@@ -40,7 +40,15 @@ type JobSheet = {
     technicalDetails?: Record<string, any> | null;
 };
 
-export default function JobListView({ initialJobSheets, shop }: { initialJobSheets: JobSheet[], shop: any }) {
+type Shop = {
+    shopName: string;
+    address: string | null;
+    city: string | null;
+    phone: string;
+    gstNumber?: string | null;
+};
+
+export default function JobListView({ initialJobSheets, shop }: { initialJobSheets: JobSheet[], shop: Shop }) {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState('ALL');
@@ -243,7 +251,7 @@ function JobStatusBadge({ status }: { status: string }) {
     );
 }
 
-function JobActionMenu({ job, shop }: { job: JobSheet, shop: any }) {
+function JobActionMenu({ job, shop }: { job: JobSheet, shop: Shop }) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const router = useRouter();

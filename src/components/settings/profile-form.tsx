@@ -13,12 +13,14 @@ type Shop = {
     address: string | null;
     city: string | null;
     phone: string;
-    companyLogoUrl?: string | null;
+    companyLogoUrl: string | null;
+    gstNumber?: string | null;
 }
 
 export default function ProfileForm({ shop }: { shop: Shop }) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const [formData, setFormData] = useState({
         shopName: shop.shopName || "",
@@ -26,7 +28,8 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
         address: shop.address || "",
         city: shop.city || "",
         phone: shop.phone || "",
-        companyLogoUrl: shop.companyLogoUrl || ""
+        companyLogoUrl: shop.companyLogoUrl || "",
+        gstNumber: shop.gstNumber || ""
     });
 
     const hasChanges =
@@ -35,20 +38,40 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
         formData.address !== (shop.address || "") ||
         formData.city !== (shop.city || "") ||
         formData.phone !== (shop.phone || "") ||
-        formData.companyLogoUrl !== (shop.companyLogoUrl || "");
+        formData.companyLogoUrl !== (shop.companyLogoUrl || "") ||
+        formData.gstNumber !== (shop.gstNumber || "");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData(prev => ({
             ...prev,
             [e.target.name]: e.target.value
         }));
+        // Clear error when user types
+        if (e.target.name === 'gstNumber') setError(null);
     };
 
     // Derived Avatar Initials
     const initials = (formData.ownerName || formData.shopName || "??").substring(0, 2).toUpperCase();
 
+    const validateGST = (gst: string) => {
+        if (!gst) return true; // Optional
+        // Regex for GST (15 chars, specific pattern)
+        // 22AAAAA0000A1Z5
+        const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+        return gstRegex.test(gst);
+    };
+
     const handleSubmit = async (submitData: FormData) => {
         setLoading(true);
+        setError(null);
+
+        const gst = submitData.get('gstNumber') as string;
+        if (gst && !validateGST(gst)) {
+            setError("Invalid GST Number format. Example: 22AAAAA0000A1Z5");
+            setLoading(false);
+            return;
+        }
+
         try {
             await updateShopDetails(submitData);
             alert("Profile updated successfully!");
@@ -80,7 +103,6 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
                         className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 transition-all shadow-sm"
                     />
                     <p className="text-xs text-slate-500 pl-1">This name will appear on the warranty certificate header.</p>
-                    <p className="text-xs text-slate-500 pl-1">This number is linked to your subscription and cannot be changed here.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
@@ -122,7 +144,29 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
                             />
                         </div>
                         <input type="hidden" name="phone" value={formData.phone} />
+                        <p className="text-xs text-slate-500 pl-1">This number is linked to your subscription and cannot be changed here.</p>
                     </div>
+                </div>
+
+                {/* GST Number */}
+                <div className="space-y-3">
+                    <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">
+                        <Building2 className="w-4 h-4 text-primary" />
+                        GST Number
+                    </label>
+                    <input
+                        name="gstNumber"
+                        value={formData.gstNumber}
+                        onChange={handleChange}
+                        placeholder="e.g. 22AAAAA0000A1Z5"
+                        maxLength={15}
+                        className={cn(
+                            "flex h-12 w-full rounded-xl border bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 transition-all shadow-sm",
+                            error ? "border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500/20" : "border-slate-200"
+                        )}
+                    />
+                    {error && <p className="text-xs text-red-500 pl-1 font-bold">{error}</p>}
+                    <p className="text-xs text-slate-500 pl-1">Optional. Will be displayed on invoices if provided.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-[-10px]">
@@ -154,33 +198,54 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
                     </div>
                 </div>
 
-                <div className="space-y-3">
-                    <label className="text-sm font-semibold flex items-center gap-2 text-slate-700">
+                {/* Company Logo Section - Improved UI */}
+                <div className="pt-2">
+                    <label className="text-sm font-semibold flex items-center gap-2 text-slate-700 mb-4">
                         <ShieldCheck className="w-4 h-4 text-primary" />
-                        Company Logo URL
+                        Company Logo
                     </label>
-                    <div className="flex gap-4 items-start">
-                        <div className="flex-1">
-                            <input
-                                name="companyLogoUrl"
-                                value={formData.companyLogoUrl || ''}
-                                onChange={handleChange}
-                                placeholder="https://example.com/logo.png"
-                                className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 transition-all shadow-sm"
-                            />
-                            <p className="text-xs text-slate-500 pl-1 mt-1">Provide a direct image URL for your company logo.</p>
+                    <div className="p-4 bg-slate-50/50 border border-slate-100 rounded-2xl flex flex-col sm:flex-row gap-6 items-start hover:border-slate-200 transition-colors">
+
+                        {/* Logo Preview Area */}
+                        <div className="shrink-0 relative group">
+                            <div className={cn(
+                                "h-24 w-24 rounded-2xl border-2 flex items-center justify-center overflow-hidden bg-white shadow-sm transition-all",
+                                formData.companyLogoUrl ? "border-slate-100" : "border-dashed border-slate-200"
+                            )}>
+                                {formData.companyLogoUrl ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img
+                                        src={formData.companyLogoUrl}
+                                        alt="Logo Preview"
+                                        className="h-full w-full object-contain p-2"
+                                        onError={(e) => { (e.target as HTMLImageElement).style.opacity = '0.3' }}
+                                    />
+                                ) : (
+                                    <div className="flex flex-col items-center gap-1 text-slate-300">
+                                        <Store className="h-8 w-8" />
+                                        <span className="text-[10px] font-bold uppercase tracking-wider">No Logo</span>
+                                    </div>
+                                )}
+                            </div>
                         </div>
-                        {formData.companyLogoUrl && (
-                            <div className="h-12 w-12 rounded-lg border border-slate-200 overflow-hidden bg-white shrink-0">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                    src={formData.companyLogoUrl}
-                                    alt="Logo Preview"
-                                    className="h-full w-full object-contain"
-                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+
+                        {/* Input Area */}
+                        <div className="flex-1 w-full space-y-2">
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Logo Image URL</label>
+                            <div className="relative">
+                                <input
+                                    name="companyLogoUrl"
+                                    value={formData.companyLogoUrl || ''}
+                                    onChange={handleChange}
+                                    placeholder="https://example.com/branding/logo.png"
+                                    className="flex h-11 w-full rounded-xl border border-slate-200 bg-white px-4 pr-10 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                                 />
                             </div>
-                        )}
+                            <p className="text-[11px] text-slate-400 leading-relaxed">
+                                Paste a direct link to your logo image (PNG/JPG). Ideally 200x200px or square aspect ratio.
+                                <br />This logo will appear on your printed invoices and dashboard.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

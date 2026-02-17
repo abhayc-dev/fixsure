@@ -13,6 +13,7 @@ type Shop = {
     phone: string;
     accessPin: string | null;
     companyLogoUrl?: string | null;
+    gstNumber?: string | null;
 }
 
 export default function SettingsView({ shop }: { shop: Shop }) {

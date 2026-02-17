@@ -19,6 +19,7 @@ model Shop {
   ownerName         String?
   address           String?
   city              String?
+  gstNumber         String?   // Added to match backend schema
   role              Role     @default(USER)
   category          String   @default("GENERAL") // MOBILE, MOTOR, TV, GENERAL
   

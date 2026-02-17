@@ -349,6 +349,7 @@ export async function updateShopDetails(formData: FormData) {
   const ownerName = formData.get("ownerName") as string;
   const phone = formData.get("phone") as string;
   const companyLogoUrl = formData.get("companyLogoUrl") as string;
+  const gstNumber = formData.get("gstNumber") as string;
 
   if (!shopName || shopName.length < 3) {
     throw new Error("Shop Name must be at least 3 characters");
@@ -362,7 +363,8 @@ export async function updateShopDetails(formData: FormData) {
       city,
       ownerName,
       phone,
-      companyLogoUrl
+      companyLogoUrl,
+      gstNumber
     }
   });
 

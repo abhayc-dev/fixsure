@@ -31,6 +31,7 @@ type Shop = {
     city: string | null;
     phone: string;
     companyLogoUrl?: string | null;
+    gstNumber?: string | null;
 };
 
 export default function JobDetailsView({ job, shop, onBack }: { job: any, shop: any, onBack?: () => void }) {
@@ -123,6 +124,9 @@ export default function JobDetailsView({ job, shop, onBack }: { job: any, shop: 
                     <h1 className="text-4xl font-normal text-slate-800 mb-2">{shop.shopName}</h1>
                     <div className="text-slate-600 text-sm mb-1">{shop.address}, {shop.city}</div>
                     <div className="text-slate-600 text-sm">Phone: {shop.phone}</div>
+                    {shop.gstNumber && (
+                        <div className="text-slate-600 text-sm font-bold mt-1">GST No: {shop.gstNumber}</div>
+                    )}
                 </div>
 
                 <div className="border-t border-slate-200 my-6"></div>
