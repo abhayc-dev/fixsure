@@ -26,7 +26,7 @@ import { logout } from "@/lib/auth-actions";
 type Shop = {
     id: string;
     repo?: any;
-    shopName: string;
+    shopName: string | null;
     phone: string;
     isVerified: boolean;
     subscriptionStatus: string;
@@ -55,7 +55,7 @@ export default function AdminDashboard({ stats, initialShops, initialJobs = [] }
     };
 
     const filteredShops = shops.filter(s =>
-        s.shopName.toLowerCase().includes(search.toLowerCase()) ||
+        (s.shopName || '').toLowerCase().includes(search.toLowerCase()) ||
         s.phone.includes(search)
     );
 
@@ -175,7 +175,7 @@ export default function AdminDashboard({ stats, initialShops, initialJobs = [] }
                                             <div key={shop.id} className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 group">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600 text-sm group-hover:bg-white group-hover:shadow-sm transition-all border border-transparent group-hover:border-slate-100">
-                                                        {shop.shopName[0]}
+                                                        {(shop.shopName || 'Shop')[0]}
                                                     </div>
                                                     <div>
                                                         <div className="font-bold text-slate-900 text-sm">{shop.shopName}</div>

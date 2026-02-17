@@ -26,7 +26,7 @@ type JobSheet = {
 };
 
 type Shop = {
-    shopName: string;
+    shopName: string | null;
     address: string | null;
     city: string | null;
     phone: string;

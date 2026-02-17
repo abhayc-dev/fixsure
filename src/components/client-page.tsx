@@ -12,7 +12,7 @@ import Script from "next/script";
 // We use 'any' for the date to handle string serialization if it happens, 
 // but ideally we cast it properly.
 type ShopData = {
-    shopName: string;
+    shopName: string | null;
     subscriptionStatus: string;
     subscriptionEnds: Date | string | null;
     phone?: string;

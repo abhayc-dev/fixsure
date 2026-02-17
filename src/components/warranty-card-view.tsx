@@ -25,7 +25,7 @@ type Warranty = {
 };
 
 type Shop = {
-    shopName: string;
+    shopName: string | null;
     address: string | null;
     phone: string;
     companyLogoUrl?: string | null;
