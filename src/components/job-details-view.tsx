@@ -123,7 +123,7 @@ export default function JobDetailsView({ job, shop, onBack }: { job: any, shop: 
                     )}
                     <h1 className="text-4xl font-normal text-slate-800 mb-2">{shop.shopName || 'Shop'}</h1>
                     <div className="text-slate-600 text-sm mb-1">
-                        {shop.address || 'Address not set'}
+                        {shop.address || ''}
                         {shop.city && `, ${shop.city}`}
                     </div>
                     <div className="text-slate-600 text-sm">Phone: {shop.phone}</div>
