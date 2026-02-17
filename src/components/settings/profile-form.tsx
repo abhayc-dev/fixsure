@@ -124,7 +124,6 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
                         placeholder="e.g. A-1 Mobile Repair"
                         className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 transition-all shadow-sm"
                     />
-                    <p className="text-xs text-slate-500 pl-1">Optional. This name will appear on the warranty certificate header if provided.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
@@ -166,7 +165,6 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
                             />
                         </div>
                         <input type="hidden" name="phone" value={formData.phone} />
-                        <p className="text-xs text-slate-500 pl-1">This number is linked to your subscription and cannot be changed here.</p>
                     </div>
                 </div>
 
@@ -188,7 +186,6 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
                         )}
                     />
                     {error && <p className="text-xs text-red-500 pl-1 font-bold">{error}</p>}
-                    <p className="text-xs text-slate-500 pl-1">Optional. Will be displayed on invoices if provided.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-[-10px]">
@@ -221,7 +218,7 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
                 </div>
 
                 {/* Company Logo Section - Improved UI */}
-                <div className="pt-2">
+                <div className="pt-8">
                     <label className="text-sm font-semibold flex items-center gap-2 text-slate-700 mb-4">
                         <ShieldCheck className="w-4 h-4 text-primary" />
                         Company Logo
@@ -263,10 +260,6 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
                                     className="flex h-11 w-full rounded-xl border border-slate-200 bg-white px-4 pr-10 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                                 />
                             </div>
-                            <p className="text-[11px] text-slate-400 leading-relaxed">
-                                Paste a direct link to your logo image (PNG/JPG). Ideally 200x200px or square aspect ratio.
-                                <br />This logo will appear on your printed invoices and dashboard.
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -314,10 +307,6 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
                                     className="flex h-11 w-full rounded-xl border border-slate-200 bg-white px-4 pr-10 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
                                 />
                             </div>
-                            <p className="text-[11px] text-slate-400 leading-relaxed">
-                                Paste a direct link to your signature image (PNG/JPG/JPEG/WEBP).
-                                <br />This signature will appear on printed invoices.
-                            </p>
                         </div>
                     </div>
                 </div>
