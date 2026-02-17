@@ -63,7 +63,7 @@ export default function CreateJobSheetForm({
                             <input
                                 name="customerName"
                                 required
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-medium"
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-medium text-slate-600"
                                 placeholder="Enter full name"
                             />
                         </div>
@@ -74,7 +74,7 @@ export default function CreateJobSheetForm({
                                 required
                                 type="tel"
                                 maxLength={10}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-mono"
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-mono text-slate-600"
                                 placeholder="10-digit number"
                             />
                         </div>
@@ -84,7 +84,7 @@ export default function CreateJobSheetForm({
                         <input
                             name="customerAddress"
                             placeholder="e.g. House No, Street, City"
-                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all"
+                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all text-slate-600"
                         />
                     </div>
                 </div>
@@ -118,7 +118,7 @@ export default function CreateJobSheetForm({
                                 name="deviceModel"
                                 required
                                 placeholder="e.g. Samsung S23 Ultra"
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-medium"
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-medium text-slate-600"
                             />
                         </div>
                     </div>
@@ -129,7 +129,7 @@ export default function CreateJobSheetForm({
                             required
                             rows={3}
                             placeholder="Describe the issue in detail..."
-                            className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none resize-none transition-all"
+                            className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none resize-none transition-all text-slate-600"
                         />
                     </div>
                     <div className="space-y-2">
@@ -137,7 +137,7 @@ export default function CreateJobSheetForm({
                         <input
                             name="accessories"
                             placeholder="e.g. Charger, Original Box, Cover"
-                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all"
+                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all text-slate-600"
                         />
                     </div>
                 </div>

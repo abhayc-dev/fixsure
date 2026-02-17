@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
+import WorkerAssignment from "./job/WorkerAssignment";
+import AssignmentHistoryTimeline from "./job/AssignmentHistoryTimeline";
 
 type JobSheet = {
     id: string;
@@ -27,6 +29,7 @@ type JobSheet = {
 
 type Shop = {
     shopName: string | null;
+    id: string;
     address: string | null;
     city: string | null;
     phone: string;
@@ -125,6 +128,12 @@ export default function JobDetailsView({ job, shop, onBack }: { job: any, shop: 
                         </>
                     )}
                 </button>
+            </div>
+
+            {/* Worker Assignment Section */}
+            <div className="w-full max-w-[800px] mb-6 print:hidden space-y-4">
+                <WorkerAssignment jobId={job.id} shopId={shop.id} />
+                <AssignmentHistoryTimeline jobId={job.id} />
             </div>
 
             {/* THE INVOICE SHEET */}

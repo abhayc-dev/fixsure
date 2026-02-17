@@ -342,6 +342,227 @@ app.delete('/api/jobs/:id', async (req, res) => {
     }
 });
 
+/**
+ * WORKER MANAGEMENT ENDPOINTS
+ */
+
+// Get all workers for a shop
+app.get('/api/workers', async (req, res) => {
+    const { shopId } = req.query;
+    if (!shopId) return res.status(400).json({ error: 'shopId is required' });
+
+    try {
+        const workers = await prisma.worker.findMany({
+            where: { shopId: String(shopId) },
+            orderBy: { createdAt: 'asc' }
+        });
+        res.json(workers);
+    } catch (error) {
+        console.error("GET /api/workers error:", error);
+        res.status(500).json({ error: 'Failed to fetch workers' });
+    }
+});
+
+// Create a new worker
+app.post('/api/workers', async (req, res) => {
+    const { shopId, name } = req.body;
+
+    if (!shopId || !name) {
+        return res.status(400).json({ error: 'shopId and name are required' });
+    }
+
+    const trimmedName = name.trim();
+    if (!trimmedName) {
+        return res.status(400).json({ error: 'Worker name cannot be empty' });
+    }
+
+    try {
+        const worker = await prisma.worker.create({
+            data: {
+                shopId,
+                name: trimmedName
+            }
+        });
+        res.status(201).json(worker);
+    } catch (error: any) {
+        if (error.code === 'P2002') {
+            return res.status(400).json({ error: 'Worker with this name already exists' });
+        }
+        console.error("POST /api/workers error:", error);
+        res.status(500).json({ error: 'Failed to create worker' });
+    }
+});
+
+// Rename a worker
+app.put('/api/workers/:id', async (req, res) => {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    if (!name) {
+        return res.status(400).json({ error: 'name is required' });
+    }
+
+    const trimmedName = name.trim();
+    if (!trimmedName) {
+        return res.status(400).json({ error: 'Worker name cannot be empty' });
+    }
+
+    try {
+        const worker = await prisma.worker.update({
+            where: { id },
+            data: { name: trimmedName }
+        });
+        res.json(worker);
+    } catch (error: any) {
+        if (error.code === 'P2002') {
+            return res.status(400).json({ error: 'Worker with this name already exists' });
+        }
+        console.error("PUT /api/workers/:id error:", error);
+        res.status(500).json({ error: 'Failed to rename worker' });
+    }
+});
+
+// Delete a worker
+app.delete('/api/workers/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        await prisma.worker.delete({ where: { id } });
+        res.json({ success: true });
+    } catch (error) {
+        console.error("DELETE /api/workers/:id error:", error);
+        res.status(500).json({ error: 'Failed to delete worker' });
+    }
+});
+
+/**
+ * WORKER ASSIGNMENT ENDPOINTS
+ */
+
+// Get assigned workers for a job
+app.get('/api/jobs/:id/workers', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const assignments = await prisma.jobWorkerAssignment.findMany({
+            where: { jobId: id },
+            include: {
+                worker: true
+            },
+            orderBy: { assignedAt: 'asc' }
+        });
+        res.json(assignments);
+    } catch (error) {
+        console.error("GET /api/jobs/:id/workers error:", error);
+        res.status(500).json({ error: 'Failed to fetch assigned workers' });
+    }
+});
+
+// Assign worker(s) to a job
+app.post('/api/jobs/:id/workers', async (req, res) => {
+    const { id } = req.params;
+    const { workerIds } = req.body;
+
+    if (!workerIds || !Array.isArray(workerIds) || workerIds.length === 0) {
+        return res.status(400).json({ error: 'workerIds array is required' });
+    }
+
+    try {
+        const assignments = [];
+        const historyEntries = [];
+
+        for (const workerId of workerIds) {
+            // Check if already assigned
+            const existing = await prisma.jobWorkerAssignment.findUnique({
+                where: {
+                    jobId_workerId: {
+                        jobId: id,
+                        workerId
+                    }
+                }
+            });
+
+            if (!existing) {
+                // Create assignment
+                const assignment = await prisma.jobWorkerAssignment.create({
+                    data: {
+                        jobId: id,
+                        workerId
+                    },
+                    include: {
+                        worker: true
+                    }
+                });
+                assignments.push(assignment);
+
+                // Create history entry
+                await prisma.assignmentHistory.create({
+                    data: {
+                        jobId: id,
+                        workerId,
+                        actionType: 'ASSIGNED'
+                    }
+                });
+            }
+        }
+
+        res.status(201).json(assignments);
+    } catch (error) {
+        console.error("POST /api/jobs/:id/workers error:", error);
+        res.status(500).json({ error: 'Failed to assign workers' });
+    }
+});
+
+// Remove worker from job
+app.delete('/api/jobs/:id/workers/:workerId', async (req, res) => {
+    const { id, workerId } = req.params;
+
+    try {
+        // Delete assignment
+        await prisma.jobWorkerAssignment.delete({
+            where: {
+                jobId_workerId: {
+                    jobId: id,
+                    workerId
+                }
+            }
+        });
+
+        // Create history entry
+        await prisma.assignmentHistory.create({
+            data: {
+                jobId: id,
+                workerId,
+                actionType: 'REMOVED'
+            }
+        });
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error("DELETE /api/jobs/:id/workers/:workerId error:", error);
+        res.status(500).json({ error: 'Failed to remove worker assignment' });
+    }
+});
+
+// Get assignment history for a job
+app.get('/api/jobs/:id/workers/history', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const history = await prisma.assignmentHistory.findMany({
+            where: { jobId: id },
+            include: {
+                worker: true
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+        res.json(history);
+    } catch (error) {
+        console.error("GET /api/jobs/:id/workers/history error:", error);
+        res.status(500).json({ error: 'Failed to fetch assignment history' });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Backend Server running on http://localhost:${PORT}`);
 });

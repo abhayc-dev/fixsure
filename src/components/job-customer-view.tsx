@@ -6,10 +6,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { deletePayment, deleteJobSheet, updateJobSheetDetails, updateJobStatus, addPayment } from "@/lib/actions";
 import { JobDetailSkeleton } from "@/components/skeletons/job-detail-skeleton";
+import WorkerAssignment from "@/components/job/WorkerAssignment";
+import AssignmentHistoryTimeline from "@/components/job/AssignmentHistoryTimeline";
 
 type JobSheet = {
     id: string;
     jobId: string;
+    shopId: string;
     customerName: string;
     customerPhone: string;
     customerAddress?: string | null;
@@ -529,7 +532,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                             <textarea
                                 name="problemDesc"
                                 defaultValue={job.problemDesc}
-                                className="w-full bg-slate-50 p-4 rounded-2xl text-sm font-medium text-slate-800 outline-none border border-slate-200 min-h-[120px] focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
+                                className="w-full bg-slate-50 p-4 rounded-2xl text-sm font-medium text-slate-800 outline-none border border-slate-200 min-h-[120px] focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-slate-600"
                             />
                         ) : (
                             <p className="text-sm font-medium text-slate-800 leading-relaxed italic">"{job.problemDesc}"</p>
@@ -993,6 +996,12 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                             </div>
                         </div>
                     )}
+
+                    {/* Worker Assignment Section */}
+                    <WorkerAssignment jobId={job.id} shopId={job.shopId} />
+
+                    {/* Assignment History Timeline */}
+                    <AssignmentHistoryTimeline jobId={job.id} />
 
                     {/* Financial/Meta Row (Improved Payment Tracker) */}
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
