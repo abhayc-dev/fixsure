@@ -182,29 +182,40 @@ export async function getStats() {
     .filter(w => w.issuedAt >= startOfMonth)
     .reduce((sum, w) => sum + (w.repairCost || 0), 0);
 
-  // 4. Job Distribution from Backend
-  const jobStatsRes = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/stats/jobs?shopId=${shop.id}`);
-  const jobStats = jobStatsRes.ok ? await jobStatsRes.json() : { received: 0, inProgress: 0, ready: 0, delivered: 0 };
+    // 4. Job Distribution (Direct DB Access)
+    const jobStatsData = await db.jobSheet.groupBy({
+        by: ['status'],
+        where: { shopId: shop.id },
+        _count: { status: true }
+    });
 
-  return {
-    total,
-    active,
-    revenue: revenueAgg._sum.repairCost || 0,
-    monthlyRevenue,
-    weeklyChart,
-    monthlyChart,
-    jobChart,
-    jobDistribution: [
-      { label: 'Received', value: jobStats.received, color: '#3b82f6' },
-      { label: 'In Progress', value: jobStats.inProgress, color: '#eab308' },
-      { label: 'Ready', value: jobStats.ready, color: '#22c55e' },
-      { label: 'Delivered', value: jobStats.delivered, color: '#64748b' }
-    ],
-    shopName: shop.shopName,
-    subscription: shop.subscriptionStatus,
-    isVerified: shop.isVerified,
-    hasAccessPin: !!shop.accessPin
-  };
+    const jobStats = { received: 0, inProgress: 0, ready: 0, delivered: 0 };
+    jobStatsData.forEach(stat => {
+        if (stat.status === 'RECEIVED') jobStats.received = stat._count.status;
+        if (stat.status === 'IN_PROGRESS') jobStats.inProgress = stat._count.status;
+        if (stat.status === 'READY') jobStats.ready = stat._count.status;
+        if (stat.status === 'DELIVERED') jobStats.delivered = stat._count.status;
+    });
+
+    return { 
+      total,
+      active,
+      revenue: revenueAgg._sum.repairCost || 0,
+      monthlyRevenue,
+      weeklyChart,
+      monthlyChart,
+      jobChart,
+      jobDistribution: [
+          { label: 'Received', value: jobStats.received, color: '#3b82f6' },
+          { label: 'In Progress', value: jobStats.inProgress, color: '#eab308' },
+          { label: 'Ready', value: jobStats.ready, color: '#22c55e' },
+          { label: 'Delivered', value: jobStats.delivered, color: '#64748b' }
+      ],
+      shopName: shop.shopName,
+      subscription: shop.subscriptionStatus,
+      isVerified: shop.isVerified,
+      hasAccessPin: !!shop.accessPin
+    };
 }
 
 export async function verifyAccessPin(pin: string) {
@@ -526,16 +537,15 @@ export async function updateWarrantyStatus(warrantyId: string, newStatus: string
 }
 
 export async function updateJobStatus(jobId: string, newStatus: string) {
-  // No shop needed for status update as it is proxied to the backend by the ID.
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs/${jobId}/status`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ status: newStatus })
-  });
+  const shop = await getCurrentShop();
 
-  if (!response.ok) {
-    throw new Error("Failed to update status on backend");
-  }
+  await db.jobSheet.updateMany({
+    where: { 
+      id: jobId,
+      shopId: shop.id 
+    },
+    data: { status: newStatus as any }
+  });
 
   revalidatePath("/jobs");
 }
@@ -627,11 +637,13 @@ export async function createJobSheet(formData: FormData) {
   const receivedAt = receivedAtStr ? new Date(receivedAtStr) : new Date();
   const expectedAt = expectedAtStr ? new Date(expectedAtStr) : null;
 
-  // Use the new Backend API
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
+  // Generate Short ID (JO-XXXX)
+  const code = Math.floor(1000 + Math.random() * 9000);
+  const jobId = `JO-${code}`;
+
+  const newJob = await db.jobSheet.create({
+    data: {
+      jobId,
       shopId: shop.id,
       customerName,
       customerPhone,
@@ -640,19 +652,14 @@ export async function createJobSheet(formData: FormData) {
       deviceType,
       deviceModel,
       problemDesc,
-      technicalDetails,
+      technicalDetails: technicalDetails ? technicalDetails : undefined,
       receivedAt,
       expectedAt,
       estimatedCost,
-      advanceAmount
-    })
+      advanceAmount,
+      status: 'RECEIVED'
+    }
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to create job on backend");
-  }
-
-  const newJob = await response.json();
 
   // --- Simulate WhatsApp Sending ---
   console.log(`\n=== 🟢 WHATSAPP MSG to ${customerPhone} ===`);
@@ -670,31 +677,44 @@ export async function createJobSheet(formData: FormData) {
 
 export async function getJobSheets() {
   const shop = await getCurrentShop();
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs?shopId=${shop.id}`);
-  if (!response.ok) return [];
-  return await response.json();
+  
+  return await db.jobSheet.findMany({
+    where: { shopId: shop.id },
+    orderBy: { receivedAt: 'desc' },
+    include: { payments: true }
+  });
 }
 
 export async function getAdminJobSheets() {
   const shop = await getCurrentShop();
-  if ((shop as { role: string }).role !== "ADMIN") {
+  if (shop.role !== "ADMIN") {
     throw new Error("Unauthorized");
   }
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/jobs`);
-  if (!response.ok) return [];
-  return await response.json();
+  return await db.jobSheet.findMany({
+    include: {
+      shop: {
+        select: {
+          shopName: true,
+          ownerName: true,
+          phone: true,
+          city: true
+        }
+      }
+    },
+    orderBy: { receivedAt: 'desc' }
+  });
 }
 
 export async function deleteJobSheet(jobId: string) {
-  // No shop needed for deletion as it is proxied to the backend by the ID.
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs/${jobId}`, {
-    method: 'DELETE'
+  const shop = await getCurrentShop();
+  
+  await db.jobSheet.deleteMany({
+    where: { 
+      id: jobId,
+      shopId: shop.id // Security check
+    }
   });
-
-  if (!response.ok) {
-    throw new Error("Failed to delete job from backend");
-  }
 
   revalidatePath("/jobs");
   return { success: true };
@@ -855,20 +875,21 @@ export async function deletePayment(paymentId: string, jobId: string) {
 
 export async function getJobSheetById(jobId: string) {
   const shop = await getCurrentShop();
-  // No shop needed for fetch if purely by ID, but good to verify ownership if needed.
-  // Assuming backend handles auth or we just fetch by ID.
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs/${jobId}`);
+  
+  const job = await db.jobSheet.findFirst({
+    where: {
+      id: jobId,
+      shopId: shop.id
+    },
+    include: { payments: true }
+  });
 
-  if (!response.ok) {
-    if (response.status === 404) return null;
-    throw new Error("Failed to fetch job");
-  }
-
-  const job = await response.json();
-
-  // Verify ownership
-  if (job.shopId !== shop.id) {
-    throw new Error("Unauthorized access to job");
+  // Verify ownership (implicit in query above, but careful with null)
+  if (!job) {
+    // Check if it exists at all to differentiate 404 vs 403 if really needed, 
+    // but standard pattern is just null or error.
+    // For specific UI handling we return null here.
+    return null;
   }
 
   return job;
