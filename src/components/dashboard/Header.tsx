@@ -19,6 +19,11 @@ export default function Header({ isPlanActive, stats }: { isPlanActive: boolean,
         return "Dashboard";
     };
 
+    // Hide Header on Job Details and Invoice pages (sub-routes of /jobs)
+    if (pathname.startsWith('/jobs/')) {
+        return null;
+    }
+
     const showCreateJob = pathname === '/jobs';
     const showCreateWarranty = pathname === '/warranties';
 
