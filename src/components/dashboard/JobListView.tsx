@@ -103,7 +103,7 @@ export default function JobListView({ initialJobSheets, shop }: { initialJobShee
                     </div>
                 </div>
 
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto h-100">
                     <table className="w-full text-sm text-left border-collapse">
                         <thead>
                             <tr className="bg-slate-50/60 text-xs font-bold text-slate-500 tracking-widest border-b border-slate-200 font-display uppercase">
