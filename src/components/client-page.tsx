@@ -98,7 +98,7 @@ export default function SubscriptionPage({ shop }: { shop: ShopData }) {
             <div className="max-w-2xl w-full space-y-8">
                 {/* Header */}
                 <div className="flex items-center gap-4">
-                    <Link href="/dashboard" className="p-2 hover:bg-white rounded-full transition-colors">
+                    <Link href="/settings" className="p-2 hover:bg-white rounded-full transition-colors">
                         <ArrowLeft className="h-6 w-6 text-muted-foreground" />
                     </Link>
                     <div>

@@ -1,5 +1,8 @@
+"use client";
+
 import { ArrowLeft, Calendar, Smartphone, User, Receipt, Printer, MapPin, Wrench, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
@@ -30,7 +33,16 @@ type Shop = {
     companyLogoUrl?: string | null;
 };
 
-export default function JobDetailsView({ job, shop, onBack }: { job: JobSheet, shop: Shop, onBack: () => void }) {
+export default function JobDetailsView({ job, shop, onBack }: { job: any, shop: any, onBack?: () => void }) {
+    const router = useRouter();
+
+    const handleBack = () => {
+        if (onBack) {
+            onBack();
+        } else {
+            router.back();
+        }
+    };
 
     // Calculate Balance
     const total = job.estimatedCost || 0;
@@ -91,7 +103,7 @@ export default function JobDetailsView({ job, shop, onBack }: { job: JobSheet, s
             {/* Back Actions */}
             <div className="w-full max-w-[800px] flex justify-start mb-6 print:hidden">
                 <button
-                    onClick={onBack}
+                    onClick={handleBack}
                     className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer"
                 >
                     <ArrowLeft className="h-4 w-4" /> Back to Jobs

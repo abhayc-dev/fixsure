@@ -1,3 +1,5 @@
+"use client";
+
 import { ArrowLeft, Calendar, Smartphone, User, Receipt, MapPin, Wrench, MessageCircle, Trash2, Edit2, Save, X, ChevronRight, Plus, FileText, Loader2, ChevronDown, CheckCircle2, Circle, Package, Banknote, PlusCircle, ShieldCheck, XCircle, Copy, Printer } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";

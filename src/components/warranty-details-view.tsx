@@ -1,14 +1,17 @@
+"use client";
+
 import { ArrowLeft, Clock, MapPin, Smartphone, User, DollarSign, Calendar, Eye, FileText, CheckCircle, ShieldCheck, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
+import { useRouter } from "next/navigation";
 
 type Warranty = {
     id: string;
     shortCode: string;
     customerName: string;
     customerPhone: string;
-    customerAddress?: string | null; // Added
+    customerAddress?: string | null;
     deviceModel: string;
     repairType: string;
     repairCost: number | null;
@@ -19,7 +22,16 @@ type Warranty = {
     privateNote?: string | null;
 };
 
-export default function WarrantyDetailsView({ warranty, onBack, onOpenCard }: { warranty: Warranty, onBack: () => void, onOpenCard: () => void }) {
+export default function WarrantyDetailsView({ warranty, onBack }: { warranty: Warranty, onBack?: () => void }) {
+    const router = useRouter();
+
+    const handleBack = () => {
+        if (onBack) {
+            onBack();
+        } else {
+            router.back();
+        }
+    };
 
     // Verification URL
     const verificationUrl = typeof window !== 'undefined'
@@ -30,23 +42,32 @@ export default function WarrantyDetailsView({ warranty, onBack, onOpenCard }: { 
         <div className="max-w-4xl mx-auto space-y-6 mt-6 pb-20 animate-fade-in">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <button
-                    onClick={onBack}
-                    className="flex items-center gap-2 bg-white border border-slate-200 shadow-sm rounded-full px-5 py-2.5 text-sm font-bold text-slate-600 hover:text-slate-900 hover:border-slate-300 transition-all active:scale-[0.98]"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                    Back
-                </button>
+                {onBack ? (
+                    <button
+                        onClick={onBack}
+                        className="flex items-center gap-2 bg-white border border-slate-200 shadow-sm rounded-full px-5 py-2.5 text-sm font-bold text-slate-600 hover:text-slate-900 hover:border-slate-300 transition-all active:scale-[0.98]"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Back
+                    </button>
+                ) : (
+                    <Link
+                        href="/warranties"
+                        className="flex items-center gap-2 bg-white border border-slate-200 shadow-sm rounded-full px-5 py-2.5 text-sm font-bold text-slate-600 hover:text-slate-900 hover:border-slate-300 transition-all active:scale-[0.98]"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Back to Warranties
+                    </Link>
+                )}
 
                 <div className="flex gap-2">
-                    <button
-                        onClick={onOpenCard}
+                    <Link
+                        href={`/warranties/${warranty.id}/certificate`}
                         className="flex items-center gap-2 bg-slate-100 text-slate-600 border border-slate-200 rounded-full px-5 py-2.5 text-sm font-bold hover:bg-slate-200 transition-all active:scale-[0.98]"
                     >
                         <FileText className="h-4 w-4" />
                         View Certificate
-                    </button>
-                    {/* Add Edit Button here later if needed */}
+                    </Link>
                 </div>
             </div>
 

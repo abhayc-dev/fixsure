@@ -79,7 +79,7 @@ export default function LoginPage() {
       const res = await loginWithEmail(email, password);
       if (res.success) {
         if (res.role === "ADMIN") router.push("/admin");
-        else router.push("/dashboard");
+        else router.push("/jobs");
         return; // Keep loader active
       } else {
         setError(res.error || "Login failed");
@@ -100,9 +100,9 @@ export default function LoginPage() {
       const res = await signup({ email, password, phone, shopName, category });
       if (res.success) {
         if (res.shopName === "New Shop Info Required") {
-          router.push("/dashboard/settings");
+          router.push("/settings");
         } else {
-          router.push("/dashboard");
+          router.push("/jobs");
         }
         return; // Keep loader active
       } else {
@@ -135,7 +135,7 @@ export default function LoginPage() {
       });
 
       if (res.success) {
-        router.push("/dashboard");
+        router.push("/jobs");
         return; // Keep loader active
       } else if (res.needsPhone) {
         setMode("signup");

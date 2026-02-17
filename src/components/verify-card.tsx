@@ -169,7 +169,7 @@ export default function VerifyCard({ data }: {
                 <div className="mt-8 flex flex-col items-center gap-1">
                     <span className="text-zinc-500 text-sm">Own a repair shop?</span>
                     <Link
-                        href="/dashboard"
+                        href="/jobs"
                         className="text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-1.5 transition-colors"
                     >
                         Go Back to Dashboard<ArrowRight className="w-4 h-4" />

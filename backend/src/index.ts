@@ -207,6 +207,38 @@ app.post('/api/jobs', async (req, res) => {
     }
 });
 
+// Get a single job by ID
+app.get('/api/jobs/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const job = await prisma.jobSheet.findUnique({
+            where: { id },
+            include: {
+                shop: {
+                    select: {
+                        shopName: true,
+                        ownerName: true,
+                        phone: true,
+                        address: true,
+                        city: true
+                    }
+                },
+                payments: {
+                    orderBy: { date: 'asc' }
+                }
+            }
+        });
+
+        if (!job) {
+            return res.status(404).json({ error: 'Job not found' });
+        }
+
+        res.json(job);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch job details' });
+    }
+});
+
 // Update a job
 app.put('/api/jobs/:id', async (req, res) => {
     const { id } = req.params;

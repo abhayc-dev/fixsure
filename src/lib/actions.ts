@@ -76,7 +76,7 @@ export async function createWarranty(formData: FormData) {
     },
   });
 
-  revalidatePath("/dashboard");
+  revalidatePath("/warranties");
   return { success: true };
 }
 
@@ -228,7 +228,8 @@ export async function setAccessPin(pin: string) {
     data: { accessPin: pin }
   });
 
-  revalidatePath("/dashboard");
+  revalidatePath("/settings");
+  revalidatePath("/reports");
   return { success: true };
 }
 
@@ -253,7 +254,8 @@ export async function changeAccessPin(oldPin: string, newPin: string) {
     data: { accessPin: newPin }
   });
 
-  revalidatePath("/dashboard");
+  revalidatePath("/settings");
+  revalidatePath("/reports");
   return { success: true };
 }
 
@@ -333,8 +335,8 @@ export async function verifySubscriptionPayment(paymentId: string, orderId: stri
     }
   });
 
-  revalidatePath("/dashboard");
-  revalidatePath("/dashboard/subscription");
+  revalidatePath("/");
+  revalidatePath("/subscription");
   return { success: true };
 }
 
@@ -364,7 +366,7 @@ export async function updateShopDetails(formData: FormData) {
     }
   });
 
-  revalidatePath("/dashboard");
+  revalidatePath("/");
   return { success: true };
 }
 
@@ -443,8 +445,8 @@ export async function updateWarrantyNote(warrantyId: string, note: string) {
     data: { privateNote: note }
   });
 
-  revalidatePath("/dashboard");
-  revalidatePath(`/dashboard/warranties/${warrantyId}`); // In case we are on detail page
+  revalidatePath("/warranties");
+  revalidatePath(`/warranties/${warrantyId}`); // In case we are on detail page
   return { success: true };
 }
 
@@ -515,7 +517,7 @@ export async function updateWarrantyStatus(warrantyId: string, newStatus: string
     data: { status: newStatus as "ACTIVE" | "EXPIRED" | "CLAIMED" | "VOID" }
   });
 
-  revalidatePath("/dashboard");
+  revalidatePath("/warranties");
 }
 
 export async function updateJobStatus(jobId: string, newStatus: string) {
@@ -530,7 +532,7 @@ export async function updateJobStatus(jobId: string, newStatus: string) {
     throw new Error("Failed to update status on backend");
   }
 
-  revalidatePath("/dashboard");
+  revalidatePath("/jobs");
 }
 
 export async function getShopDetailsForAdmin(shopId: string) {
@@ -657,7 +659,7 @@ export async function createJobSheet(formData: FormData) {
   console.log(`We will notify you when it is ready!`);
   console.log(`==========================================\n`);
 
-  revalidatePath("/dashboard");
+  revalidatePath("/jobs");
   return { success: true, jobId: newJob.jobId };
 }
 
@@ -689,7 +691,7 @@ export async function deleteJobSheet(jobId: string) {
     throw new Error("Failed to delete job from backend");
   }
 
-  revalidatePath("/dashboard");
+  revalidatePath("/jobs");
   return { success: true };
 }
 
@@ -781,7 +783,7 @@ export async function updateJobSheetDetails(formData: FormData) {
 
 
 
-    revalidatePath("/dashboard");
+    revalidatePath("/jobs");
     return { success: true };
   } catch (error: any) {
     console.error("Update error:", error);
@@ -844,4 +846,25 @@ export async function deletePayment(paymentId: string, jobId: string) {
 
   revalidatePath("/dashboard");
   return { success: true };
+}
+
+export async function getJobSheetById(jobId: string) {
+  const shop = await getCurrentShop();
+  // No shop needed for fetch if purely by ID, but good to verify ownership if needed.
+  // Assuming backend handles auth or we just fetch by ID.
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/jobs/${jobId}`);
+
+  if (!response.ok) {
+    if (response.status === 404) return null;
+    throw new Error("Failed to fetch job");
+  }
+
+  const job = await response.json();
+
+  // Verify ownership
+  if (job.shopId !== shop.id) {
+    throw new Error("Unauthorized access to job");
+  }
+
+  return job;
 }

@@ -11,7 +11,7 @@ export default async function AdminPage() {
   const shop = await getCurrentShop();
 
   if ((shop as any).role !== "ADMIN") {
-    redirect("/dashboard"); 
+    redirect("/jobs");
   }
 
   const stats = await getAdminStats();

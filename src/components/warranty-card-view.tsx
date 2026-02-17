@@ -1,9 +1,12 @@
+"use client";
+
 import { ArrowLeft, CheckCircle, Calendar, Smartphone, User, ShieldCheck, Printer, AlertCircle, Loader2, MapPin, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRef, useState } from "react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { QRCodeSVG } from "qrcode.react";
+import { useRouter } from "next/navigation";
 
 
 // Define Warranty Type matching the DashboardClient one
@@ -28,10 +31,18 @@ type Shop = {
     companyLogoUrl?: string | null;
 }
 
-export default function WarrantyCardView({ warranty, shop, onBack }: { warranty: Warranty, shop: Shop, onBack: () => void }) {
-
+export default function WarrantyCardView({ warranty, shop, onBack }: { warranty: Warranty, shop: Shop, onBack?: () => void }) {
+    const router = useRouter();
     const cardRef = useRef<HTMLDivElement>(null);
     const [downloading, setDownloading] = useState(false);
+
+    const handleBack = () => {
+        if (onBack) {
+            onBack();
+        } else {
+            router.back();
+        }
+    };
 
     const handleDownloadPdf = async () => {
         if (!cardRef.current) return;
@@ -134,7 +145,7 @@ export default function WarrantyCardView({ warranty, shop, onBack }: { warranty:
                 {/* Header Actions */}
                 <div className="flex items-center justify-between print:hidden mb-1">
                     <button
-                        onClick={onBack}
+                        onClick={handleBack}
                         className="group flex items-center gap-2 bg-white border border-slate-200 shadow-sm rounded-full px-5 py-2.5 text-sm font-bold text-slate-600 hover:text-slate-900 hover:border-slate-300 hover:shadow-md transition-all active:scale-[0.98]"
                     >
                         <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
