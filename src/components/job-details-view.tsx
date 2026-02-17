@@ -250,7 +250,7 @@ export default function JobDetailsView({ job, shop, onBack }: { job: any, shop: 
                 </div>
 
                 {/* 6. Footer Signature */}
-                <div className="mt-20 flex justify-between items-end">
+                {/* <div className="mt-20 flex justify-between items-end">
                     <div className="text-[10px] text-slate-400 font-medium">
                         * This is a computer generated document.<br />
                         * Please bring this sheet at the time of delivery.
@@ -259,8 +259,27 @@ export default function JobDetailsView({ job, shop, onBack }: { job: any, shop: 
                         <div className="w-40 border-b border-slate-900 mb-2"></div>
                         <div className="text-[10px] font-bold tracking-widest">Authorized Signature</div>
                     </div>
-                </div>
+                </div> */}
 
+                {/* Signature Section */}
+                {shop?.signatureUrl && (
+                    <div className="mt-8 flex flex-col items-end gap-4 max-w-md ml-auto px-4">
+                        <div className="w-full">
+                            <div className="flex flex-col items-center gap-3">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                    src={shop.signatureUrl}
+                                    alt="Authorized Signature"
+                                    className="h-16 object-contain"
+                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                                />
+                                <div className="text-center border-t border-slate-300 pt-2 w-48">
+                                    <span className="text-xs font-semibold text-slate-600 tracking-wide">Authorized Signature</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Print/Download Button */}
