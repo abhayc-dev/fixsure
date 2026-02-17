@@ -37,7 +37,7 @@ type JobSheet = {
     estimatedCost: number | null;
     advanceAmount?: number | null;
     category?: string;
-    technicalDetails?: Record<string, any> | null;
+    technicalDetails?: any;
 };
 
 type Shop = {
@@ -341,7 +341,7 @@ function DateRangeFilter({
                 <Calendar className="h-4 w-4 text-slate-400" />
                 <DatePicker
                     selected={startDate}
-                    onChange={(date) => onStartDateChange(date)}
+                    onChange={(date: Date | null) => onStartDateChange(date)}
                     selectsStart
                     startDate={startDate}
                     endDate={endDate}
@@ -352,11 +352,11 @@ function DateRangeFilter({
                 <span className="text-slate-400">-</span>
                 <DatePicker
                     selected={endDate}
-                    onChange={(date) => onEndDateChange(date)}
+                    onChange={(date: Date | null) => onEndDateChange(date)}
                     selectsEnd
                     startDate={startDate}
                     endDate={endDate}
-                    minDate={startDate}
+                    minDate={startDate ?? undefined}
                     placeholderText="End Date"
                     className="w-28 text-xs font-bold focus:outline-none text-slate-700"
                     dateFormat="dd MMM yyyy"
