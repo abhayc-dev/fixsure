@@ -12,7 +12,7 @@ type Shop = {
     city: string | null;
     phone: string;
     accessPin: string | null;
-    companyLogoUrl?: string | null;
+    companyLogoUrl: string | null;
     gstNumber?: string | null;
 }
 
