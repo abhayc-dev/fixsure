@@ -101,13 +101,29 @@ export default function JobDetailsView({ job, shop, onBack }: { job: any, shop: 
 
     return (
         <div className="w-full h-full bg-white flex flex-col items-center p-8 overflow-y-auto">
-            {/* Back Actions */}
-            <div className="w-full max-w-[800px] flex justify-start mb-6 print:hidden">
+            {/* Action Buttons */}
+            <div className="w-full max-w-[800px] flex justify-between items-center mb-6 print:hidden">
                 <button
                     onClick={handleBack}
                     className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer"
                 >
                     <ArrowLeft className="h-4 w-4" /> Back to Jobs
+                </button>
+
+                <button
+                    onClick={handleDownloadPdf}
+                    className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg shadow-primary/20 cursor-pointer"
+                    disabled={downloading}
+                >
+                    {downloading ? (
+                        <>
+                            <Loader2 className="h-4 w-4 animate-spin" /> Generating...
+                        </>
+                    ) : (
+                        <>
+                            <Printer className="h-5 w-5" /> Download / Print Invoice
+                        </>
+                    )}
                 </button>
             </div>
 
@@ -282,24 +298,6 @@ export default function JobDetailsView({ job, shop, onBack }: { job: any, shop: 
                 )}
             </div>
 
-            {/* Print/Download Button */}
-            <div className="w-full max-w-[800px] flex justify-end mt-6 print:hidden">
-                <button
-                    onClick={handleDownloadPdf}
-                    className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-xl font-bold transition-all shadow-lg shadow-primary/20 cursor-pointer"
-                    disabled={downloading}
-                >
-                    {downloading ? (
-                        <>
-                            <Loader2 className="h-4 w-4 animate-spin" /> Generating...
-                        </>
-                    ) : (
-                        <>
-                            <Printer className="h-5 w-5" /> Download / Print Invoice
-                        </>
-                    )}
-                </button>
-            </div>
         </div>
     );
 }
