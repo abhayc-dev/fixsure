@@ -8,7 +8,7 @@ import { updateShopDetails } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 
 type Shop = {
-    shopName: string;
+    shopName: string | null;
     ownerName: string | null;
     address: string | null;
     city: string | null;

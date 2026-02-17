@@ -22,7 +22,7 @@ type Stats = {
     monthlyChart: { label: string, value: number }[];
     jobChart: { label: string, value: number }[];
     jobDistribution: { label: string, value: number, color: string }[];
-    shopName: string;
+    shopName: string | null;
     subscription: string;
     isVerified: boolean;
     hasAccessPin: boolean;

@@ -6,7 +6,7 @@ import SecurityForm from "../settings/security-form";
 
 type Shop = {
     id: string;
-    shopName: string;
+    shopName: string | null;
     ownerName: string | null;
     address: string | null;
     city: string | null;
