@@ -15,12 +15,13 @@ model Shop {
   phone             String   @unique
   email             String?  @unique
   password          String?
-  shopName          String
+  shopName          String?
   ownerName         String?
   address           String?
   city              String?
   companyLogoUrl    String?   // URL to logo image
   gstNumber         String?
+  signatureUrl      String?   // URL to signature image
   role              Role     @default(USER)
   category          String   @default("GENERAL") // MOBILE, MOTOR, TV, GENERAL
   

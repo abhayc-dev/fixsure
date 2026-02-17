@@ -14,6 +14,7 @@ type Shop = {
     accessPin: string | null;
     companyLogoUrl: string | null;
     gstNumber?: string | null;
+    signatureUrl?: string | null;
 }
 
 export default function SettingsView({ shop }: { shop: Shop }) {

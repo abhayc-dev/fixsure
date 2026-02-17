@@ -15,7 +15,7 @@ import { logout } from "@/lib/auth-actions";
 
 type Shop = {
     id: string;
-    shopName: string;
+    shopName: string | null;
     ownerName: string | null;
     companyLogoUrl?: string | null;
     category?: string;
@@ -97,7 +97,7 @@ export default function Sidebar({ shop, stats, isPlanActive }: { shop: Shop, sta
                                 {shop.ownerName || "Shop Owner"}
                             </div>
                             <div className="text-[10px] text-slate-400 truncate tracking-wider mt-0.5">
-                                {shop.shopName}
+                                {shop.shopName || 'My Shop'}
                             </div>
                         </div>
                     </div>

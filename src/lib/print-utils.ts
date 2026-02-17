@@ -2,11 +2,12 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
 interface Shop {
-    shopName: string;
+    shopName: string | null;
     address: string | null;
     phone: string;
     email?: string;
     gstNumber?: string | null;
+    signatureUrl?: string | null;
 }
 
 interface JobSheet {
@@ -32,7 +33,7 @@ export const generateJobBill = (shop: Shop, job: JobSheet) => {
     // --- Header ---
     doc.setFontSize(22);
     doc.setTextColor(40, 40, 40);
-    doc.text(shop.shopName, pageWidth / 2, 20, { align: 'center' });
+    doc.text(shop.shopName || 'Shop', pageWidth / 2, 20, { align: 'center' });
 
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
@@ -118,6 +119,26 @@ export const generateJobBill = (shop: Shop, job: JobSheet) => {
             1: { halign: 'right', cellWidth: 40 }
         }
     });
+
+    // --- Signature ---
+    if (shop.signatureUrl) {
+        // @ts-ignore
+        const signatureY = doc.lastAutoTable.finalY + 15;
+        doc.setFontSize(9);
+        doc.setTextColor(100, 100, 100);
+
+        // Try to add signature image
+        try {
+            // Note: Image adding in jsPDF requires base64 or proper CORS handling
+            // For now, just add the text placeholder
+            doc.line(pageWidth - 60, signatureY + 15, pageWidth - 10, signatureY + 15);
+            doc.text("Authorized Signature", pageWidth - 35, signatureY + 20, { align: 'center' });
+        } catch (e) {
+            console.error('Error adding signature:', e);
+            doc.line(pageWidth - 60, signatureY + 15, pageWidth - 10, signatureY + 15);
+            doc.text("Authorized Signature", pageWidth - 35, signatureY + 20, { align: 'center' });
+        }
+    }
 
     // --- Footer ---
     const footerY = 250;

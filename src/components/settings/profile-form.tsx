@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Save, Store, MapPin, User, Building2, Smartphone, ShieldCheck } from "lucide-react";
+import { Loader2, Save, Store, MapPin, User, Building2, Smartphone, ShieldCheck, FileText } from "lucide-react";
 import { updateShopDetails } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 
@@ -15,6 +15,7 @@ type Shop = {
     phone: string;
     companyLogoUrl: string | null;
     gstNumber?: string | null;
+    signatureUrl?: string | null;
 }
 
 export default function ProfileForm({ shop }: { shop: Shop }) {
@@ -29,7 +30,8 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
         city: shop.city || "",
         phone: shop.phone || "",
         companyLogoUrl: shop.companyLogoUrl || "",
-        gstNumber: shop.gstNumber || ""
+        gstNumber: shop.gstNumber || "",
+        signatureUrl: shop.signatureUrl || ""
     });
 
     const hasChanges =
@@ -39,7 +41,8 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
         formData.city !== (shop.city || "") ||
         formData.phone !== (shop.phone || "") ||
         formData.companyLogoUrl !== (shop.companyLogoUrl || "") ||
-        formData.gstNumber !== (shop.gstNumber || "");
+        formData.gstNumber !== (shop.gstNumber || "") ||
+        formData.signatureUrl !== (shop.signatureUrl || "");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData(prev => ({
@@ -47,7 +50,7 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
             [e.target.name]: e.target.value
         }));
         // Clear error when user types
-        if (e.target.name === 'gstNumber') setError(null);
+        if (e.target.name === 'gstNumber' || e.target.name === 'signatureUrl') setError(null);
     };
 
     // Derived Avatar Initials
@@ -61,6 +64,20 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
         return gstRegex.test(gst);
     };
 
+    const validateSignatureUrl = (url: string) => {
+        if (!url) return true; // Optional
+        // Check if it's a valid URL format
+        try {
+            new URL(url);
+        } catch {
+            return false;
+        }
+        // Check if it has a valid image extension
+        const validExtensions = ['.png', '.jpg', '.jpeg', '.webp'];
+        const lowerUrl = url.toLowerCase();
+        return validExtensions.some(ext => lowerUrl.includes(ext));
+    };
+
     const handleSubmit = async (submitData: FormData) => {
         setLoading(true);
         setError(null);
@@ -68,6 +85,13 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
         const gst = submitData.get('gstNumber') as string;
         if (gst && !validateGST(gst)) {
             setError("Invalid GST Number format. Example: 22AAAAA0000A1Z5");
+            setLoading(false);
+            return;
+        }
+
+        const signatureUrl = submitData.get('signatureUrl') as string;
+        if (signatureUrl && !validateSignatureUrl(signatureUrl)) {
+            setError("Invalid Signature URL. Please provide a valid image URL (PNG, JPG, JPEG, or WEBP)");
             setLoading(false);
             return;
         }
@@ -97,12 +121,10 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
                         name="shopName"
                         value={formData.shopName}
                         onChange={handleChange}
-                        required
-                        minLength={3}
                         placeholder="e.g. A-1 Mobile Repair"
                         className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 transition-all shadow-sm"
                     />
-                    <p className="text-xs text-slate-500 pl-1">This name will appear on the warranty certificate header.</p>
+                    <p className="text-xs text-slate-500 pl-1">Optional. This name will appear on the warranty certificate header if provided.</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
@@ -244,6 +266,57 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
                             <p className="text-[11px] text-slate-400 leading-relaxed">
                                 Paste a direct link to your logo image (PNG/JPG). Ideally 200x200px or square aspect ratio.
                                 <br />This logo will appear on your printed invoices and dashboard.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Signature Section - Improved UI */}
+                <div className="pt-2">
+                    <label className="text-sm font-semibold flex items-center gap-2 text-slate-700 mb-4">
+                        <FileText className="w-4 h-4 text-primary" />
+                        Signature
+                    </label>
+                    <div className="p-4 bg-slate-50/50 border border-slate-100 rounded-2xl flex flex-col sm:flex-row gap-6 items-start hover:border-slate-200 transition-colors">
+
+                        {/* Signature Preview Area */}
+                        <div className="shrink-0 relative group">
+                            <div className={cn(
+                                "h-24 w-32 rounded-2xl border-2 flex items-center justify-center overflow-hidden bg-white shadow-sm transition-all",
+                                formData.signatureUrl ? "border-slate-100" : "border-dashed border-slate-200"
+                            )}>
+                                {formData.signatureUrl ? (
+                                    // eslint-disable-next-line @next/next/no-img-element
+                                    <img
+                                        src={formData.signatureUrl}
+                                        alt="Signature Preview"
+                                        className="h-full w-full object-contain p-2"
+                                        onError={(e) => { (e.target as HTMLImageElement).style.opacity = '0.3' }}
+                                    />
+                                ) : (
+                                    <div className="flex flex-col items-center gap-1 text-slate-300">
+                                        <FileText className="h-8 w-8" />
+                                        <span className="text-[10px] font-bold uppercase tracking-wider">No Sign</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Input Area */}
+                        <div className="flex-1 w-full space-y-2">
+                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Signature Image URL</label>
+                            <div className="relative">
+                                <input
+                                    name="signatureUrl"
+                                    value={formData.signatureUrl || ''}
+                                    onChange={handleChange}
+                                    placeholder="https://example.com/signature.png"
+                                    className="flex h-11 w-full rounded-xl border border-slate-200 bg-white px-4 pr-10 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary transition-all shadow-sm"
+                                />
+                            </div>
+                            <p className="text-[11px] text-slate-400 leading-relaxed">
+                                Paste a direct link to your signature image (PNG/JPG/JPEG/WEBP).
+                                <br />This signature will appear on printed invoices.
                             </p>
                         </div>
                     </div>

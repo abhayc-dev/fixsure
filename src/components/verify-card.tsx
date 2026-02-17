@@ -18,7 +18,7 @@ export default function VerifyCard({ data }: {
         deviceModel: string;
         repairType: string;
         shop: {
-            shopName: string;
+            shopName: string | null;
             address?: string | null;
         }
     }
@@ -91,7 +91,7 @@ export default function VerifyCard({ data }: {
                                 </div>
                                 <div>
                                     <div className="text-[10px] font-bold text-indigo-500 tracking-wider mb-0.5">Authorized Partner</div>
-                                    <div className="font-bold text-slate-900 leading-tight">{data.shop.shopName}</div>
+                                    <div className="font-bold text-slate-900 leading-tight">{data.shop.shopName || 'Authorized Shop'}</div>
                                     <div className="text-xs text-slate-500 mt-1 line-clamp-1">{data.shop.address || "Location Verified"}</div>
                                 </div>
                             </div>

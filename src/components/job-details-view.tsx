@@ -121,8 +121,11 @@ export default function JobDetailsView({ job, shop, onBack }: { job: any, shop: 
                             <img src={shop.companyLogoUrl} alt="Logo" className="h-full w-full object-contain" />
                         </div>
                     )}
-                    <h1 className="text-4xl font-normal text-slate-800 mb-2">{shop.shopName}</h1>
-                    <div className="text-slate-600 text-sm mb-1">{shop.address}, {shop.city}</div>
+                    <h1 className="text-4xl font-normal text-slate-800 mb-2">{shop.shopName || 'Shop'}</h1>
+                    <div className="text-slate-600 text-sm mb-1">
+                        {shop.address || 'Address not set'}
+                        {shop.city && `, ${shop.city}`}
+                    </div>
                     <div className="text-slate-600 text-sm">Phone: {shop.phone}</div>
                     {shop.gstNumber && (
                         <div className="text-slate-600 text-sm font-bold mt-1">GST No: {shop.gstNumber}</div>

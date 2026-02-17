@@ -1156,6 +1156,26 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
 
 
                 </div>
+
+                {/* Signature Section */}
+                {shop?.signatureUrl && (
+                    <div className="mt-8 flex flex-col items-end gap-4 max-w-md ml-auto px-4">
+                        <div className="w-full border-t border-slate-200 pt-4">
+                            <div className="flex flex-col items-center gap-3">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                    src={shop.signatureUrl}
+                                    alt="Authorized Signature"
+                                    className="h-16 object-contain"
+                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                                />
+                                <div className="text-center border-t border-slate-300 pt-2 w-48">
+                                    <span className="text-xs font-semibold text-slate-600 tracking-wide">Authorized Signature</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </form>
         </div>
     );

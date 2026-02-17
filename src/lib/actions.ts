@@ -350,9 +350,11 @@ export async function updateShopDetails(formData: FormData) {
   const phone = formData.get("phone") as string;
   const companyLogoUrl = formData.get("companyLogoUrl") as string;
   const gstNumber = formData.get("gstNumber") as string;
+  const signatureUrl = formData.get("signatureUrl") as string;
 
-  if (!shopName || shopName.length < 3) {
-    throw new Error("Shop Name must be at least 3 characters");
+  // Validate shopName only if provided
+  if (shopName && shopName.trim().length > 0 && shopName.trim().length < 3) {
+    throw new Error("Shop Name must be at least 3 characters if provided");
   }
 
   await db.shop.update({
@@ -364,7 +366,8 @@ export async function updateShopDetails(formData: FormData) {
       ownerName,
       phone,
       companyLogoUrl,
-      gstNumber
+      gstNumber,
+      signatureUrl
     }
   });
 
