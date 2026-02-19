@@ -998,7 +998,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                     )}
 
                     {/* Worker Assignment Section */}
-                    <WorkerAssignment jobId={job.id} shopId={job.shopId} />
+                    <WorkerAssignment jobId={job.id} />
 
                     {/* Assignment History Timeline */}
                     <AssignmentHistoryTimeline jobId={job.id} />
