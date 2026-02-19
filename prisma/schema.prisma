@@ -26,6 +26,8 @@ model Shop {
   // Auth
   otp               String?
   otpExpires        DateTime?
+  resetToken        String?
+  resetTokenExpiry  DateTime?
 
   // Security
   accessPin         String?   // For hiding revenue
