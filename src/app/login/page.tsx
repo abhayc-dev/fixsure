@@ -22,7 +22,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [shopName, setShopName] = useState("");
-  const [category, setCategory] = useState("MOBILE"); // Default to Mobile
+  const [category, setCategory] = useState("MOTOR"); // Default to Mobile
 
   // For verification errors or status messages
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
