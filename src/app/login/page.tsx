@@ -292,7 +292,7 @@ export default function LoginPage() {
                 <div className="flex justify-between items-center px-1">
                   <label className="text-[10px] font-bold text-slate-400 tracking-widest">Password</label>
                   {mode === "login" && (
-                    <button type="button" className="text-[10px] font-bold text-primary hover:text-primary/80 transition-colors tracking-wider">Forgot?</button>
+                    <Link href="/forgot-password" className="text-[10px] font-bold text-primary hover:text-primary/80 transition-colors tracking-wider">Forgot?</Link>
                   )}
                 </div>
                 <div className="relative group">
