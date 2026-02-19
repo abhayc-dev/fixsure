@@ -894,3 +894,64 @@ export async function getJobSheetById(jobId: string) {
 
   return job;
 }
+
+// --- WORKER MANAGEMENT ACTIONS ---
+
+export async function getWorkers() {
+  const shop = await getCurrentShop();
+  return await db.worker.findMany({
+    where: { shopId: shop.id },
+    orderBy: { createdAt: 'desc' }
+  });
+}
+
+export async function createWorker(name: string) {
+  const shop = await getCurrentShop();
+  
+  const existing = await db.worker.findFirst({
+    where: { shopId: shop.id, name }
+  });
+  
+  if (existing) {
+    throw new Error("Worker already exists");
+  }
+  
+  const newWorker = await db.worker.create({
+    data: {
+      shopId: shop.id,
+      name
+    }
+  });
+  
+  revalidatePath("/settings");
+  return newWorker;
+}
+
+export async function updateWorker(id: string, name: string) {
+  const shop = await getCurrentShop();
+  
+  await db.worker.update({
+    where: { 
+      id,
+      shopId: shop.id 
+    },
+    data: { name }
+  });
+  
+  revalidatePath("/settings");
+  return { success: true };
+}
+
+export async function deleteWorker(id: string) {
+  const shop = await getCurrentShop();
+  
+  await db.worker.delete({
+    where: { 
+      id,
+      shopId: shop.id 
+    }
+  });
+  
+  revalidatePath("/settings");
+  return { success: true };
+}

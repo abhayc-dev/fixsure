@@ -2,16 +2,18 @@
 
 import { useState, useEffect, KeyboardEvent } from "react";
 import { Users, X, Loader2, Edit2, Check } from "lucide-react";
+import { getWorkers, createWorker, updateWorker, deleteWorker } from "@/lib/actions";
 
 type Worker = {
     id: string;
     name: string;
-    createdAt: string;
+    createdAt: string; // The action returns Date object actually, prisma dates are Date objects. But JSON serialization might make them strings if passed from server component to client component via props. Here we call action directly so we get Date objects.
     updatedAt: string;
 };
 
+// We don't need shopId prop necessarily if action uses session, but helpful for validation context if needed.
 export default function WorkerManagement({ shopId }: { shopId: string }) {
-    const [workers, setWorkers] = useState<Worker[]>([]);
+    const [workers, setWorkers] = useState<any[]>([]); // Relax type for now as Date vs string is tricky with actions
     const [inputValue, setInputValue] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -21,15 +23,12 @@ export default function WorkerManagement({ shopId }: { shopId: string }) {
     // Fetch workers on mount
     useEffect(() => {
         fetchWorkers();
-    }, [shopId]);
+    }, []);
 
     const fetchWorkers = async () => {
         try {
-            const res = await fetch(`http://localhost:8000/api/workers?shopId=${shopId}`);
-            if (res.ok) {
-                const data = await res.json();
-                setWorkers(data);
-            }
+            const data = await getWorkers();
+            setWorkers(data);
         } catch (err) {
             console.error("Failed to fetch workers:", err);
         }
@@ -43,22 +42,11 @@ export default function WorkerManagement({ shopId }: { shopId: string }) {
         setError("");
 
         try {
-            const res = await fetch("http://localhost:8000/api/workers", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ shopId, name: trimmedName }),
-            });
-
-            if (res.ok) {
-                const newWorker = await res.json();
-                setWorkers([...workers, newWorker]);
-                setInputValue("");
-            } else {
-                const data = await res.json();
-                setError(data.error || "Failed to add worker");
-            }
-        } catch (err) {
-            setError("Network error. Please try again.");
+            const newWorker = await createWorker(trimmedName);
+            setWorkers([...workers, newWorker]);
+            setInputValue("");
+        } catch (err: any) {
+            setError(err.message || "Failed to add worker");
         } finally {
             setLoading(false);
         }
@@ -74,17 +62,10 @@ export default function WorkerManagement({ shopId }: { shopId: string }) {
         if (!confirm("Are you sure you want to delete this worker?")) return;
 
         try {
-            const res = await fetch(`http://localhost:8000/api/workers/${id}`, {
-                method: "DELETE",
-            });
-
-            if (res.ok) {
-                setWorkers(workers.filter((w) => w.id !== id));
-            } else {
-                alert("Failed to delete worker");
-            }
+            await deleteWorker(id);
+            setWorkers(workers.filter((w) => w.id !== id));
         } catch (err) {
-            alert("Network error. Please try again.");
+            alert("Failed to delete worker");
         }
     };
 
@@ -106,22 +87,11 @@ export default function WorkerManagement({ shopId }: { shopId: string }) {
         }
 
         try {
-            const res = await fetch(`http://localhost:8000/api/workers/${id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name: trimmedName }),
-            });
-
-            if (res.ok) {
-                const updatedWorker = await res.json();
-                setWorkers(workers.map((w) => (w.id === id ? updatedWorker : w)));
-                cancelEditing();
-            } else {
-                const data = await res.json();
-                alert(data.error || "Failed to rename worker");
-            }
-        } catch (err) {
-            alert("Network error. Please try again.");
+            await updateWorker(id, trimmedName);
+            setWorkers(workers.map((w) => (w.id === id ? { ...w, name: trimmedName } : w)));
+            cancelEditing();
+        } catch (err: any) {
+            alert(err.message || "Failed to rename worker");
         }
     };
 
