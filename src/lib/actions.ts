@@ -602,8 +602,8 @@ export async function createJobSheet(formData: FormData) {
   const customerPhone = formData.get("customerPhone") as string;
   const customerAddress = formData.get("customerAddress") as string;
 
-  // Use shop's pre-configured category so owner doesn't have to select it every time
-  const category = shop.category || "GENERAL";
+  // Use form category if provided (for shops handling multiple types), else default to shop's main category
+  const category = (formData.get("category") as string) || shop.category || "GENERAL";
   let deviceType = formData.get("deviceType") as string;
   const deviceModel = formData.get("deviceModel") as string;
   const problemDesc = formData.get("problemDesc") as string;
@@ -954,4 +954,121 @@ export async function deleteWorker(id: string) {
   
   revalidatePath("/settings");
   return { success: true };
+
 }
+
+// --- JOB ASSIGNMENT ACTIONS ---
+
+export async function getJobAssignments(jobId: string) {
+  const shop = await getCurrentShop();
+  
+  // Ensure job belongs to shop
+  const job = await db.jobSheet.findFirst({
+    where: { id: jobId, shopId: shop.id }
+  });
+  
+  if (!job) return [];
+
+  const assignments = await db.jobWorkerAssignment.findMany({
+    where: { jobId },
+    include: { worker: true }
+  });
+  
+  return assignments;
+}
+
+export async function updateJobAssignments(jobId: string, workerIds: string[]) {
+  const shop = await getCurrentShop();
+  
+  // Ensure job belongs to shop
+  const job = await db.jobSheet.findFirst({
+    where: { id: jobId, shopId: shop.id },
+    include: { workerAssignments: true }
+  });
+  
+  if (!job) throw new Error("Job not found");
+
+  const currentWorkerIds = new Set(job.workerAssignments.map(a => a.workerId));
+  const newWorkerIds = new Set(workerIds);
+
+  const toAdd = workerIds.filter(id => !currentWorkerIds.has(id));
+  const toRemove = job.workerAssignments
+    .filter(a => !newWorkerIds.has(a.workerId))
+    .map(a => ({ id: a.id, workerId: a.workerId }));
+
+  // Transaction to ensure consistency
+  await db.$transaction(async (tx) => {
+    // Add new assignments
+    for (const workerId of toAdd) {
+      await tx.jobWorkerAssignment.create({
+        data: { jobId, workerId }
+      });
+      // Add history
+      await tx.assignmentHistory.create({
+        data: { jobId, workerId, actionType: 'ASSIGNED' }
+      });
+    }
+
+    // Remove old assignments
+    for (const item of toRemove) {
+      await tx.jobWorkerAssignment.delete({
+        where: { id: item.id }
+      });
+      
+      // Add history
+      await tx.assignmentHistory.create({
+        data: { jobId, workerId: item.workerId, actionType: 'REMOVED' }
+      });
+    }
+  });
+
+  revalidatePath("/jobs");
+  return { success: true };
+}
+
+export async function removeJobAssignment(jobId: string, workerId: string) {
+  const shop = await getCurrentShop();
+  
+  // Ensure job belongs to shop
+  const job = await db.jobSheet.findFirst({
+    where: { id: jobId, shopId: shop.id }
+  });
+  
+  if (!job) throw new Error("Job not found");
+
+  await db.$transaction(async (tx) => {
+      // Find assignment to delete to get its ID (though we delete by compound/unique usually, but Prisma needs unique ID or unique constraint)
+      await tx.jobWorkerAssignment.deleteMany({
+         where: {
+             jobId: jobId,
+             workerId: workerId
+         }
+      });
+      
+      await tx.assignmentHistory.create({
+          data: { jobId, workerId, actionType: 'REMOVED' }
+      });
+  });
+  
+  revalidatePath("/jobs");
+  return { success: true };
+}
+
+export async function getAssignmentHistory(jobId: string) {
+  const shop = await getCurrentShop();
+  
+  // Ensure job belongs to shop
+  const job = await db.jobSheet.findFirst({
+    where: { id: jobId, shopId: shop.id }
+  });
+  
+  if (!job) return [];
+
+  const history = await db.assignmentHistory.findMany({
+    where: { jobId },
+    include: { worker: true },
+    orderBy: { createdAt: 'desc' }
+  });
+  return history;
+}
+

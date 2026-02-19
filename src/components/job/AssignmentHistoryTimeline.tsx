@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { History, Loader2, UserPlus, UserMinus } from "lucide-react";
+import { getAssignmentHistory } from "@/lib/actions";
 
 type Worker = {
     id: string;
@@ -25,11 +26,16 @@ export default function AssignmentHistoryTimeline({ jobId }: { jobId: string }) 
 
     const fetchHistory = async () => {
         try {
-            const res = await fetch(`http://localhost:8000/api/jobs/${jobId}/workers/history`);
-            if (res.ok) {
-                const data = await res.json();
-                setHistory(data);
-            }
+            const data = await getAssignmentHistory(jobId);
+            // Convert Date objects to strings if needed by the type, or update type. 
+            // The component expects strings for createdAt, but Prisma returns Date objects.
+            // Let's cast or map it.
+            const historyWithStrings = data.map((entry: any) => ({
+                ...entry,
+                createdAt: entry.createdAt.toString()
+            }));
+            
+            setHistory(historyWithStrings as any);
         } catch (err) {
             console.error("Failed to fetch assignment history:", err);
         } finally {
