@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { UserPlus, Loader2, X } from "lucide-react";
+import { getWorkers, getJobAssignments, updateJobAssignments, removeJobAssignment } from "@/lib/actions";
 
 type Worker = {
     id: string;
@@ -14,7 +15,7 @@ type Assignment = {
     assignedAt: string;
 };
 
-export default function WorkerAssignment({ jobId, shopId }: { jobId: string; shopId: string }) {
+export default function WorkerAssignment({ jobId }: { jobId: string }) {
     const [workers, setWorkers] = useState<Worker[]>([]);
     const [assignments, setAssignments] = useState<Assignment[]>([]);
     const [selectedWorkerIds, setSelectedWorkerIds] = useState<Set<string>>(new Set());
@@ -24,24 +25,19 @@ export default function WorkerAssignment({ jobId, shopId }: { jobId: string; sho
 
     useEffect(() => {
         fetchData();
-    }, [jobId, shopId]);
+    }, [jobId]);
 
     const fetchData = async () => {
         setLoading(true);
-        try {            // Fetch all workers for the shop
-            const workersRes = await fetch(`http://localhost:8000/api/workers?shopId=${shopId}`);
-            if (workersRes.ok) {
-                const workersData = await workersRes.json();
-                setWorkers(workersData);
-            }
+        try {
+            // Fetch all workers for the shop
+            const workersData = await getWorkers();
+            setWorkers(workersData as any);
 
             // Fetch current assignments
-            const assignmentsRes = await fetch(`http://localhost:8000/api/jobs/${jobId}/workers`);
-            if (assignmentsRes.ok) {
-                const assignmentsData = await assignmentsRes.json();
-                setAssignments(assignmentsData);
-                setSelectedWorkerIds(new Set(assignmentsData.map((a: Assignment) => a.worker.id)));
-            }
+            const assignmentsData = await getJobAssignments(jobId);
+            setAssignments(assignmentsData as any);
+            setSelectedWorkerIds(new Set(assignmentsData.map((a: any) => a.worker.id)));
         } catch (err) {
             console.error("Failed to fetch worker data:", err);
         } finally {
@@ -62,30 +58,9 @@ export default function WorkerAssignment({ jobId, shopId }: { jobId: string; sho
     const handleApply = async () => {
         setSaving(true);
         try {
-            const currentIds = new Set(assignments.map(a => a.worker.id));
-
-            // Find workers to add
-            const toAdd = Array.from(selectedWorkerIds).filter(id => !currentIds.has(id));
-
-            // Find workers to remove
-            const toRemove = Array.from(currentIds).filter(id => !selectedWorkerIds.has(id));
-
-            // Add new assignments
-            if (toAdd.length > 0) {
-                await fetch(`http://localhost:8000/api/jobs/${jobId}/workers`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ workerIds: toAdd }),
-                });
-            }
-
-            // Remove assignments
-            for (const workerId of toRemove) {
-                await fetch(`http://localhost:8000/api/jobs/${jobId}/workers/${workerId}`, {
-                    method: "DELETE",
-                });
-            }
-
+            const workerIds = Array.from(selectedWorkerIds);
+            await updateJobAssignments(jobId, workerIds);
+            
             // Refresh assignments
             await fetchData();
             setIsOpen(false);
@@ -99,9 +74,7 @@ export default function WorkerAssignment({ jobId, shopId }: { jobId: string; sho
 
     const handleRemoveWorker = async (workerId: string) => {
         try {
-            await fetch(`http://localhost:8000/api/jobs/${jobId}/workers/${workerId}`, {
-                method: "DELETE",
-            });
+            await removeJobAssignment(jobId, workerId);
             await fetchData();
         } catch (err) {
             console.error("Failed to remove worker:", err);

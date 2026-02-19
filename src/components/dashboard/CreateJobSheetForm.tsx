@@ -15,6 +15,7 @@ export default function CreateJobSheetForm({
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState(shopCategory || "GENERAL");
 
     const handleSubmit = async (formData: FormData) => {
         setLoading(true);
@@ -94,34 +95,143 @@ export default function CreateJobSheetForm({
                     <h3 className="text-sm font-bold text-slate-400 tracking-wider flex items-center gap-3 uppercase">
                         <span className="w-6 h-[2px] bg-slate-200"></span> Device Information
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    {!shopCategory && (
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-700">Device Type</label>
-                            <select
-                                name="deviceType"
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none appearance-none font-medium text-slate-600"
-                            >
-                                <option value="Mobile">Mobile Phone</option>
-                                <option value="Laptop">Laptop / PC</option>
-                                <option value="Tablet">Tablet</option>
-                                <option value="TV">TV (LED/LCD)</option>
-                                <option value="Refrigerator">Refrigerator</option>
-                                <option value="WashingMachine">Washing Machine</option>
-                                <option value="AC">Air Conditioner</option>
-                                <option value="Microwave">Microwave</option>
-                                <option value="Other">Other</option>
-                            </select>
+                            <label className="text-sm font-bold text-slate-700">Service Category</label>
+                            <div className="relative">
+                                <select
+                                    name="category"
+                                    value={selectedCategory}
+                                    onChange={(e) => setSelectedCategory(e.target.value)}
+                                    className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none appearance-none font-medium text-slate-600"
+                                >
+                                    <option value="GENERAL">General Repair</option>
+                                    <option value="MOBILE">Mobile Repair</option>
+                                    <option value="TV">TV Repairing</option>
+                                    <option value="MOTOR">Motor Repairing</option>
+                                </select>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                            </div>
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-700">Brand & Model</label>
-                            <input
-                                name="deviceModel"
-                                required
-                                placeholder="e.g. Samsung S23 Ultra"
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-medium text-slate-600"
-                            />
+                    )}
+
+                    {selectedCategory === 'MOTOR' ? (
+                        <div className="bg-slate-50/50 rounded-2xl p-6 border border-slate-100 space-y-6 animate-in fade-in slide-in-from-top-4">
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-bold text-slate-700">Equipment / Motor Type</label>
+                                    <div className="relative">
+                                        <select
+                                            name="deviceType"
+                                            required
+                                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none appearance-none font-medium text-slate-600"
+                                            defaultValue=""
+                                        >
+                                            <option value="" disabled>Select motor type</option>
+                                            <option value="MONO_BLOCK">Mono Block Pump</option>
+                                            <option value="SUBMERSIBLE">Submersible Motor</option>
+                                            <option value="SEWELL">Sewell / Open Well</option>
+                                            <option value="ELECTRIC_MOTOR">Electric Motor</option>
+                                            <option value="GENERATOR">Generator</option>
+                                            <option value="STABILIZER">Stabilizer</option>
+                                            <option value="OTHER">Other</option>
+                                        </select>
+                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm font-bold text-slate-700">Phase</label>
+                                    <div className="relative">
+                                        <select
+                                            name="motor.phase"
+                                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none appearance-none font-medium text-slate-600"
+                                            defaultValue="Single"
+                                        >
+                                            <option value="Single">Single phase</option>
+                                            <option value="Double">Double phase</option>
+                                            <option value="Triple">Triple phase</option>
+                                        </select>
+                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm font-bold text-slate-700">Model / Serial No.</label>
+                                    <input 
+                                        name="deviceModel" 
+                                        placeholder="e.g. KV12345" 
+                                        className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-medium text-slate-600" 
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm font-bold text-slate-700">Motor Power</label>
+                                    <div className="flex gap-2">
+                                        <input 
+                                            name="motor.power" 
+                                            placeholder="Value" 
+                                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-medium text-slate-600" 
+                                        />
+                                        <div className="relative w-28">
+                                            <select 
+                                                name="motor.power_unit" 
+                                                className="w-full h-12 pl-3 pr-8 rounded-xl border border-slate-200 bg-white font-bold text-slate-900 focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none appearance-none"
+                                            >
+                                                <option value="HP">HP</option>
+                                                <option value="kW">kW</option>
+                                            </select>
+                                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in slide-in-from-top-2">
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-slate-700">Device Type</label>
+                                <div className="relative">
+                                    <select
+                                        name="deviceType"
+                                        className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none appearance-none font-medium text-slate-600"
+                                    >
+                                        <option value="Mobile">Mobile Phone</option>
+                                        <option value="Laptop">Laptop / PC</option>
+                                        <option value="Tablet">Tablet</option>
+                                        <option value="TV">TV (LED/LCD)</option>
+                                        <option value="Refrigerator">Refrigerator</option>
+                                        <option value="WashingMachine">Washing Machine</option>
+                                        <option value="AC">Air Conditioner</option>
+                                        <option value="Microwave">Microwave</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-slate-700">Brand & Model</label>
+                                <input
+                                    name="deviceModel"
+                                    required
+                                    placeholder="e.g. Samsung S23 Ultra"
+                                    className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-medium text-slate-600"
+                                />
+                            </div>
+                        </div>
+                    )}
+                    
                     <div className="space-y-2">
                         <label className="text-sm font-bold text-slate-700">Problem Description</label>
                         <textarea
@@ -132,14 +242,17 @@ export default function CreateJobSheetForm({
                             className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none resize-none transition-all text-slate-600"
                         />
                     </div>
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-700">Accessories Received</label>
-                        <input
-                            name="accessories"
-                            placeholder="e.g. Charger, Original Box, Cover"
-                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all text-slate-600"
-                        />
-                    </div>
+                    
+                    {selectedCategory !== 'MOTOR' && (
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-slate-700">Accessories Received</label>
+                            <input
+                                name="accessories"
+                                placeholder="e.g. Charger, Original Box, Cover"
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all text-slate-600"
+                            />
+                        </div>
+                    )}
                 </div>
 
                 {/* Service Details */}
