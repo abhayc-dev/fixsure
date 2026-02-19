@@ -17,7 +17,9 @@ import {
     LogOut,
     Trash,
     Wrench,
-    Calendar
+    Calendar,
+    Menu,
+    X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toggleShopStatus, deleteShop } from "@/lib/actions";
@@ -47,6 +49,7 @@ export default function AdminDashboard({ stats, initialShops, initialJobs = [] }
     const [shops, setShops] = useState(initialShops);
     const [jobs] = useState(initialJobs); // Read-only for now
     const [search, setSearch] = useState("");
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const handleToggleStatus = async (id: string, currentStatus: boolean) => {
         // Optimistic update
@@ -62,43 +65,63 @@ export default function AdminDashboard({ stats, initialShops, initialJobs = [] }
     return (
         <div className="flex min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-primary/20 selection:text-primary">
 
+
+            {/* Mobile Sidebar Overlay */}
+            {isSidebarOpen && (
+                <div 
+                    onClick={() => setIsSidebarOpen(false)}
+                    className="fixed inset-0 bg-slate-900/50 z-30 md:hidden backdrop-blur-sm transition-all"
+                />
+            )}
+
             {/* Sidebar */}
-            <aside className="w-64 border-r border-slate-200 bg-white p-6 flex flex-col gap-8 hidden md:flex sticky top-0 h-screen z-20 shadow-sm">
-                <div className="flex items-center gap-2 text-2xl font-bold tracking-tighter text-slate-900">
-                    <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary/30">
-                        <ShieldAlert className="w-5 h-5" />
+            <aside className={cn(
+                "w-64 border-r border-slate-200 bg-white p-6 flex flex-col gap-8 h-screen z-40 fixed top-0 left-0 transition-transform duration-300 md:translate-x-0 md:sticky md:top-0 md:shadow-sm",
+                isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+            )}>
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-2xl font-bold tracking-tighter text-slate-900">
+                        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary/30">
+                            <ShieldAlert className="w-5 h-5" />
+                        </div>
+                        FixSure
                     </div>
-                    FixSure
+                    <button 
+                        onClick={() => setIsSidebarOpen(false)}
+                        className="md:hidden p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
                 </div>
 
                 <nav className="flex flex-col gap-2">
                     <NavButton
                         active={activeTab === 'overview'}
-                        onClick={() => setActiveTab('overview')}
+                        onClick={() => { setActiveTab('overview'); setIsSidebarOpen(false); }}
                         icon={<BarChart className="w-5 h-5" />}
                         label="Overview"
                     />
                     <NavButton
                         active={activeTab === 'shops'}
-                        onClick={() => setActiveTab('shops')}
+                        onClick={() => { setActiveTab('shops'); setIsSidebarOpen(false); }}
                         icon={<Store className="w-5 h-5" />}
                         label="Shop Management"
                     />
                     <NavButton
                         active={activeTab === 'abuse'}
-                        onClick={() => setActiveTab('abuse')}
+                        onClick={() => { setActiveTab('abuse'); setIsSidebarOpen(false); }}
                         icon={<ShieldAlert className="w-5 h-5" />}
                         label="Abuse Monitor"
                     />
                     <NavButton
                         active={activeTab === 'repairs'}
-                        onClick={() => setActiveTab('repairs')}
+                        onClick={() => { setActiveTab('repairs'); setIsSidebarOpen(false); }}
                         icon={<Wrench className="w-5 h-5" />}
                         label="Repair Jobs"
                     />
                     <NavButton
                         active={activeTab === 'revenue'}
-                        onClick={() => setActiveTab('revenue')}
+                        onClick={() => { setActiveTab('revenue'); setIsSidebarOpen(false); }}
                         icon={<DollarSign className="w-5 h-5" />}
                         label="Revenue"
                     />
@@ -127,14 +150,20 @@ export default function AdminDashboard({ stats, initialShops, initialJobs = [] }
             <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
 
                 {/* Mobile Header */}
-                <header className="md:hidden h-16 border-b border-slate-200 bg-white/80 backdrop-blur-md flex items-center justify-between px-6 shrink-0 z-30 sticky top-0">
-                    <div className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                        <div className="w-7 h-7 bg-primary rounded-md flex items-center justify-center text-white">
-                            <ShieldAlert className="w-4 h-4" />
+                <header className="md:hidden h-16 border-b border-slate-200 bg-white/80 backdrop-blur-md flex items-center justify-between px-4 shrink-0 z-30 sticky top-0">
+                    <div className="flex items-center gap-3">
+                        <button 
+                            onClick={() => setIsSidebarOpen(true)}
+                            className="p-2 -ml-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                        >
+                            <Menu className="w-6 h-6" />
+                        </button>
+                        <div className="flex items-center gap-2 text-lg font-bold text-slate-900">
+                            <ShieldAlert className="w-5 h-5 text-primary" />
+                            <span className="truncate">FixSure Admin</span>
                         </div>
-                        FixSure Admin
                     </div>
-                    <button onClick={() => logout()} className="text-slate-500 hover:text-red-500 transition-colors">
+                    <button onClick={() => logout()} className="text-slate-500 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-lg">
                         <LogOut className="w-5 h-5" />
                     </button>
                 </header>

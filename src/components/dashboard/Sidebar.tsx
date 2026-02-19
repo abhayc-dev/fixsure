@@ -9,9 +9,11 @@ import {
     Activity,
     Settings,
     LogOut,
+    X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { logout } from "@/lib/auth-actions";
+import { useSidebar } from "./SidebarContext";
 
 type Shop = {
     id: string;
@@ -27,6 +29,7 @@ type Stats = {
 
 export default function Sidebar({ shop, stats, isPlanActive }: { shop: Shop, stats: Stats, isPlanActive: boolean }) {
     const pathname = usePathname();
+    const { isMobileMenuOpen, closeMobileMenu } = useSidebar();
 
     const navItems = [
         { href: '/jobs', icon: Wrench, label: 'Repair Jobs', activePattern: /^\/jobs/ },
@@ -36,28 +39,47 @@ export default function Sidebar({ shop, stats, isPlanActive }: { shop: Shop, sta
     ];
 
     return (
-        <aside className="w-64 bg-[#0F172A] text-white flex-shrink-0 flex flex-col justify-between hidden md:flex border-r border-slate-800/50 relative overflow-hidden h-screen sticky top-0">
-            {/* Subtle Glow Background */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[80px] -z-0 pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full blur-[80px] -z-0 pointer-events-none" />
+        <>
+            {/* Mobile Overlay */}
+            {isMobileMenuOpen && (
+                <div 
+                    onClick={closeMobileMenu}
+                    className="fixed inset-0 bg-slate-900/60 z-[45] md:hidden backdrop-blur-sm transition-all"
+                />
+            )}
 
-            <div className="relative z-10 flex flex-col h-full">
-                {/* Brand */}
-                <div className="h-24 flex items-center px-8 mb-4">
-                    <Link href="/" className="flex items-center gap-3 group transition-all">
-                        <div className="p-2.5 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-all border border-primary/20 shadow-lg shadow-primary/5 overflow-hidden relative">
-                            {shop.companyLogoUrl ? (
-                                <img src={shop.companyLogoUrl} alt="Logo" className="h-7 w-7 object-contain" />
-                            ) : (
-                                <ShieldCheck className="h-7 w-7 text-primary" />
-                            )}
-                        </div>
-                        <span className="text-2xl font-bold tracking-tight text-white group-hover:text-primary transition-colors font-display">FixSure</span>
-                    </Link>
-                </div>
+            <aside className={cn(
+                "w-64 bg-[#0F172A] text-white flex-shrink-0 flex flex-col justify-between border-r border-slate-800/50 overflow-hidden h-screen",
+                "fixed top-0 left-0 z-50 transition-transform duration-300 md:sticky md:top-0",
+                isMobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+            )}>
+                {/* Subtle Glow Background */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[80px] -z-0 pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full blur-[80px] -z-0 pointer-events-none" />
 
-                {/* Nav Items */}
-                <nav className="px-4 space-y-1.5">
+                <div className="relative z-10 flex flex-col h-full">
+                    {/* Brand */}
+                    <div className="h-24 flex items-center justify-between px-8 mb-4">
+                        <Link href="/" onClick={closeMobileMenu} className="flex items-center gap-3 group transition-all">
+                            <div className="p-2.5 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-all border border-primary/20 shadow-lg shadow-primary/5 overflow-hidden relative">
+                                {shop.companyLogoUrl ? (
+                                    <img src={shop.companyLogoUrl} alt="Logo" className="h-7 w-7 object-contain" />
+                                ) : (
+                                    <ShieldCheck className="h-7 w-7 text-primary" />
+                                )}
+                            </div>
+                            <span className="text-2xl font-bold tracking-tight text-white group-hover:text-primary transition-colors font-display">FixSure</span>
+                        </Link>
+                        <button 
+                            onClick={closeMobileMenu}
+                            className="md:hidden text-slate-400 hover:text-white transition-colors"
+                        >
+                            <X className="h-6 w-6" />
+                        </button>
+                    </div>
+
+                    {/* Nav Items */}
+                    <nav className="px-4 space-y-1.5">
                     <div className="px-4 mb-3">
                         <p className="text-xs font-bold text-slate-500 tracking-widest ml-1 opacity-70 uppercase">Management</p>
                     </div>
@@ -114,5 +136,6 @@ export default function Sidebar({ shop, stats, isPlanActive }: { shop: Shop, sta
                 </div>
             </div>
         </aside>
+        </>
     );
 }
