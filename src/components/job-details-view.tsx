@@ -132,7 +132,7 @@ export default function JobDetailsView({ job, shop, onBack }: { job: any, shop: 
 
             {/* Worker Assignment Section */}
             <div className="w-full max-w-[800px] mb-6 print:hidden space-y-4">
-                <WorkerAssignment jobId={job.id} shopId={shop.id} />
+                <WorkerAssignment jobId={job.id} />
                 <AssignmentHistoryTimeline jobId={job.id} />
             </div>
 
