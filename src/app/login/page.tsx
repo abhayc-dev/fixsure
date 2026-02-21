@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ShieldCheck, ArrowRight, Loader2, Mail, Lock, Phone, Store, User as UserIcon, LayoutGrid } from "lucide-react";
+import { ShieldCheck, ArrowRight, Loader2, Mail, Lock, Phone, Store, User as UserIcon, LayoutGrid, Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
@@ -23,6 +23,9 @@ export default function LoginPage() {
   const [phone, setPhone] = useState("");
   const [shopName, setShopName] = useState("");
   const [category, setCategory] = useState("MOTOR"); // Default to Mobile
+
+  // Password visibility toggle
+  const [showPassword, setShowPassword] = useState(false);
 
   // For verification errors or status messages
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
@@ -298,15 +301,28 @@ export default function LoginPage() {
                 <div className="relative group">
                   <Lock className={`absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors ${fieldErrors.password ? 'text-red-400' : 'text-slate-400 group-focus-within:text-primary'}`} />
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
-                    className={`w-full h-11 pl-11 pr-4 rounded-xl border bg-slate-50/50 text-slate-900 placeholder:text-slate-400 focus:ring-4 outline-none transition-all font-semibold text-sm ${fieldErrors.password ? 'border-red-300 focus:ring-red-100' : 'border-slate-200 focus:ring-primary/10 focus:border-primary'}`}
+                    className={`w-full h-11 pl-11 pr-11 rounded-xl border bg-slate-50/50 text-slate-900 placeholder:text-slate-400 focus:ring-4 outline-none transition-all font-semibold text-sm ${fieldErrors.password ? 'border-red-300 focus:ring-red-100' : 'border-slate-200 focus:ring-primary/10 focus:border-primary'}`}
                     value={password}
                     onChange={(e) => {
                       setPassword(e.target.value);
                       clearFieldError('password');
                     }}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none"
+                    tabIndex={-1}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
                 </div>
                 {fieldErrors.password && <p className="text-[10px] text-red-500 font-bold ml-1">{fieldErrors.password}</p>}
               </div>

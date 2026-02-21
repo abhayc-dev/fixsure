@@ -142,11 +142,11 @@ export default function JobDetailsView({ job, shop, onBack }: { job: any, shop: 
                 {/* 1. Header Section */}
                 <div className="text-center mb-8 relative">
                     {shop.companyLogoUrl && (
-                        <div className="absolute left-0 top-0 h-16 w-16">
+                        <div className="absolute left-0 top-0 h-24 w-24">
                             <img src={shop.companyLogoUrl} alt="Logo" className="h-full w-full object-contain" />
                         </div>
                     )}
-                    <h1 className="text-4xl font-normal text-slate-800 mb-2">{shop.shopName || 'Shop'}</h1>
+                    <h1 className="text-2xl font-normal text-slate-800 mb-2">{shop.shopName || 'Shop'}</h1>
                     <div className="text-slate-600 text-sm mb-1">
                         {shop.address || ''}
                         {shop.city && `, ${shop.city}`}
