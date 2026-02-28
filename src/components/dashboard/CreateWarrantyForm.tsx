@@ -9,11 +9,23 @@ export default function CreateWarrantyForm({ onSuccess }: { onSuccess?: () => vo
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [durationSelection, setDurationSelection] = useState("30");
+    const [customDate, setCustomDate] = useState("");
 
     const handleSubmit = async (formData: FormData) => {
         setLoading(true);
         setError(null);
         try {
+            if (durationSelection === "custom" && customDate) {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const selected = new Date(customDate);
+                selected.setHours(0, 0, 0, 0);
+                const diffTime = selected.getTime() - today.getTime();
+                const diffDays = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+                formData.set("duration", diffDays.toString());
+            }
+
             await createWarranty(formData);
             if (onSuccess) {
                 onSuccess();
@@ -52,7 +64,7 @@ export default function CreateWarrantyForm({ onSuccess }: { onSuccess?: () => vo
                         <input
                             name="customer"
                             required
-                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-medium"
+                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-medium text-slate-900"
                             placeholder="Customer Name"
                         />
                     </div>
@@ -63,7 +75,7 @@ export default function CreateWarrantyForm({ onSuccess }: { onSuccess?: () => vo
                             required
                             type="tel"
                             maxLength={10}
-                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-mono"
+                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-mono text-slate-900"
                             placeholder="10-digit number"
                         />
                     </div>
@@ -73,7 +85,7 @@ export default function CreateWarrantyForm({ onSuccess }: { onSuccess?: () => vo
                     <label className="text-sm font-bold text-slate-700">Customer Address <span className="text-slate-400 font-normal">(Optional)</span></label>
                     <input
                         name="address"
-                        className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all"
+                        className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all text-slate-900"
                         placeholder="e.g. Sector 62, Noida"
                     />
                 </div>
@@ -83,7 +95,7 @@ export default function CreateWarrantyForm({ onSuccess }: { onSuccess?: () => vo
                     <input
                         name="device"
                         required
-                        className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-medium"
+                        className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-medium text-slate-900"
                         placeholder="e.g. iPhone 13, Samsung AC 1.5T"
                     />
                 </div>
@@ -94,7 +106,7 @@ export default function CreateWarrantyForm({ onSuccess }: { onSuccess?: () => vo
                         <input
                             name="issue"
                             required
-                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all"
+                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all text-slate-900"
                             placeholder="e.g. Screen Replacement"
                         />
                     </div>
@@ -107,7 +119,7 @@ export default function CreateWarrantyForm({ onSuccess }: { onSuccess?: () => vo
                             step="10"
                             required
                             placeholder="e.g. 1500"
-                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-mono font-bold"
+                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-mono font-bold text-slate-900"
                         />
                     </div>
                 </div>
@@ -116,19 +128,33 @@ export default function CreateWarrantyForm({ onSuccess }: { onSuccess?: () => vo
                     <label className="text-sm font-bold text-slate-700">Warranty Period</label>
                     <div className="relative">
                         <select
-                            name="duration"
+                            name={durationSelection === 'custom' ? undefined : "duration"}
                             className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none appearance-none font-medium text-slate-600"
-                            defaultValue="30"
+                            value={durationSelection}
+                            onChange={(e) => setDurationSelection(e.target.value)}
                         >
                             <option value="15">15 Days</option>
                             <option value="30">30 Days (Standard)</option>
                             <option value="90">3 Months</option>
                             <option value="180">6 Months</option>
+                            <option value="custom">Custom Date</option>
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
                             <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /></svg>
                         </div>
                     </div>
+                    {durationSelection === 'custom' && (
+                        <div className="pt-2">
+                            <input
+                                type="date"
+                                value={customDate}
+                                onChange={(e) => setCustomDate(e.target.value)}
+                                min={new Date().toISOString().split('T')[0]}
+                                required={durationSelection === 'custom'}
+                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all text-slate-900 font-medium"
+                            />
+                        </div>
+                    )}
                 </div>
 
                 <div className="pt-6 flex gap-4 border-t border-slate-100">

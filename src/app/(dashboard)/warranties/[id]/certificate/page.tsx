@@ -14,5 +14,5 @@ export default async function WarrantyCertificatePage({ params }: { params: { id
         notFound();
     }
 
-    return <WarrantyCardView warranty={warranty} shop={shop} onBack={() => { }} />;
+    return <WarrantyCardView warranty={warranty} shop={shop} />;
 }

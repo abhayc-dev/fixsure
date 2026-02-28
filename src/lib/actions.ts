@@ -182,40 +182,40 @@ export async function getStats() {
     .filter(w => w.issuedAt >= startOfMonth)
     .reduce((sum, w) => sum + (w.repairCost || 0), 0);
 
-    // 4. Job Distribution (Direct DB Access)
-    const jobStatsData = await db.jobSheet.groupBy({
-        by: ['status'],
-        where: { shopId: shop.id },
-        _count: { status: true }
-    });
+  // 4. Job Distribution (Direct DB Access)
+  const jobStatsData = await db.jobSheet.groupBy({
+    by: ['status'],
+    where: { shopId: shop.id },
+    _count: { status: true }
+  });
 
-    const jobStats = { received: 0, inProgress: 0, ready: 0, delivered: 0 };
-    jobStatsData.forEach(stat => {
-        if (stat.status === 'RECEIVED') jobStats.received = stat._count.status;
-        if (stat.status === 'IN_PROGRESS') jobStats.inProgress = stat._count.status;
-        if (stat.status === 'READY') jobStats.ready = stat._count.status;
-        if (stat.status === 'DELIVERED') jobStats.delivered = stat._count.status;
-    });
+  const jobStats = { received: 0, inProgress: 0, ready: 0, delivered: 0 };
+  jobStatsData.forEach(stat => {
+    if (stat.status === 'RECEIVED') jobStats.received = stat._count.status;
+    if (stat.status === 'IN_PROGRESS') jobStats.inProgress = stat._count.status;
+    if (stat.status === 'READY') jobStats.ready = stat._count.status;
+    if (stat.status === 'DELIVERED') jobStats.delivered = stat._count.status;
+  });
 
-    return { 
-      total,
-      active,
-      revenue: revenueAgg._sum.repairCost || 0,
-      monthlyRevenue,
-      weeklyChart,
-      monthlyChart,
-      jobChart,
-      jobDistribution: [
-          { label: 'Received', value: jobStats.received, color: '#3b82f6' },
-          { label: 'In Progress', value: jobStats.inProgress, color: '#eab308' },
-          { label: 'Ready', value: jobStats.ready, color: '#22c55e' },
-          { label: 'Delivered', value: jobStats.delivered, color: '#64748b' }
-      ],
-      shopName: shop.shopName,
-      subscription: shop.subscriptionStatus,
-      isVerified: shop.isVerified,
-      hasAccessPin: !!shop.accessPin
-    };
+  return {
+    total,
+    active,
+    revenue: revenueAgg._sum.repairCost || 0,
+    monthlyRevenue,
+    weeklyChart,
+    monthlyChart,
+    jobChart,
+    jobDistribution: [
+      { label: 'Received', value: jobStats.received, color: '#3b82f6' },
+      { label: 'In Progress', value: jobStats.inProgress, color: '#eab308' },
+      { label: 'Ready', value: jobStats.ready, color: '#22c55e' },
+      { label: 'Delivered', value: jobStats.delivered, color: '#64748b' }
+    ],
+    shopName: shop.shopName,
+    subscription: shop.subscriptionStatus,
+    isVerified: shop.isVerified,
+    hasAccessPin: !!shop.accessPin
+  };
 }
 
 export async function verifyAccessPin(pin: string) {
@@ -540,9 +540,9 @@ export async function updateJobStatus(jobId: string, newStatus: string) {
   const shop = await getCurrentShop();
 
   await db.jobSheet.updateMany({
-    where: { 
+    where: {
       id: jobId,
-      shopId: shop.id 
+      shopId: shop.id
     },
     data: { status: newStatus as any }
   });
@@ -677,7 +677,7 @@ export async function createJobSheet(formData: FormData) {
 
 export async function getJobSheets() {
   const shop = await getCurrentShop();
-  
+
   return await db.jobSheet.findMany({
     where: { shopId: shop.id },
     orderBy: { receivedAt: 'desc' },
@@ -708,15 +708,79 @@ export async function getAdminJobSheets() {
 
 export async function deleteJobSheet(jobId: string) {
   const shop = await getCurrentShop();
-  
+
   await db.jobSheet.deleteMany({
-    where: { 
+    where: {
       id: jobId,
       shopId: shop.id // Security check
     }
   });
 
   revalidatePath("/jobs");
+  return { success: true };
+}
+
+export async function deleteWarranty(warrantyId: string) {
+  const shop = await getCurrentShop();
+
+  const warranty = await db.warranty.findUnique({
+    where: { id: warrantyId }
+  });
+
+  if (!warranty || warranty.shopId !== shop.id) {
+    throw new Error("Warranty not found or unauthorized");
+  }
+
+  await db.warranty.delete({
+    where: { id: warrantyId }
+  });
+
+  revalidatePath("/warranties");
+  return { success: true };
+}
+
+export async function updateWarranty(warrantyId: string, formData: FormData) {
+  const shop = await getCurrentShop();
+
+  const warranty = await db.warranty.findUnique({
+    where: { id: warrantyId }
+  });
+
+  if (!warranty || warranty.shopId !== shop.id) {
+    throw new Error("Warranty not found or unauthorized");
+  }
+
+  const customerName = formData.get("customer") as string;
+  const customerPhone = formData.get("phone") as string;
+  const customerAddress = formData.get("address") as string;
+  const deviceModel = formData.get("device") as string;
+  const repairType = formData.get("issue") as string;
+  const durationStr = formData.get("duration") as string;
+  const duration = durationStr ? parseInt(durationStr) : warranty.durationDays;
+  const repairCost = formData.get("price") ? parseFloat(formData.get("price") as string) : warranty.repairCost;
+
+  let expiresAt = warranty.expiresAt;
+  if (duration !== warranty.durationDays) {
+    expiresAt = new Date(warranty.issuedAt);
+    expiresAt.setDate(expiresAt.getDate() + duration);
+  }
+
+  await db.warranty.update({
+    where: { id: warrantyId },
+    data: {
+      customerName,
+      customerPhone,
+      customerAddress,
+      deviceModel,
+      repairType,
+      repairCost: repairCost || 0,
+      durationDays: duration,
+      expiresAt: expiresAt,
+    },
+  });
+
+  revalidatePath("/warranties");
+  revalidatePath(`/warranties/${warrantyId}`);
   return { success: true };
 }
 
@@ -875,7 +939,7 @@ export async function deletePayment(paymentId: string, jobId: string) {
 
 export async function getJobSheetById(jobId: string) {
   const shop = await getCurrentShop();
-  
+
   const job = await db.jobSheet.findFirst({
     where: {
       id: jobId,
@@ -907,51 +971,51 @@ export async function getWorkers() {
 
 export async function createWorker(name: string) {
   const shop = await getCurrentShop();
-  
+
   const existing = await db.worker.findFirst({
     where: { shopId: shop.id, name }
   });
-  
+
   if (existing) {
     throw new Error("Worker already exists");
   }
-  
+
   const newWorker = await db.worker.create({
     data: {
       shopId: shop.id,
       name
     }
   });
-  
+
   revalidatePath("/settings");
   return newWorker;
 }
 
 export async function updateWorker(id: string, name: string) {
   const shop = await getCurrentShop();
-  
+
   await db.worker.update({
-    where: { 
+    where: {
       id,
-      shopId: shop.id 
+      shopId: shop.id
     },
     data: { name }
   });
-  
+
   revalidatePath("/settings");
   return { success: true };
 }
 
 export async function deleteWorker(id: string) {
   const shop = await getCurrentShop();
-  
+
   await db.worker.delete({
-    where: { 
+    where: {
       id,
-      shopId: shop.id 
+      shopId: shop.id
     }
   });
-  
+
   revalidatePath("/settings");
   return { success: true };
 
@@ -961,31 +1025,31 @@ export async function deleteWorker(id: string) {
 
 export async function getJobAssignments(jobId: string) {
   const shop = await getCurrentShop();
-  
+
   // Ensure job belongs to shop
   const job = await db.jobSheet.findFirst({
     where: { id: jobId, shopId: shop.id }
   });
-  
+
   if (!job) return [];
 
   const assignments = await db.jobWorkerAssignment.findMany({
     where: { jobId },
     include: { worker: true }
   });
-  
+
   return assignments;
 }
 
 export async function updateJobAssignments(jobId: string, workerIds: string[]) {
   const shop = await getCurrentShop();
-  
+
   // Ensure job belongs to shop
   const job = await db.jobSheet.findFirst({
     where: { id: jobId, shopId: shop.id },
     include: { workerAssignments: true }
   });
-  
+
   if (!job) throw new Error("Job not found");
 
   const currentWorkerIds = new Set(job.workerAssignments.map(a => a.workerId));
@@ -1014,7 +1078,7 @@ export async function updateJobAssignments(jobId: string, workerIds: string[]) {
       await tx.jobWorkerAssignment.delete({
         where: { id: item.id }
       });
-      
+
       // Add history
       await tx.assignmentHistory.create({
         data: { jobId, workerId: item.workerId, actionType: 'REMOVED' }
@@ -1028,40 +1092,40 @@ export async function updateJobAssignments(jobId: string, workerIds: string[]) {
 
 export async function removeJobAssignment(jobId: string, workerId: string) {
   const shop = await getCurrentShop();
-  
+
   // Ensure job belongs to shop
   const job = await db.jobSheet.findFirst({
     where: { id: jobId, shopId: shop.id }
   });
-  
+
   if (!job) throw new Error("Job not found");
 
   await db.$transaction(async (tx) => {
-      // Find assignment to delete to get its ID (though we delete by compound/unique usually, but Prisma needs unique ID or unique constraint)
-      await tx.jobWorkerAssignment.deleteMany({
-         where: {
-             jobId: jobId,
-             workerId: workerId
-         }
-      });
-      
-      await tx.assignmentHistory.create({
-          data: { jobId, workerId, actionType: 'REMOVED' }
-      });
+    // Find assignment to delete to get its ID (though we delete by compound/unique usually, but Prisma needs unique ID or unique constraint)
+    await tx.jobWorkerAssignment.deleteMany({
+      where: {
+        jobId: jobId,
+        workerId: workerId
+      }
+    });
+
+    await tx.assignmentHistory.create({
+      data: { jobId, workerId, actionType: 'REMOVED' }
+    });
   });
-  
+
   revalidatePath("/jobs");
   return { success: true };
 }
 
 export async function getAssignmentHistory(jobId: string) {
   const shop = await getCurrentShop();
-  
+
   // Ensure job belongs to shop
   const job = await db.jobSheet.findFirst({
     where: { id: jobId, shopId: shop.id }
   });
-  
+
   if (!job) return [];
 
   const history = await db.assignmentHistory.findMany({

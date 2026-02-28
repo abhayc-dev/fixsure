@@ -4,19 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
     Search,
-    Filter,
     ShieldCheck,
     CheckCircle,
-    DollarSign,
-    Smartphone,
     Clock,
-    MoreHorizontal,
     X,
     Eye,
     EyeOff
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { updateWarrantyStatus } from "@/lib/actions";
 
 type Warranty = {
     id: string;
@@ -30,56 +25,20 @@ type Warranty = {
     status: string;
 };
 
-type Stats = {
-    total: number;
-    active: number;
-    revenue: number;
-    subscription: string;
-}
-
-export default function WarrantyListView({ initialWarranties, stats }: { initialWarranties: Warranty[], stats: Stats }) {
+export default function WarrantyListView({ initialWarranties }: { initialWarranties: Warranty[] }) {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState("");
-    const [statusFilter, setStatusFilter] = useState('ALL');
-    const [isRevenueVisible, setIsRevenueVisible] = useState(false);
 
     // Filter logic
     const filteredWarranties = initialWarranties.filter(w =>
-        (statusFilter === 'ALL' || w.status === statusFilter) &&
-        (w.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            w.customerPhone.includes(searchTerm) ||
-            w.shortCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            w.deviceModel.toLowerCase().includes(searchTerm.toLowerCase()))
+    (w.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        w.customerPhone.includes(searchTerm) ||
+        w.shortCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        w.deviceModel.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     return (
         <div className="space-y-6">
-            {/* Stats Summary Panel */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-fade-in">
-                <StatCard
-                    title="Total Certificates"
-                    value={stats.total.toString()}
-                    sub="+4% from last week"
-                    icon={ShieldCheck}
-                />
-                <StatCard
-                    title="Active Protection"
-                    value={stats.active.toString()}
-                    sub="Healthy Fleet"
-                    highlight
-                    icon={CheckCircle}
-                />
-                <StatCard
-                    title="Store Revenue"
-                    value={`₹${stats.revenue.toLocaleString()}`}
-                    sub="Total Earnings"
-                    secure
-                    isVisible={isRevenueVisible}
-                    onToggle={() => setIsRevenueVisible(!isRevenueVisible)}
-                    icon={DollarSign}
-                />
-            </div>
-
             <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 flex flex-col overflow-hidden animate-slide-up">
                 {/* Control Bar */}
                 <div className="p-8 bg-slate-50/40 backdrop-blur-sm flex flex-col md:flex-row gap-6 items-center border-b border-slate-200/50">
@@ -107,13 +66,12 @@ export default function WarrantyListView({ initialWarranties, stats }: { initial
                                 <th className="px-8 py-5 text-right">Valuation</th>
                                 <th className="px-8 py-5">Term</th>
                                 <th className="px-8 py-5">Live Status</th>
-                                <th className="px-6 py-5 text-right">Management</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
                             {filteredWarranties.length === 0 ? (
                                 <tr>
-                                    <td colSpan={7} className="py-32 text-center text-slate-300">
+                                    <td colSpan={6} className="py-32 text-center text-slate-300">
                                         <div className="flex flex-col items-center justify-center gap-4">
                                             <div className="p-6 bg-slate-50 rounded-full border border-slate-100">
                                                 <Search className="h-12 w-12 opacity-20" />
@@ -142,9 +100,6 @@ export default function WarrantyListView({ initialWarranties, stats }: { initial
                                         {/* Customer */}
                                         <td className="px-6 py-6 font-medium group/customer">
                                             <div className="flex items-center gap-3">
-                                                <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 border border-white flex items-center justify-center text-xs  text-slate-500 shrink-0 shadow-sm transition-transform group-hover/customer:scale-110">
-                                                    {w.customerName.substring(0, 2).toUpperCase()}
-                                                </div>
                                                 <div className="flex flex-col">
                                                     <div className="text-slate-900 font-bold text-base group-hover/customer:text-primary transition-colors">{w.customerName}</div>
                                                     <div className="text-xs text-slate-500 font-bold tracking-wider mt-0.5">{w.customerPhone}</div>
@@ -154,14 +109,8 @@ export default function WarrantyListView({ initialWarranties, stats }: { initial
 
                                         {/* Device */}
                                         <td className="px-8 py-6 font-medium">
-                                            <div className="flex flex-col gap-2 p-4 bg-slate-50 rounded-2xl border border-slate-200 hover:bg-white transition-all hover:shadow-sm group/device">
-                                                <div className="text-sm font-bold text-slate-900 flex items-center gap-2 font-display group-hover/device:text-primary transition-colors">
-                                                    <Smartphone className="h-4 w-4 text-primary/70" />
-                                                    {w.deviceModel}
-                                                </div>
-                                                <span className="text-[10px] font-bold tracking-widest px-2.5 py-1 bg-white text-slate-500 rounded-lg w-fit border border-slate-200">
-                                                    {w.repairType}
-                                                </span>
+                                            <div className="text-sm font-bold text-slate-900 flex items-center gap-2 font-display group-hover/device:text-primary transition-colors">
+                                                {w.deviceModel}
                                             </div>
                                         </td>
 
@@ -198,13 +147,6 @@ export default function WarrantyListView({ initialWarranties, stats }: { initial
                                             <div className="flex flex-col">
                                                 <span className="text-[10px] font-bold text-slate-400 leading-none mb-2 tracking-widest font-display uppercase">LIVE STATE</span>
                                                 <StatusBadge status={w.status} expiresAt={w.expiresAt} />
-                                            </div>
-                                        </td>
-
-                                        {/* Actions */}
-                                        <td className="px-6 py-4 text-right" onClick={(e) => e.stopPropagation()}>
-                                            <div className="flex items-center justify-end gap-3 transition-all duration-500">
-                                                <ActionMenu warranty={w} />
                                             </div>
                                         </td>
                                     </tr>
@@ -301,51 +243,5 @@ function StatusBadge({ status, expiresAt }: { status: string, expiresAt: Date })
             <StatusIcon className="h-3 w-3 mr-1.5" strokeWidth={2.5} />
             {displayStatus}
         </span>
-    );
-}
-
-function ActionMenu({ warranty }: { warranty: Warranty }) {
-    const [isOpen, setIsOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const router = useRouter();
-
-    const handleUpdate = async (status: string) => {
-        setLoading(true);
-        await updateWarrantyStatus(warranty.id, status);
-        setLoading(false);
-        setIsOpen(false);
-        router.refresh();
-    };
-
-    return (
-        <div className="relative inline-block text-left">
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="p-2 hover:bg-secondary rounded-full transition-colors relative z-0"
-            >
-                <MoreHorizontal className="h-4 w-4 text-gray-500" />
-            </button>
-
-            {isOpen && (
-                <>
-                    <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-                    <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20 animate-fade-in">
-                        <div className="py-1">
-                            <div className="px-4 py-2 text-xs font-bold text-gray-400">Update Status</div>
-                            {['ACTIVE', 'CLAIMED', 'VOID', 'EXPIRED'].map((s) => (
-                                <button
-                                    key={s}
-                                    onClick={() => handleUpdate(s)}
-                                    disabled={loading}
-                                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
-                                >
-                                    Mark as {s}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                </>
-            )}
-        </div>
     );
 }

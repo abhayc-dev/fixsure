@@ -21,8 +21,8 @@ export default function Header({ isPlanActive, stats }: { isPlanActive: boolean,
         return "Dashboard";
     };
 
-    // Hide Header on Job Details and Invoice pages (sub-routes of /jobs)
-    if (pathname.startsWith('/jobs/')) {
+    // Hide Header on Job Details, Invoice pages, and Warranty Details pages
+    if (pathname.startsWith('/jobs/') || (pathname.startsWith('/warranties/') && !pathname.endsWith('/new'))) {
         return null;
     }
 
@@ -32,7 +32,7 @@ export default function Header({ isPlanActive, stats }: { isPlanActive: boolean,
     return (
         <header className="h-20 md:h-24 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 sticky top-0 z-40 flex items-center px-4 md:px-10 transition-all">
             {/* Mobile Menu Toggle */}
-            <button 
+            <button
                 onClick={toggleMobileMenu}
                 className="md:hidden mr-2 p-2 -ml-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
             >
