@@ -404,7 +404,7 @@ function JobStatusDropdown({ job, shop }: { job: JobSheet, shop: Shop }) {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "px-3 py-1.5 rounded-2xl text-[10px] font-bold tracking-widest inline-flex items-center gap-2 border shadow-sm transition-all hover:shadow-md active:scale-95 cursor-pointer",
+                    "min-w-[144px] px-3 py-1.5 rounded-2xl text-[10px] font-bold tracking-widest inline-flex items-center gap-2 border shadow-sm transition-all hover:shadow-md active:scale-95 cursor-pointer",
                     currentConfig.bg, currentConfig.text, currentConfig.border
                 )}
             >
