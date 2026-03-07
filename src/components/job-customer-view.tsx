@@ -291,8 +291,8 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
     return (
         <div className="w-full max-w-7xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-5 duration-700 pb-20 px-4 md:px-6">
 
-            {/* --- TOP BAR & NAVIGATION (STICKY) --- */}
-            <div className="sticky top-0 z-50 bg-slate-50/80 backdrop-blur-md py-4 border-b border-slate-200/50 -mx-4 md:-mx-6 px-4 md:px-6 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300">
+            {/* --- TOP BAR & NAVIGATION (SCROLL) --- */}
+            <div className="relative z-10 bg-slate-50 py-4 border-b border-slate-200/50 -mx-4 md:-mx-6 px-4 md:px-6 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300">
                 <button
                     onClick={onBack}
                     className="flex items-center gap-3 text-slate-600 hover:text-slate-900 font-bold transition-all group w-fit cursor-pointer"
@@ -303,38 +303,39 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                     <span className="text-sm tracking-tight opacity-90 group-hover:opacity-100">Back to Dashboard</span>
                 </button>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 w-full md:w-auto mt-4 md:mt-0">
                     {!(isEditing || isTechEditing || isCoilEditing || isPartsEditing) ? (
-                        <div className="flex items-center gap-3 bg-white/50 p-1.5 rounded-[20px] border border-slate-100 shadow-sm overflow-x-auto no-scrollbar w-full md:w-auto">
-                            <button
-                                onClick={() => setIsDeleting(true)}
-                                className="p-2.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all duration-200 cursor-pointer"
-                                title="Delete Job"
-                                type="button"
-                            >
-                                <Trash2 className="h-5 w-5" />
-                            </button>
-                            <div className="w-px h-6 bg-slate-300" />
+                        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-3 bg-transparent md:bg-white/50 p-0 md:p-1.5 rounded-none md:rounded-[20px] md:border md:border-slate-100 shadow-none md:shadow-sm w-full md:w-auto">
                             <button
                                 onClick={() => setIsEditing(true)}
-                                className="flex items-center gap-2 bg-white border border-slate-100 px-5 py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 hover:shadow-sm transition-all duration-200 cursor-pointer"
+                                className="flex items-center justify-center gap-2 bg-white border border-slate-100 px-5 py-3 md:py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 hover:shadow-sm transition-all duration-200 cursor-pointer shadow-sm md:shadow-none w-full md:w-auto"
                                 type="button"
                             >
                                 <Edit2 className="h-4 w-4 text-primary" /> Edit Job
                             </button>
                             <button
                                 onClick={onInvoice}
-                                className="flex items-center gap-2 bg-white border border-slate-100 px-5 py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 hover:shadow-sm transition-all duration-200 cursor-pointer"
+                                className="flex items-center justify-center gap-2 bg-white border border-slate-100 px-5 py-3 md:py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 hover:shadow-sm transition-all duration-200 cursor-pointer shadow-sm md:shadow-none w-full md:w-auto"
                                 type="button"
                             >
                                 <Printer className="h-4 w-4 text-emerald-500" /> Invoice
                             </button>
                             <button
                                 onClick={handleNotify}
-                                className="flex items-center gap-2 bg-indigo-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all active:scale-95 duration-200 cursor-pointer"
+                                className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-6 py-3 md:py-2.5 rounded-xl text-sm font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all active:scale-95 duration-200 cursor-pointer w-full md:w-auto"
                                 type="button"
                             >
                                 <MessageCircle className="h-5 w-5" /> Share on WhatsApp
+                            </button>
+                            <div className="hidden md:block w-px h-6 bg-slate-300" />
+                            <button
+                                onClick={() => setIsDeleting(true)}
+                                className="flex items-center justify-center gap-2 px-5 py-3 md:py-2.5 text-rose-600 bg-white md:bg-transparent border border-rose-100 md:border-transparent hover:bg-rose-50 rounded-xl transition-all duration-200 cursor-pointer shadow-sm md:shadow-none w-full md:w-auto"
+                                title="Delete Job"
+                                type="button"
+                            >
+                                <Trash2 className="h-4 w-4 hidden md:block" />
+                                <span className="font-bold text-sm">Delete Job</span>
                             </button>
                         </div>
                     ) : (
@@ -547,28 +548,28 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                 <div className="flex-1 space-y-5">
 
                     {/* Customer Identity Section (Wide Asymmetric) */}
-                    <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm flex flex-col md:flex-row gap-6 items-center justify-between group transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/5">
-                        <div className="flex items-center gap-8">
-                            <div className="space-y-3">
+                    <div className="bg-white rounded-3xl p-5 md:p-6 border border-slate-100 shadow-sm flex flex-col md:flex-row gap-6 items-start md:items-center justify-between group transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/5">
+                        <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8 w-full md:w-auto">
+                            <div className="space-y-3 w-full md:w-auto">
                                 {isEditing ? (
                                     <div className="flex flex-col gap-2">
-                                        <input name="customerName" defaultValue={job.customerName} className="text-2xl  text-slate-900 tracking-tighter outline-none border-b-2 border-slate-100 focus:border-blue-500 transition-all font-outfit" />
-                                        <input name="customerPhone" defaultValue={job.customerPhone} className="text-xl font-bold text-slate-400 outline-none border-b-2 border-slate-100 focus:border-blue-500 font-mono" />
+                                        <input name="customerName" defaultValue={job.customerName} className="text-2xl  text-slate-900 tracking-tighter outline-none border-b-2 border-slate-100 focus:border-blue-500 transition-all font-outfit w-full" />
+                                        <input name="customerPhone" defaultValue={job.customerPhone} className="text-xl font-bold text-slate-400 outline-none border-b-2 border-slate-100 focus:border-blue-500 font-mono w-full" />
                                     </div>
                                 ) : (
                                     <>
-                                        <div className="flex items-center gap-3">
-                                            <h1 className="text-2xl  text-slate-900 tracking-tighter leading-none">{job.customerName}</h1>
-                                            <div className="h-4 w-px bg-slate-200" />
-                                            <span className="text-[15px] font-mono font-bold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md">{job.jobId}</span>
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                                            <h1 className="text-2xl  text-slate-900 tracking-tighter leading-none break-all">{job.customerName}</h1>
+                                            <div className="hidden sm:block h-4 w-px bg-slate-200" />
+                                            <span className="text-[15px] font-mono font-bold text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md self-start sm:self-auto">{job.jobId}</span>
                                         </div>
-                                        <div className="flex items-center gap-6 mt-2">
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 mt-3">
                                             <div className="flex items-center gap-2 text-slate-400 font-bold text-xs">
                                                 <Smartphone className="h-3.5 w-3.5 text-indigo-400" />
                                                 <span className="text-[15px] font-mono tracking-tight">{job.customerPhone}</span>
                                             </div>
 
-                                            <div className="relative group/status h-7 min-w-[120px]">
+                                            <div className="relative group/status h-8 min-w-[140px] w-full sm:w-auto">
                                                 {statusUpdating && (
                                                     <div className="absolute -left-5 top-1/2 -translate-y-1/2">
                                                         <Loader2 className="h-3 w-3 animate-spin text-indigo-400" />
@@ -579,7 +580,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                     value={job.status}
                                                     onChange={(e) => handleStatusChange(e.target.value)}
                                                     className={cn(
-                                                        "appearance-none cursor-pointer h-full px-3 rounded-lg text-[9px]  tracking-widest outline-none transition-all w-full text-center border border-transparent shadow-sm",
+                                                        "appearance-none cursor-pointer h-full px-3 py-1 sm:py-0 rounded-lg text-xs font-bold tracking-widest outline-none transition-all w-full text-center border border-transparent shadow-sm",
                                                         job.status === 'READY' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
                                                             job.status === 'DELIVERED' ? "bg-emerald-500 text-white" :
                                                                 job.status === 'CANCELLED' ? "bg-rose-500/10 text-rose-400 border-rose-500/20" :
@@ -591,7 +592,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                     ))}
                                                 </select>
                                                 <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
-                                                    <ChevronDown className="h-2.5 w-2.5" />
+                                                    <ChevronDown className="h-3.5 w-3.5" />
                                                 </div>
                                             </div>
                                         </div>
@@ -602,11 +603,11 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
 
                         <div className="hidden lg:block w-[1px] h-16 bg-slate-100" />
 
-                        <div className="flex flex-col items-end gap-2 text-right">
+                        <div className="flex flex-col items-start md:items-end gap-2 text-left md:text-right w-full md:w-auto mt-2 md:mt-0 pt-4 md:pt-0 border-t border-slate-100 md:border-t-0">
                             {isEditing ? (
-                                <div className="space-y-2">
-                                    <label className="text-[13px]  text-slate-800 tracking-widest text-right block italic">Customer Address</label>
-                                    <textarea name="customerAddress" defaultValue={job.customerAddress || ''} className="text-right text-sm font-bold text-slate-500 outline-none border-b-2 border-slate-100 focus:border-blue-500 bg-transparent min-w-[200px]" rows={2} />
+                                <div className="space-y-2 w-full">
+                                    <label className="text-[13px]  text-slate-800 tracking-widest md:text-right block italic">Customer Address</label>
+                                    <textarea name="customerAddress" defaultValue={job.customerAddress || ''} className="md:text-right text-sm font-bold text-slate-500 outline-none border-b-2 border-slate-100 focus:border-blue-500 bg-transparent w-full md:min-w-[200px]" rows={2} />
                                 </div>
                             ) : (
                                 <>
