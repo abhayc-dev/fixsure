@@ -161,7 +161,7 @@ export default function JobListView({ initialJobSheets, shop }: { initialJobShee
                                     <tr
                                         key={j.id}
                                         onClick={() => router.push(`/jobs/${j.id}`)}
-                                        className="hover:bg-slate-100/60 hover:shadow-sm transition-all duration-300 group cursor-pointer"
+                                        className="hover:bg-slate-100/60 hover:shadow-sm transition-all duration-300 group cursor-pointer border-b-[0.3px] border-slate-200"
                                     >
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-4">

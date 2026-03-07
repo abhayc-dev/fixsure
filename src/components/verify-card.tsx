@@ -141,7 +141,7 @@ export default function VerifyCard({ data }: {
                             <div className="text-[10px] font-bold text-slate-400 mb-2 tracking-widest">Authenticity Verified By</div>
                             <div className="inline-flex items-center gap-2">
                                 <ShieldCheck className="h-6 w-6 text-indigo-600 fill-indigo-100" />
-                                <span className="text-xl font-bold text-indigo-600 tracking-tight">FixSure</span>
+                                <span className="text-xl font-bold text-indigo-600 tracking-tight">RepairDesk</span>
                             </div>
                         </div>
                         <div className="text-right">

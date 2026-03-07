@@ -34,8 +34,6 @@ model Shop {
 
   // Business Status
   isVerified        Boolean  @default(false)
-  subscriptionStatus SubscriptionStatus @default(FREE_TRIAL)
-  subscriptionEnds  DateTime?
 
   // Relations
   warranties        Warranty[]
@@ -84,13 +82,6 @@ model Warranty {
 }
 
 // Enums for standardizing status
-enum SubscriptionStatus {
-  FREE_TRIAL
-  ACTIVE
-  EXPIRED
-  PAST_DUE
-}
-
 enum WarrantyStatus {
   ACTIVE    // Covered
   EXPIRED   // Time over

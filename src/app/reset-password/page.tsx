@@ -19,7 +19,7 @@ function ResetPasswordContent() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -197,15 +197,15 @@ function ResetPasswordContent() {
           </div>
 
           <div className="text-center">
-             {expiryTimer > 0 ? (
-                <p className="text-xs font-bold text-slate-500 bg-slate-100 inline-block px-3 py-1 rounded-full">
-                  Code expires in {Math.floor(expiryTimer / 60)}:{(expiryTimer % 60).toString().padStart(2, '0')}
-                </p>
-             ) : (
-                <p className="text-xs font-bold text-red-500 bg-red-50 inline-block px-3 py-1 rounded-full">
-                  Code expired. Please resend.
-                </p>
-             )}
+            {expiryTimer > 0 ? (
+              <p className="text-xs font-bold text-slate-500 bg-slate-100 inline-block px-3 py-1 rounded-full">
+                Code expires in {Math.floor(expiryTimer / 60)}:{(expiryTimer % 60).toString().padStart(2, '0')}
+              </p>
+            ) : (
+              <p className="text-xs font-bold text-red-500 bg-red-50 inline-block px-3 py-1 rounded-full">
+                Code expired. Please resend.
+              </p>
+            )}
           </div>
 
           <button
@@ -298,29 +298,29 @@ export default function ResetPasswordPage() {
 
       <div className="w-full max-w-md z-10 py-4">
         <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-white/50 p-6 md:p-8 animate-in fade-in zoom-in duration-500">
-          
+
           <div className="text-center mb-4">
-             <Link href="/" className="inline-flex items-center gap-2 text-[#FF6442] font-bold text-2xl mb-4 group transition-all">
-               <div className="p-2 bg-[#FF6442]/10 rounded-xl group-hover:bg-[#FF6442]/20 transition-colors">
-                 <ShieldCheck className="h-6 w-6" />
-               </div>
-               <span className="text-slate-900">FixSure</span>
-             </Link>
+            <Link href="/" className="inline-flex items-center gap-2 text-[#FF6442] font-bold text-2xl mb-4 group transition-all">
+              <div className="p-2 bg-[#FF6442]/10 rounded-xl group-hover:bg-[#FF6442]/20 transition-colors">
+                <ShieldCheck className="h-6 w-6" />
+              </div>
+              <span className="text-slate-900">RepairDesk</span>
+            </Link>
           </div>
 
           <Suspense fallback={
-             <div className="flex flex-col items-center py-12">
-               <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
-               <p className="text-slate-500 font-medium">Loading...</p>
-             </div>
+            <div className="flex flex-col items-center py-12">
+              <Loader2 className="h-10 w-10 animate-spin text-primary mb-4" />
+              <p className="text-slate-500 font-medium">Loading...</p>
+            </div>
           }>
             <ResetPasswordContent />
           </Suspense>
 
         </div>
-        
+
         <p className="mt-6 text-center text-slate-400 text-[10px] font-bold tracking-widest">
-          Secure & Verified. © 2026 FixSure Digital.
+          Secure & Verified. © 2026 RepairDesk Digital.
         </p>
       </div>
     </div>

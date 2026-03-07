@@ -8,5 +8,5 @@ export default async function WarrantiesPage() {
         getStats()
     ]);
 
-    return <WarrantyListView initialWarranties={warranties} stats={stats} />;
+    return <WarrantyListView initialWarranties={warranties} />;
 }

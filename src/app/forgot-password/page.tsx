@@ -44,13 +44,13 @@ export default function ForgotPasswordPage() {
 
       <div className="w-full max-w-md z-10 py-4">
         <div className="bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-white/50 p-6 md:p-8 animate-in fade-in zoom-in duration-500">
-          
+
           <div className="text-center mb-8">
             <Link href="/" className="inline-flex items-center gap-2 text-[#FF6442] font-bold text-2xl mb-4 group transition-all">
               <div className="p-2 bg-[#FF6442]/10 rounded-xl group-hover:bg-[#FF6442]/20 transition-colors">
                 <ShieldCheck className="h-6 w-6" />
               </div>
-              <span className="text-slate-900">FixSure</span>
+              <span className="text-slate-900">RepairDesk</span>
             </Link>
             <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 mb-1">
               Reset Password
@@ -106,9 +106,9 @@ export default function ForgotPasswordPage() {
             </div>
           </form>
         </div>
-        
+
         <p className="mt-6 text-center text-slate-400 text-[10px] font-bold tracking-widest">
-          Secure & Verified. © 2026 FixSure Digital.
+          Secure & Verified. © 2026 RepairDesk Digital.
         </p>
       </div>
     </div>

@@ -1,5 +1,5 @@
 {
-  "name": "fixsure_app",
+  "name": "repair_desk",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -29,7 +29,6 @@
     "pg": "^8.17.2",
     "prisma": "^7.3.0",
     "qrcode.react": "^4.2.0",
-    "razorpay": "^2.9.6",
     "react": "19.2.3",
     "react-datepicker": "^9.1.0",
     "react-dom": "19.2.3",

@@ -1,6 +1,6 @@
-# FixSure - Local Repair Warranty Platform
+# RepairDesk - Local Repair Management System
 
-FixSure is a digital warranty platform for local repair shops in India. It builds trust between customers and repair shops ("Mistris") by providing a digital, verifiable warranty system.
+RepairDesk is a digital warranty platform for local repair shops in India. It builds trust between customers and repair shops ("Mistris") by providing a digital, verifiable warranty system.
 
 ## Features (MVP)
 - **Landing Page**: Value proposition for Shops and Customers.
@@ -41,3 +41,5 @@ FixSure is a digital warranty platform for local repair shops in India. It build
 - Integration with Supabase/Postgres.
 - SMS/WhatsApp API integration (Twilio/Interakt).
 - Razorpay Subscription integration.
+
+# repairedesk

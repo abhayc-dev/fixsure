@@ -12,19 +12,19 @@ const transporter = nodemailer.createTransport({
 export async function sendResetEmail(email: string, resetUrl: string) {
   try {
     const info = await transporter.sendMail({
-      from: `"FixSure Support" <${process.env.APP_EMAIL}>`,
+      from: `"RepairDesk Support" <${process.env.APP_EMAIL}>`,
       to: email,
       subject: "Password Reset Request",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
           <h2 style="color: #FF6442;">Password Reset Request</h2>
-          <p>You requested a password reset for your FixSure account.</p>
+          <p>You requested a password reset for your RepairDesk account.</p>
           <p>Click the button below to reset your password. This link will expire in 1 hour.</p>
           <div style="text-align: center; margin: 30px 0;">
             <a href="${resetUrl}" style="background-color: #FF6442; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Reset Password</a>
           </div>
           <p style="color: #666; font-size: 14px;">If you didn't request this, you can safely ignore this email.</p>
-          <p style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; font-size: 12px; color: #999;">Best regards,<br>The FixSure Team</p>
+          <p style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; font-size: 12px; color: #999;">Best regards,<br>The RepairDesk Team</p>
         </div>
       `,
     });
@@ -39,7 +39,7 @@ export async function sendResetEmail(email: string, resetUrl: string) {
 export async function sendOtpEmail(email: string, otp: string) {
   try {
     const info = await transporter.sendMail({
-      from: `"FixSure Support" <${process.env.APP_EMAIL}>`,
+      from: `"RepairDesk Support" <${process.env.APP_EMAIL}>`,
       to: email,
       subject: "Your OTP for Password Reset",
       html: `
@@ -50,7 +50,7 @@ export async function sendOtpEmail(email: string, otp: string) {
             <span style="background-color: #f0f0f0; color: #333; padding: 15px 30px; font-size: 32px; letter-spacing: 5px; font-weight: bold; border-radius: 8px; border: 1px solid #ddd;">${otp}</span>
           </div>
           <p style="color: #666; font-size: 14px; text-align: center;">Do not share this OTP with anyone.</p>
-          <p style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; font-size: 12px; color: #999; text-align: center;">Best regards,<br>The FixSure Team</p>
+          <p style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; font-size: 12px; color: #999; text-align: center;">Best regards,<br>The RepairDesk Team</p>
         </div>
       `,
     });

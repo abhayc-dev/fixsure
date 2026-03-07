@@ -5,38 +5,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@gmail.com";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "1234567";
-
 export async function loginWithEmail(email: string, password: string) {
     const normalizedEmail = email.toLowerCase();
-    
-    // Check for hardcoded Admin
-    if (normalizedEmail === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-        // Create or get Admin user in DB
-        let admin = await db.shop.findUnique({ where: { email : ADMIN_EMAIL } });
-        if (!admin) {
-            admin = await db.shop.create({
-                data: {
-                    email: ADMIN_EMAIL,
-                    phone: "0000000000", // Placeholder for admin
-                    shopName: "Admin Dashboard",
-                    role: "ADMIN",
-                    password: await bcrypt.hash(ADMIN_PASSWORD, 10),
-                    isVerified: true,
-                }
-            });
-        }
-
-        (await cookies()).set("shop_session", admin.id, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            maxAge: 60 * 60 * 24 * 30, // 30 days
-            path: "/"
-        });
-
-        return { success: true, role: "ADMIN" };
-    }
 
     const shop = await db.shop.findUnique({
         where: { email: normalizedEmail }
@@ -58,7 +28,7 @@ export async function loginWithEmail(email: string, password: string) {
         path: "/"
     });
 
-    return { success: true, role: shop.role, shopName: shop.shopName };
+    return { success: true, shopName: shop.shopName };
 }
 
 export async function signup(data: { email: string; password: string; phone: string; shopName: string; category?: string }) {
@@ -86,9 +56,7 @@ export async function signup(data: { email: string; password: string; phone: str
             phone: cleanPhone,
             shopName,
             category,
-            isVerified: true,
-            subscriptionStatus: "FREE_TRIAL",
-            subscriptionEnds: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
+            isVerified: true
         }
     });
 
@@ -127,9 +95,7 @@ export async function googleLogin(data: { email: string; name: string; googleId:
                 phone: cleanPhone,
                 shopName: shopName || (name + "'s Shop"),
                 category,
-                isVerified: true,
-                subscriptionStatus: "FREE_TRIAL",
-                subscriptionEnds: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
+                isVerified: true
             }
         });
     }
@@ -145,7 +111,7 @@ export async function googleLogin(data: { email: string; name: string; googleId:
         sameSite: "lax"
     });
 
-    return { success: true, role: shop.role, shopName: shop.shopName };
+    return { success: true, shopName: shop.shopName };
 }
 
 export async function logout() {
