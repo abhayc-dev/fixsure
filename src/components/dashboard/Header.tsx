@@ -9,7 +9,7 @@ type Stats = {
     isVerified: boolean;
 }
 
-export default function Header({ stats }: { stats: Stats }) {
+export default function Header({ isPlanActive, stats }: { isPlanActive: boolean, stats: Stats }) {
     const pathname = usePathname();
     const { toggleMobileMenu } = useSidebar();
 
@@ -47,7 +47,7 @@ export default function Header({ stats }: { stats: Stats }) {
                         {getTitle()}
                     </h1>
                     <p className="hidden sm:block text-[10px] md:text-xs font-bold text-slate-400 tracking-widest mt-1 md:mt-2 whitespace-nowrap opacity-60 uppercase">
-                        RepairDesk Control Systems v2.0
+                        FixSure Control Systems v2.0
                     </p>
                 </div>
             </div>
@@ -60,7 +60,7 @@ export default function Header({ stats }: { stats: Stats }) {
                 {showCreateJob && (
                     <Link
                         href="/jobs/new"
-                        className={`flex items-center gap-2 bg-primary text-white px-3 md:px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95 ${(!stats.isVerified) ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
+                        className={`flex items-center gap-2 bg-primary text-white px-3 md:px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95 ${(!isPlanActive || !stats.isVerified) ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
                     >
                         <Wrench className="h-4 w-4" />
                         <span className="hidden md:inline">Repair Entry</span>
@@ -70,7 +70,7 @@ export default function Header({ stats }: { stats: Stats }) {
                 {showCreateWarranty && (
                     <Link
                         href="/warranties/new"
-                        className={`flex items-center gap-2 bg-primary text-white px-3 md:px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95 ${(!stats.isVerified) ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
+                        className={`flex items-center gap-2 bg-primary text-white px-3 md:px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-primary/90 shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95 ${(!isPlanActive || !stats.isVerified) ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''}`}
                     >
                         <Plus className="h-4 w-4" />
                         <span className="hidden md:inline">Add Warranty</span>

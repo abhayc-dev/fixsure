@@ -122,7 +122,7 @@ export default function JobDetailsView({ job, shop, onBack }: { job: any, shop: 
                         </>
                     ) : (
                         <>
-                            <Printer className="h-5 w-5" /> Download / Print Repair Invoice
+                            <Printer className="h-5 w-5" /> Download / Print Invoice
                         </>
                     )}
                 </button>

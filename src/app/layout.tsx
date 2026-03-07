@@ -13,7 +13,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "RepairDesk - Repair Shop Management Software",
+  title: "FixSure - Repair & Warranty Management",
   description: "Elite dashboard for repair shops and warranty management.",
 };
 

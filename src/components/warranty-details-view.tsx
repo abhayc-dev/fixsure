@@ -38,7 +38,7 @@ export default function WarrantyDetailsView({ warranty, onBack }: { warranty: Wa
     // Verification URL
     const verificationUrl = typeof window !== 'undefined'
         ? `${window.location.origin}/verify/${warranty.shortCode}`
-        : `https://repairdesk.app/verify/${warranty.shortCode}`;
+        : `https://fixsure.app/verify/${warranty.shortCode}`;
 
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -265,7 +265,7 @@ export default function WarrantyDetailsView({ warranty, onBack }: { warranty: Wa
                         <div className="relative z-10">
                             <h3 className="text-lg font-bold mb-1">Need Help?</h3>
                             <p className="text-slate-400 text-sm mb-4">Contact support if you need to update incorrect details.</p>
-                            <Link href="#" className="text-primary font-bold text-sm hover:underline">Contact Support</Link>
+                            <Link href="#" className="text-primary font-bold text-sm hover:underline">Contact Admin</Link>
                         </div>
                     </div>
                 </div>

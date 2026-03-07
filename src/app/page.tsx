@@ -14,7 +14,7 @@ export default function Home() {
             <div className="bg-[#FF6442] p-1.5 rounded-lg">
               <ShieldCheck className="w-5 h-5 text-white" strokeWidth={2.5} />
             </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900">RepairDesk</span>
+            <span className="text-xl font-bold tracking-tight text-slate-900">FixSure</span>
           </div>
           <div className="flex items-center gap-4">
             <Link
@@ -50,8 +50,8 @@ export default function Home() {
                 {/* Trust Pill */}
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white border border-slate-200 rounded-full shadow-sm">
                   <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75 animate-ping"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-[#FF6442] opacity-75 animate-ping"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FF6442]"></span>
                   </span>
                   <span className="text-xs font-semibold text-slate-600 tracking-wide">
                     Trusted by 500+ Repair Shops
@@ -60,18 +60,20 @@ export default function Home() {
 
                 {/* Headline */}
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tighter text-slate-900 leading-[1.05]">
-                  RepairDesk
+                  Ab Kagaz Chhodo, Digital Bano
                 </h1>
 
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight mt-2">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-800">
-                    Repair Shop Management Software
-                  </span>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF6442] via-[#FF8C6B] to-[#FF4D4D]">
+                    Repair aur Warranty
+                  </span>{" "}
+                  — dono easily manage karo
                 </h2>
 
                 {/* Sub headline */}
-                <p className="text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed mt-4">
-                  Manage repair jobs, warranties, invoices, and customers from one simple dashboard.
+                <p className="text-lg text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                  Manage <strong>Job Sheets</strong>, track <strong>Repairs</strong>, and issue{" "}
+                  <strong>Verified Warranties</strong> — all in one simple, secure platform.
                 </p>
 
                 {/* Form */}
@@ -96,17 +98,17 @@ export default function Home() {
 
                   {/* Hero Image */}
                   <Image
-                    src="/repairdesk_hero.png"
-                    alt="RepairDesk Dashboard Illustration"
+                    src="/hero-image.png"
+                    alt="Repair & Warranty Management Platform"
                     width={750}
                     height={750}
                     priority
-                    className="relative z-10 w-[120%] lg:w-[150%] max-w-none rounded-3xl object-contain shadow-2xl transition-transform duration-700 group-hover:scale-[1.02] animate-in fade-in zoom-in duration-1000 lg:translate-x-8"
+                    className="relative z-10 w-[115%] max-w-[700px] object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.25)] transition-transform duration-700 group-hover:scale-[1.02]"
                   />
 
                   {/* Verified Warranties Card */}
-                  <div className="absolute -bottom-8 right-0 lg:-right-6 z-20 bg-white border border-slate-100 p-5 pr-8 rounded-3xl shadow-xl flex items-center gap-5 motion-safe:animate-bounce">
-                    <div className="bg-gradient-to-br from-indigo-500 to-blue-500 p-3.5 rounded-2xl shadow-lg shadow-indigo-200">
+                  <div className="absolute -bottom-8 -right-6 bg-white border border-slate-100 p-5 pr-8 rounded-3xl shadow-xl flex items-center gap-5 motion-safe:animate-bounce">
+                    <div className="bg-gradient-to-br from-[#FF6442] to-[#ff8c6b] p-3.5 rounded-2xl shadow-lg shadow-orange-200">
                       <ShieldCheck className="w-7 h-7 text-white" />
                     </div>
                     <div>
@@ -118,8 +120,8 @@ export default function Home() {
                   </div>
 
                   {/* System Online */}
-                  <div className="absolute -top-8 left-10 lg:left-0 z-30 bg-white border border-slate-100 px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 animate-bounce motion-safe:animate-in fade-in slide-in-from-top-8 duration-1000">
-                    <span className="w-2.5 h-2.5 bg-green-500 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.6)]"></span>
+                  <div className="absolute top-16 -left-16 bg-white border border-slate-100 px-5 py-3 rounded-2xl shadow-lg flex items-center gap-3">
+                    <span className="w-2.5 h-2.5 bg-[#FF6442] rounded-full shadow-[0_0_10px_rgba(255,100,66,0.6)]"></span>
                     <p className="text-xs font-bold text-slate-700 tracking-wide">
                       System Online
                     </p>
@@ -212,7 +214,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-slate-500" />
-              <span className="text-sm font-semibold text-slate-300">RepairDesk &copy; {new Date().getFullYear()}</span>
+              <span className="text-sm font-semibold text-slate-300">FixSure &copy; {new Date().getFullYear()}</span>
             </div>
             <div className="flex gap-6 text-sm">
               <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>

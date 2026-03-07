@@ -81,7 +81,8 @@ export default function LoginPage() {
     try {
       const res = await loginWithEmail(email, password);
       if (res.success) {
-        router.push("/jobs");
+        if (res.role === "ADMIN") router.push("/admin");
+        else router.push("/jobs");
         return; // Keep loader active
       } else {
         setError(res.error || "Login failed");
@@ -187,7 +188,7 @@ export default function LoginPage() {
                 <div className="p-2 bg-[#FF6442]/10 rounded-xl group-hover:bg-[#FF6442]/20 transition-colors">
                   <ShieldCheck className="h-6 w-6" />
                 </div>
-                <span className="text-slate-900">RepairDesk</span>
+                <span className="text-slate-900">FixSure</span>
               </Link>
 
               <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 mb-1">
@@ -394,7 +395,7 @@ export default function LoginPage() {
           </div>
 
           <p className="mt-3 text-center text-slate-400 text-[10px] font-bold tracking-widest mb-[-12px]">
-            Secure & Verified. © 2026 RepairDesk Digital.
+            Secure & Verified. © 2026 FixSure Digital.
           </p>
         </div>
       </div>

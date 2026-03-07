@@ -23,7 +23,11 @@ type Shop = {
     category?: string;
 }
 
-export default function Sidebar({ shop }: { shop: Shop }) {
+type Stats = {
+    subscription: string;
+}
+
+export default function Sidebar({ shop, stats, isPlanActive }: { shop: Shop, stats: Stats, isPlanActive: boolean }) {
     const pathname = usePathname();
     const { isMobileMenuOpen, closeMobileMenu } = useSidebar();
 
@@ -67,7 +71,7 @@ export default function Sidebar({ shop }: { shop: Shop }) {
                                     <ShieldCheck className="h-7 w-7 text-primary" />
                                 )}
                             </div>
-                            <span className="text-2xl font-bold tracking-tight text-white group-hover:text-primary transition-colors font-display">RepairDesk</span>
+                            <span className="text-2xl font-bold tracking-tight text-white group-hover:text-primary transition-colors font-display">FixSure</span>
                         </Link>
                         <button
                             onClick={closeMobileMenu}
@@ -125,9 +129,9 @@ export default function Sidebar({ shop }: { shop: Shop }) {
                         </div>
 
                         <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between">
-                            <div className="text-[10px] flex items-center gap-1.5 font-bold tracking-widest uppercase text-emerald-400">
-                                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                                ACTIVE
+                            <div className={cn("text-[10px] flex items-center gap-1.5 font-bold tracking-widest uppercase", isPlanActive ? "text-emerald-400" : "text-rose-400")}>
+                                <div className={cn("w-2 h-2 rounded-full", isPlanActive ? "bg-emerald-400 animate-pulse" : "bg-rose-400")} />
+                                {stats.subscription.replace('_', ' ')}
                             </div>
                             <button onClick={() => logout()} className="p-1.5 rounded-lg hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 transition-colors" title="Logout">
                                 <LogOut className="h-3.5 w-3.5" />

@@ -23,6 +23,7 @@ type Stats = {
     jobChart: { label: string, value: number }[];
     jobDistribution: { label: string, value: number, color: string }[];
     shopName: string | null;
+    subscription: string;
     isVerified: boolean;
     hasAccessPin: boolean;
 }

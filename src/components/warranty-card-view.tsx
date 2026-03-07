@@ -105,7 +105,7 @@ export default function WarrantyCardView({ warranty, shop, onBack }: { warranty:
     // Verification URL (Example structure)
     const verificationUrl = typeof window !== 'undefined'
         ? `${window.location.origin}/verify/${warranty.shortCode}`
-        : `https://repairdesk.app/verify/${warranty.shortCode}`;
+        : `https://fixsure.app/verify/${warranty.shortCode}`;
 
     return (
         <>
@@ -299,11 +299,11 @@ export default function WarrantyCardView({ warranty, shop, onBack }: { warranty:
                             <div>
                                 <div className="text-[10px] font-bold text-slate-400 tracking-widest mb-2">Authorized Signature</div>
                                 <div className="font-serif text-2xl text-slate-800 font-bold select-none italic">
-                                    {shop.shopName || "RepairDesk"}
+                                    {shop.shopName || "FixSure"}
                                 </div>
                             </div>
                             <div className="text-right">
-                                <div className="text-[10px] text-slate-400 font-medium tracking-widest">Powered by RepairDesk</div>
+                                <div className="text-[10px] text-slate-400 font-medium tracking-widest">Powered by FixSure</div>
                                 <div className="text-[9px] text-slate-300 mt-1">{new Date().getFullYear()} © Digital Warranty Record</div>
                             </div>
                         </div>

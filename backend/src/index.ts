@@ -68,7 +68,9 @@ app.post('/api/auth/signup', async (req, res) => {
                 phone: cleanPhone,
                 shopName,
                 category: category || 'GENERAL',
-                isVerified: true // Auto-verify for mobile signups for now
+                isVerified: true, // Auto-verify for mobile signups for now
+                subscriptionStatus: 'FREE_TRIAL',
+                subscriptionEnds: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
             }
         });
 

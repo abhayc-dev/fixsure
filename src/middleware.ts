@@ -12,7 +12,7 @@ export function middleware(request: NextRequest) {
 
   // 2. If user is NOT logged in, prevent them from accessing protected pages
   if (!sessionId || request.nextUrl.searchParams.has('error')) {
-    if (pathname.startsWith('/jobs') || pathname.startsWith('/warranties') || pathname.startsWith('/reports') || pathname.startsWith('/settings')) {
+    if (pathname.startsWith('/jobs') || pathname.startsWith('/warranties') || pathname.startsWith('/reports') || pathname.startsWith('/settings') || pathname.startsWith('/admin')) {
       return NextResponse.redirect(new URL('/login?error=unauthorized', request.url));
     }
   }

@@ -319,7 +319,7 @@ export default function CreateJobSheetForm({ onSuccess, shopCategory }: { onSucc
                         ) : (
                             <>
                                 <Plus className="w-4 h-4" />
-                                <span>Create Repair Job</span>
+                                <span>Create Job Sheet</span>
                             </>
                         )}
                     </button>

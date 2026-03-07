@@ -85,7 +85,7 @@ export default function WarrantyListView({ initialWarranties }: { initialWarrant
                                     <tr
                                         key={w.id}
                                         onClick={() => router.push(`/warranties/${w.id}`)}
-                                        className="hover:bg-slate-100/60 hover:shadow-sm transition-all group cursor-pointer border-b-[0.3px] border-slate-200"
+                                        className="hover:bg-slate-100/60 hover:shadow-sm transition-all group cursor-pointer"
                                     >
                                         {/* ID */}
                                         <td className="px-6 py-5">

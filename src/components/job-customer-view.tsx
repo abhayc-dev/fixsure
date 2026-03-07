@@ -318,14 +318,14 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                 className="flex items-center justify-center gap-2 bg-white border border-slate-100 px-5 py-3 md:py-2.5 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 hover:shadow-sm transition-all duration-200 cursor-pointer shadow-sm md:shadow-none w-full md:w-auto"
                                 type="button"
                             >
-                                <Printer className="h-4 w-4 text-emerald-500" /> Repair Invoice
+                                <Printer className="h-4 w-4 text-emerald-500" /> Invoice
                             </button>
                             <button
                                 onClick={handleNotify}
                                 className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-6 py-3 md:py-2.5 rounded-xl text-sm font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all active:scale-95 duration-200 cursor-pointer w-full md:w-auto"
                                 type="button"
                             >
-                                <MessageCircle className="h-5 w-5" /> Share via WhatsApp
+                                <MessageCircle className="h-5 w-5" /> Share on WhatsApp
                             </button>
                             <div className="hidden md:block w-px h-6 bg-slate-300" />
                             <button

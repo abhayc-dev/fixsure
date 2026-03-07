@@ -20,6 +20,7 @@ model Shop {
   address           String?
   city              String?
   gstNumber         String?   // Added to match backend schema
+  role              Role     @default(USER)
   category          String   @default("GENERAL") // MOBILE, MOTOR, TV, GENERAL
   
   // Auth
@@ -35,6 +36,8 @@ model Shop {
 
   // Business Status
   isVerified        Boolean  @default(false)
+  subscriptionStatus SubscriptionStatus @default(FREE_TRIAL)
+  subscriptionEnds  DateTime?
 
   // Relations
   warranties        Warranty[]
@@ -43,6 +46,11 @@ model Shop {
   
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 // 2. The Digital Warranty (The Core Product)
@@ -78,6 +86,13 @@ model Warranty {
 }
 
 // Enums for standardizing status
+enum SubscriptionStatus {
+  FREE_TRIAL
+  ACTIVE
+  EXPIRED
+  PAST_DUE
+}
+
 enum WarrantyStatus {
   ACTIVE    // Covered
   EXPIRED   // Time over

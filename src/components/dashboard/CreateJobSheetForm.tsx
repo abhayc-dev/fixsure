@@ -304,7 +304,7 @@ export default function CreateJobSheetForm({
                     >
                         {loading ? <Loader2 className="animate-spin h-5 w-5" /> : (
                             <>
-                                <span>Create Repair Job</span>
+                                <span>Create Job Sheet</span>
                                 <ArrowRight className="w-5 h-5" />
                             </>
                         )}
