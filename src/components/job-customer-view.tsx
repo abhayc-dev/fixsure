@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { deletePayment, deleteJobSheet, updateJobSheetDetails, updateJobStatus, addPayment } from "@/lib/actions";
+import { VoiceTextarea } from "@/components/ui/VoiceTextarea";
 import { JobDetailSkeleton } from "@/components/skeletons/job-detail-skeleton";
 import WorkerAssignment from "@/components/job/WorkerAssignment";
 import AssignmentHistoryTimeline from "@/components/job/AssignmentHistoryTimeline";
@@ -529,7 +530,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                             <span className="text-xs font-bold text-slate-500 tracking-widest">Reported Issue</span>
                         </div>
                         {isEditing ? (
-                            <textarea
+                            <VoiceTextarea
                                 name="problemDesc"
                                 defaultValue={job.problemDesc}
                                 className="w-full bg-slate-50 p-4 rounded-2xl text-sm font-medium text-slate-800 outline-none border border-slate-200 min-h-[120px] focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-slate-600"
@@ -708,18 +709,18 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
 
                                             <div className="space-y-4">
                                                 {/* Coil Details Row Container */}
-                                                <div className="space-y-4 ml-12 ">
+                                                <div className="space-y-4 ml-4">
                                                     {(type === 'running' ? coilDetails.running : coilDetails.starting).map((row: any, i: number) => (
-                                                        <div key={i} className="flex flex-row items-center gap-3">
-                                                            <div className="flex flex-row items-end gap-3">
+                                                        <div key={i} className="flex flex-row items-center">
+                                                            <div className="flex flex-row items-end gap-1">
                                                                 {/* Turns Column */}
-                                                                <div className="flex flex-col gap-1.5">
+                                                                <div className="flex flex-col">
                                                                     <input
                                                                         value={row.turns}
                                                                         onChange={(e) => updateCoilRow(type as any, i, 'turns', e.target.value)}
                                                                         disabled={!isEditing && !isCoilEditing}
                                                                         placeholder="0"
-                                                                        className="w-24 h-12 bg-gray-50 text-slate-900 rounded-xl text-center text-lg font-bold outline-none border border-slate-200 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm block"
+                                                                        className="w-16 h-12 bg-gray-50 text-slate-900 rounded-xl text-center text-lg font-bold outline-none border border-slate-200 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm block"
                                                                     />
                                                                 </div>
 
@@ -729,13 +730,13 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                                 </div>
 
                                                                 {/* Wire Column */}
-                                                                <div className="flex flex-col gap-1.5">
+                                                                <div className="flex flex-col gap-1">
                                                                     <input
                                                                         value={row.swg}
                                                                         onChange={(e) => updateCoilRow(type as any, i, 'swg', e.target.value)}
                                                                         disabled={!isEditing && !isCoilEditing}
                                                                         placeholder="0"
-                                                                        className="w-24 h-12 bg-gray-50 text-slate-900 rounded-xl text-center text-lg font-bold outline-none border border-slate-200 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm block"
+                                                                        className="w-16 h-12 bg-gray-50 text-slate-900 rounded-xl text-center text-lg font-bold outline-none border border-slate-200 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm block"
                                                                     />
                                                                 </div>
 
@@ -745,7 +746,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                                 </div>
 
                                                                 {/* Weight Column */}
-                                                                <div className="flex flex-col gap-1.5">
+                                                                <div className="flex flex-col gap-1">
                                                                     {i === 0 && (
                                                                         <span className="text-[10px] font-bold text-slate-500 tracking-wider block uppercase mb-1">Turn (T)</span>
                                                                     )}
@@ -754,7 +755,7 @@ export default function JobCustomerView({ job, shop, onBack, onInvoice }: { job:
                                                                         onChange={(e) => updateCoilRow(type as any, i, 'weight', e.target.value)}
                                                                         disabled={!isEditing && !isCoilEditing}
                                                                         placeholder="0"
-                                                                        className="w-24 h-12 bg-gray-50 text-slate-900 rounded-xl text-center text-lg font-bold outline-none border border-slate-200 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm block"
+                                                                        className="w-16 h-12 bg-gray-50 text-slate-900 rounded-xl text-center text-lg font-bold outline-none border border-slate-200 focus:bg-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-sm block"
                                                                     />
                                                                 </div>
                                                             </div>

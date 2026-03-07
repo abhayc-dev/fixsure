@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Wrench, X, Loader2, ArrowRight, XCircle } from "lucide-react";
 import { createJobSheet } from "@/lib/actions";
+import { VoiceTextarea } from "@/components/ui/VoiceTextarea";
 
 export default function CreateJobSheetForm({
     onSuccess,
@@ -120,7 +121,7 @@ export default function CreateJobSheetForm({
 
                     {selectedCategory === 'MOTOR' ? (
                         <div className="bg-slate-50/50 rounded-2xl p-6 border border-slate-100 space-y-6 animate-in fade-in slide-in-from-top-4">
-                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-slate-700">Equipment / Motor Type</label>
                                     <div className="relative">
@@ -165,24 +166,24 @@ export default function CreateJobSheetForm({
 
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-slate-700">Model / Serial No.</label>
-                                    <input 
-                                        name="deviceModel" 
-                                        placeholder="e.g. KV12345" 
-                                        className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-medium text-slate-600" 
+                                    <input
+                                        name="deviceModel"
+                                        placeholder="e.g. KV12345"
+                                        className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-medium text-slate-600"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-slate-700">Motor Power</label>
                                     <div className="flex gap-2">
-                                        <input 
-                                            name="motor.power" 
-                                            placeholder="Value" 
-                                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-medium text-slate-600" 
+                                        <input
+                                            name="motor.power"
+                                            placeholder="Value"
+                                            className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none transition-all font-medium text-slate-600"
                                         />
                                         <div className="relative w-28">
-                                            <select 
-                                                name="motor.power_unit" 
+                                            <select
+                                                name="motor.power_unit"
                                                 className="w-full h-12 pl-3 pr-8 rounded-xl border border-slate-200 bg-white font-bold text-slate-900 focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none appearance-none"
                                             >
                                                 <option value="HP">HP</option>
@@ -231,10 +232,10 @@ export default function CreateJobSheetForm({
                             </div>
                         </div>
                     )}
-                    
+
                     <div className="space-y-2">
                         <label className="text-sm font-bold text-slate-700">Problem Description</label>
-                        <textarea
+                        <VoiceTextarea
                             name="problemDesc"
                             required
                             rows={3}
@@ -242,7 +243,7 @@ export default function CreateJobSheetForm({
                             className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-4 focus:ring-primary/10 focus:border-primary focus:outline-none resize-none transition-all text-slate-600"
                         />
                     </div>
-                    
+
                     {selectedCategory !== 'MOTOR' && (
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700">Accessories Received</label>
