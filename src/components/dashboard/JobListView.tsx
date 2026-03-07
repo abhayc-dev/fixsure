@@ -92,18 +92,18 @@ export default function JobListView({ initialJobSheets, shop }: { initialJobShee
     return (
         <div className="space-y-6 animate-fade-in ">
             {/* Stats Summary for Jobs */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="hidden md:grid grid-cols-1 md:grid-cols-4 gap-6">
                 <JobSummaryCard title="In Intake" count={initialJobSheets.filter(j => j.status === 'RECEIVED').length} color="blue" />
                 <JobSummaryCard title="Under Repair" count={initialJobSheets.filter(j => j.status === 'IN_PROGRESS').length} color="amber" />
                 <JobSummaryCard title="Ready to Go" count={initialJobSheets.filter(j => j.status === 'READY').length} color="emerald" />
                 <JobSummaryCard title="Delivered" count={initialJobSheets.filter(j => j.status === 'DELIVERED').length} color="slate" />
             </div>
 
-            <div className="bg-white rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 overflow-hidden flex flex-col min-h-[500px]">
+            <div className="bg-white rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 flex flex-col min-h-[500px]">
                 {/* Control Bar */}
-                <div className="p-8 bg-slate-50/40 backdrop-blur-sm flex flex-col lg:flex-row gap-6 items-center border-b border-slate-200/50">
+                <div className="relative z-30 p-4 md:p-8 bg-slate-50/40 backdrop-blur-sm flex flex-col items-center border-b border-slate-200/50 rounded-t-[2.5rem]">
 
-                    <div className="flex gap-3 w-full lg:w-auto items-center flex-wrap">
+                    <div className="flex flex-col md:flex-row gap-3 w-full items-center">
                         {/* Status Filter Dropdown */}
                         <StatusFilterDropdown
                             currentFilter={statusFilter}
@@ -126,16 +126,16 @@ export default function JobListView({ initialJobSheets, shop }: { initialJobShee
                                 placeholder="Find job by name, device, or repair ID..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full h-12 pl-14 pr-6 rounded-[1.25rem] bg-white border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-base font-normal text-slate-700 placeholder:text-slate-400"
+                                className="w-full h-12 pl-14 pr-6 rounded-2xl bg-white border border-slate-200 shadow-sm focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all text-base md:text-sm font-medium text-slate-700 placeholder:text-slate-400"
                             />
                         </div>
                     </div>
                 </div>
 
-                <div className="overflow-x-auto h-100">
+                <div className="overflow-auto relative min-h-[400px] flex-1">
                     <table className="w-full text-sm text-left border-collapse">
-                        <thead>
-                            <tr className="bg-slate-50/60 text-xs font-bold text-slate-500 tracking-widest border-b border-slate-200 font-display uppercase">
+                        <thead className="sticky top-0 z-20">
+                            <tr className="bg-slate-50/95 backdrop-blur-sm text-xs font-bold text-slate-500 tracking-widest border-b border-slate-200 font-display uppercase shadow-sm">
                                 <th className="px-6 py-5">Sequence</th>
                                 <th className="px-6 py-5">Client Profile</th>
                                 <th className="px-6 py-5">Machine Class</th>
@@ -215,7 +215,7 @@ export default function JobListView({ initialJobSheets, shop }: { initialJobShee
                         </tbody>
                     </table>
                 </div>
-                <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-between items-center">
+                <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-between items-center rounded-b-[2.5rem]">
                     <div className="flex gap-4">
                         <div className="flex items-center gap-2">
                             <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
@@ -276,23 +276,23 @@ function StatusFilterDropdown({ currentFilter, onFilterChange }: { currentFilter
     };
 
     return (
-        <div className="relative inline-block text-left">
+        <div className="relative inline-block text-left w-full md:w-auto z-[100]">
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "h-12 px-4 rounded-2xl text-xs font-bold tracking-wider whitespace-nowrap transition-all border shadow-sm flex items-center gap-2",
+                    "h-12 w-full md:w-auto px-4 rounded-2xl text-xs font-bold tracking-wider whitespace-nowrap transition-all border shadow-sm flex items-center justify-between md:justify-start gap-2",
                     colorMap[currentFilterObj.color],
                     "hover:shadow-md active:scale-95"
                 )}
             >
-                Status: {currentFilterObj.label}
+                <span>Status: {currentFilterObj.label}</span>
                 <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
             </button>
 
             {isOpen && (
                 <>
                     <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-                    <div className="absolute left-0 mt-2 w-48 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 z-20 animate-fade-in overflow-hidden">
+                    <div className="absolute left-0 mt-2 w-48 rounded-xl shadow-xl bg-white ring-1 ring-black ring-opacity-5 z-[100] animate-fade-in overflow-hidden">
                         {filters.map((filter) => (
                             <button
                                 key={filter.value}
@@ -336,20 +336,20 @@ function DateRangeFilter({
     const hasDateRange = startDate || endDate;
 
     return (
-        <div className="flex gap-2 items-center">
-            <div className="flex gap-2 items-center bg-white rounded-2xl border border-slate-200 px-4 py-2 shadow-sm">
-                <Calendar className="h-4 w-4 text-slate-400" />
+        <div className="flex gap-2 items-center w-full md:w-auto">
+            <div className="flex flex-1 gap-2 items-center bg-white rounded-2xl border border-slate-200 px-4 h-12 shadow-sm w-full md:w-auto">
+                <Calendar className="h-4 w-4 text-slate-400 shrink-0" />
                 <DatePicker
                     selected={startDate}
                     onChange={(date: Date | null) => onStartDateChange(date)}
                     selectsStart
                     startDate={startDate}
                     endDate={endDate}
-                    placeholderText="Start Date"
-                    className="w-28 text-xs font-bold focus:outline-none text-slate-700"
-                    dateFormat="dd MMM yyyy"
+                    placeholderText="Start"
+                    className="w-full min-w-[70px] max-w-[95px] text-base md:text-xs font-bold focus:outline-none text-slate-700 bg-transparent"
+                    dateFormat="dd MMM yy"
                 />
-                <span className="text-slate-400">-</span>
+                <span className="text-slate-400 shrink-0">-</span>
                 <DatePicker
                     selected={endDate}
                     onChange={(date: Date | null) => onEndDateChange(date)}
@@ -357,16 +357,16 @@ function DateRangeFilter({
                     startDate={startDate}
                     endDate={endDate}
                     minDate={startDate ?? undefined}
-                    placeholderText="End Date"
-                    className="w-28 text-xs font-bold focus:outline-none text-slate-700"
-                    dateFormat="dd MMM yyyy"
+                    placeholderText="End"
+                    className="w-full min-w-[70px] max-w-[95px] text-base md:text-xs font-bold focus:outline-none text-slate-700 bg-transparent text-right"
+                    dateFormat="dd MMM yy"
                 />
             </div>
 
             {hasDateRange && (
                 <button
                     onClick={onClear}
-                    className="h-12 w-12 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-all active:scale-95 border border-slate-200"
+                    className="h-12 w-12 shrink-0 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-all active:scale-95 border border-slate-200 shadow-sm"
                     title="Clear date range"
                 >
                     <X className="h-4 w-4" />

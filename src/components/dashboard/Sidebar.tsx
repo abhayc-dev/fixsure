@@ -95,6 +95,7 @@ export default function Sidebar({ shop, stats, isPlanActive }: { shop: Shop, sta
                                 <Link
                                     key={item.href}
                                     href={item.href}
+                                    onClick={closeMobileMenu}
                                     className={cn(
                                         "flex items-center gap-3.5 w-full px-5 py-4 rounded-2xl text-sm font-bold transition-all group",
                                         isActive

@@ -30,7 +30,7 @@ export default function Header({ isPlanActive, stats }: { isPlanActive: boolean,
     const showCreateWarranty = pathname === '/warranties';
 
     return (
-        <header className="h-20 md:h-24 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 sticky top-0 z-40 flex items-center px-4 md:px-10 transition-all">
+        <header className="shrink-0 h-20 md:h-24 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 sticky top-0 z-40 flex items-center px-4 md:px-10 transition-all">
             {/* Mobile Menu Toggle */}
             <button
                 onClick={toggleMobileMenu}

@@ -134,10 +134,6 @@ export default function ProfileForm({ shop }: { shop: Shop }) {
                             Owner Name
                         </label>
                         <div className="flex gap-4">
-                            {/* Owner Logo/Avatar */}
-                            <div className="flex-shrink-0 h-12 w-12 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-lg border border-orange-200 shadow-sm">
-                                {initials}
-                            </div>
                             <input
                                 name="ownerName"
                                 value={formData.ownerName}
